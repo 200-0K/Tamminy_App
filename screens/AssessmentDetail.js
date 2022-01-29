@@ -2,7 +2,7 @@ import React from "react";
 import { StyleSheet } from "react-native";
 import PropTypes from "prop-types";
 
-export default class FeedBack extends React.Component {
+export default class AssessmentDetail extends React.Component {
   static propTypes = {
     prop1: PropTypes.string,
     prop2: PropTypes.number.isRequired,
