@@ -3,7 +3,9 @@ import PropTypes from "prop-types";
 
 import { COLORS } from "../utils/colors";
 
-export default function DetailListItem({ title, subtitle, color, subtitleColor }) {
+export default function DetailListItem({ title, subtitle, color, subtitleColor, isRtl }) {
+  const rtlText = isRtl && { textAlign: 'right', writingDirection: 'rtl' };
+
   const titleStyle = {
     color,
   };
@@ -16,10 +18,10 @@ export default function DetailListItem({ title, subtitle, color, subtitleColor }
     <View
       style={styles.container}
     >
-      <Text style={[styles.title, titleStyle]}>{title}</Text>
+      <Text style={[styles.title, rtlText, titleStyle]}>{title}</Text>
       {subtitle && (
         <View style={styles.subtitleContainer}>
-          <Text style={[styles.subtitle, subtitleStyle]}>{subtitle}</Text>
+          <Text style={[styles.subtitle, rtlText, subtitleStyle]}>{subtitle}</Text>
         </View>
       )}
     </View>
@@ -50,10 +52,12 @@ DetailListItem.propTypes = {
   subtitle: PropTypes.string,
   color: PropTypes.string,
   subtitleColor: PropTypes.string,
+  isRtl: PropTypes.bool,
 };
 
 DetailListItem.defaultProps = {
   subtitle: null,
   color: COLORS.primaryText,
   subtitleColor: COLORS.secondaryText,
+  isRtl: true,
 };
