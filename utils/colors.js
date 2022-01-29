@@ -1,7 +1,9 @@
 const colorValues = {
   white: "#fff",
 
-  quartz_500: "#4C4A5E",
+  quartz_800: "#4C4A5E",
+  quartz_600: "#6C6A7F",
+  quartz_500: "#9492A8",
 
   green_200: "#81FF9C",
 
@@ -11,8 +13,9 @@ const colorValues = {
 };
 
 export const COLORS = {
-  primaryText: colorValues.quartz_500,
-  buttonText: colorValues.quartz_500,
+  primaryText: colorValues.quartz_800,
+  secondaryText: colorValues.quartz_600,
+  buttonText: colorValues.quartz_800,
   buttonBackground: colorValues.white,
   diseaseSeverityLow: colorValues.green_200,
   diseaseSeverityMedium: colorValues.yellow_400,
