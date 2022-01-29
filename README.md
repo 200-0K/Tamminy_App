@@ -10,7 +10,11 @@ After that, download _expo_ using _yarn_ as follows:
 ```shell
 $> yarn global add expo-cli
 ```
-Finally, inside the repo root directory, do the following to start _expo_:
+Now, inside the repo root directory, run the following command to install dependencies:
+```shell
+$> yarn install
+```
+Finally, inside the repo root directory, type the following to start _expo_:
 ```shell
 $> expo start
 ```
