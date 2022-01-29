@@ -1,6 +1,7 @@
-import React from "react";
 import { StyleSheet, Text, TouchableOpacity } from "react-native";
 import PropTypes from "prop-types";
+
+import { COLORS } from "../utils/colors";
 
 export default function Button({
   title,
@@ -39,10 +40,11 @@ const styles = StyleSheet.create({
     paddingHorizontal: 18,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#fff",
+    backgroundColor: COLORS.buttonBackground,
   },
   title: {
     backgroundColor: "transparent",
+    color: COLORS.buttonText,
     fontSize: 24,
   },
 });
@@ -59,7 +61,7 @@ Button.propTypes = {
 Button.defaultProps = {
   fontSize: 20,
   onPress: null,
-  backgroundColor: "#fff", // TODO: Make it dynamic based on preferred theme i.e. (Dark/Light)
-  color: "#4C4A5E", // TODO: ...
+  backgroundColor: COLORS.buttonBackground, // TODO: Make it dynamic based on preferred theme i.e. (Dark/Light)
+  color: COLORS.buttonText, // TODO: ...
   borderRadius: 5
 }
