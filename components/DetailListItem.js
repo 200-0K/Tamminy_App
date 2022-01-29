@@ -1,13 +1,15 @@
-import { StyleSheet, TouchableOpacity, Text, View } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 import PropTypes from "prop-types";
 
-export default function DetailListItem({ title, subtitle, color }) {
+import { COLORS } from "../utils/colors";
+
+export default function DetailListItem({ title, subtitle, color, subtitleColor }) {
   const titleStyle = {
     color,
   };
 
   const subtitleStyle = {
-    color,
+    color: subtitleColor,
   };
 
   return (
@@ -32,14 +34,14 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 24,
     fontWeight: "bold",
-    color: "#4C4A5E",
+    color: COLORS.primaryText,
   },
   subtitleContainer: {
-    opacity: 0.6,
+    opacity: 0.7,
   },
   subtitle: {
     fontSize: 13,
-    color: "#4C4A5E",
+    color: COLORS.secondaryText,
   },
 });
 
@@ -47,9 +49,11 @@ DetailListItem.propTypes = {
   title: PropTypes.string.isRequired,
   subtitle: PropTypes.string,
   color: PropTypes.string,
+  subtitleColor: PropTypes.string,
 };
 
 DetailListItem.defaultProps = {
   subtitle: null,
-  color: "#4C4A5E",
+  color: COLORS.primaryText,
+  subtitleColor: COLORS.secondaryText,
 };
