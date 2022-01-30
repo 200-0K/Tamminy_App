@@ -3,8 +3,15 @@ import PropTypes from "prop-types";
 
 import { COLORS } from "../utils/colors";
 
-export default function DetailListItem({ title, subtitle, color, subtitleColor, isRtl }) {
-  const rtlText = isRtl && { textAlign: 'right', writingDirection: 'rtl' };
+export default function DetailListItem({
+  title,
+  subtitle,
+  color,
+  subtitleColor,
+  isRtl,
+  style,
+}) {
+  const rtlText = isRtl && { textAlign: "right", writingDirection: "rtl" };
 
   const titleStyle = {
     color,
@@ -15,13 +22,13 @@ export default function DetailListItem({ title, subtitle, color, subtitleColor, 
   };
 
   return (
-    <View
-      style={styles.container}
-    >
+    <View style={[styles.container, style]}>
       <Text style={[styles.title, rtlText, titleStyle]}>{title}</Text>
       {subtitle && (
         <View style={styles.subtitleContainer}>
-          <Text style={[styles.subtitle, rtlText, subtitleStyle]}>{subtitle}</Text>
+          <Text style={[styles.subtitle, rtlText, subtitleStyle]}>
+            {subtitle}
+          </Text>
         </View>
       )}
     </View>
@@ -30,11 +37,12 @@ export default function DetailListItem({ title, subtitle, color, subtitleColor, 
 
 const styles = StyleSheet.create({
   container: {
-    paddingVertical: 12,
-    paddingHorizontal: 18,
+    paddingVertical: 8,
+    paddingHorizontal: 10,
+    flex: 1,
   },
   title: {
-    fontSize: 24,
+    fontSize: 20,
     fontWeight: "bold",
     color: COLORS.primaryText,
   },
@@ -42,7 +50,7 @@ const styles = StyleSheet.create({
     opacity: 0.7,
   },
   subtitle: {
-    fontSize: 13,
+    fontSize: 12,
     color: COLORS.secondaryText,
   },
 });
@@ -53,6 +61,7 @@ DetailListItem.propTypes = {
   color: PropTypes.string,
   subtitleColor: PropTypes.string,
   isRtl: PropTypes.bool,
+  style: PropTypes.object,
 };
 
 DetailListItem.defaultProps = {
@@ -60,4 +69,5 @@ DetailListItem.defaultProps = {
   color: COLORS.primaryText,
   subtitleColor: COLORS.secondaryText,
   isRtl: true,
+  style: null,
 };

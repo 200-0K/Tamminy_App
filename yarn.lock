@@ -1948,6 +1948,11 @@ chalk@^4.0.0, chalk@^4.1.0, chalk@^4.1.2:
     ansi-styles "^4.1.0"
     supports-color "^7.1.0"
 
+chroma-js@^2.3.0:
+  version "2.3.0"
+  resolved "https://registry.yarnpkg.com/chroma-js/-/chroma-js-2.3.0.tgz#fdf68a18d8f97ce006422338044218ccbffb9ecb"
+  integrity sha512-dRgAp9FHHy+VfE7e3/I5HHU0+zZlUHBODcjvXUXinsR/NnHCO+kfv68ofzrAqFI80q2IWvDSAmHAqHh93TGgKg==
+
 ci-info@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/ci-info/-/ci-info-2.0.0.tgz#67a9e964be31a51e15e5010d58e6f12834002f46"

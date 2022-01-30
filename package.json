@@ -10,6 +10,7 @@
     "eject": "expo eject"
   },
   "dependencies": {
+    "chroma-js": "^2.3.0",
     "expo": "~44.0.0",
     "expo-status-bar": "~1.2.0",
     "prop-types": "^15.8.1",
