@@ -9,12 +9,6 @@ export default class ComponentName extends React.Component {
     prop3: PropTypes.func,
   };
 
-  // set default value for optional props
-  static defaultProps = {
-    prop1: "Default",
-    prop3: () => {},
-  };
-
   render() {
     // const { ... } = this.props;
 
