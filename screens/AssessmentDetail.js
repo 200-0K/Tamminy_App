@@ -8,100 +8,51 @@ import {
   SafeAreaView,
   StatusBar,
   TouchableOpacity,
+  TouchableHighlight,
+  ActivityIndicator,
 } from "react-native";
-// import Constants from "expo-constants"; //!
-import PropTypes from "prop-types";
 import chroma from "chroma-js";
 
-import { COLORS } from "../utils/colors";
 import DetailListItem from "../components/DetailListItem";
 
-const rtlText = { textAlign: "right", writingDirection: "rtl" };
-const rtlView = { flexDirection: "row-reverse" };
+import { COLORS } from "../utils/colors";
+import { formatDate } from "../utils/date";
+import { STYLES } from "../utils/styles";
 
+const { rtlText, rtlView } = STYLES;
 export default class AssessmentDetail extends React.Component {
-  static propTypes = {
-    date: PropTypes.string.isRequired,
-    possibleDiseases: PropTypes.arrayOf(PropTypes.shape({
-      id: PropTypes.number.isRequired,
-      diseaseName: PropTypes.string.isRequired,
-      diseaseSubtitle: PropTypes.string.isRequired,
-      percentage: PropTypes.number.isRequired
-    })),
-    selectedSymptoms: PropTypes.arrayOf(PropTypes.shape({
-      id: PropTypes.number.isRequired,
-      symptomName: PropTypes.string.isRequired
-    })),
-  };
+  // TODO: navigation props
+  // static propTypes = {
+  //   id: PropTypes.number,
+  //   date: PropTypes.string.isRequired,
+  //   possibleDiseases: PropTypes.arrayOf(PropTypes.shape({
+  //     id: PropTypes.number.isRequired,
+  //     diseaseName: PropTypes.string.isRequired,
+  //     diseaseSubtitle: PropTypes.string.isRequired,
+  //     percentage: PropTypes.number.isRequired
+  //   })),
+  //   selectedSymptoms: PropTypes.arrayOf(PropTypes.shape({
+  //     id: PropTypes.number.isRequired,
+  //     symptomName: PropTypes.string.isRequired
+  //   })),
+  // };
 
-  // set default value for optional props
-  static defaultProps = {
+  state = {
+    loading: true,
+    error: false,
+    id: null,
+    date: null,
     possibleDiseases: [],
     selectedSymptoms: [],
   };
 
-  handleDiseasePress = ({ id }) => {
-    // TODO: Stack Navigate to DiseaseDetail screen
-  };
+  async componentDidMount() {
+    // TODO
+    // if id != null then fetch assessment detail from the API
+    // if id == null then get assessment detail from Navigate object and update the state
 
-  renderDiseaseItem = ({ id, diseaseName, diseaseSubtitle, percentage }) => {
-    const severityColor = chroma.scale([
-      COLORS.diseaseSeverityLow,
-      COLORS.diseaseSeverityMedium,
-      COLORS.diseaseSeverityHigh,
-    ])(percentage / 100).toString();
-
-    return (
-      <TouchableOpacity
-        style={[styles.listItemContainer, rtlView]}
-        activeOpacity={0.8}
-        onPress={() => this.handleDiseasePress(id)}
-        key={id}
-      >
-        <View
-          style={[styles.severityContainer, { backgroundColor: severityColor }]}
-        >
-          <Text style={styles.severityPercentage}>
-            {percentage}
-            <Text style={{ fontSize: 8 }}>%</Text>
-          </Text>
-        </View>
-        <DetailListItem
-          title={diseaseName}
-          subtitle={diseaseSubtitle}
-          isRtl={!!rtlText} // convert to boolean
-          style={styles.detailListItem}
-        />
-      </TouchableOpacity>
-    );
-  };
-
-  handleSymptomPress = ({ id }) => {
-    // TODO: Stack Navigate to SymptomDetail screen
-  };
-
-  renderSymptomItem = ({ id, symptomName }) => {
-    return (
-      <TouchableOpacity
-        style={[styles.listItemContainer, rtlView]}
-        activeOpacity={0.8}
-        onPress={() => this.handleSymptomPress(id)}
-        key={id}
-      >
-        <Text>+</Text>
-        <DetailListItem
-         title={symptomName} 
-         isRtl={!!rtlText}
-         style={styles.detailListItem}
-        />
-      </TouchableOpacity>
-    );
-  };
-
-  render() {
-    // const { ... } = this.props; // date: string/Date?, possibleDiseases: [{id, diseaseName, diseaseSubtitle, percentage}], selectedSymptoms: [{id, symptomName}]
-    const date = "2021 ,02 Nov";
-    const possibleDiseases = [
+    date = formatDate();
+    possibleDiseases = [
       {
         id: 118,
         diseaseName: "كورونا",
@@ -138,7 +89,7 @@ export default class AssessmentDetail extends React.Component {
         percentage: 20,
       },
     ];
-    const selectedSymptoms = [
+    selectedSymptoms = [
       {
         id: 96,
         symptomName: "صداع",
@@ -156,7 +107,90 @@ export default class AssessmentDetail extends React.Component {
         symptomName: "تعب",
       },
     ];
-    
+
+    try {
+      setTimeout(() => {
+        this.setState({
+          loading: false,
+          error: false,
+          date,
+          possibleDiseases,
+          selectedSymptoms,
+        });
+      }, 5000); //! update the state after 5 second | For Testing
+    } catch (e) {
+      this.setState({
+        loading: false,
+        error: true,
+      });
+    }
+  }
+
+  handleDiseasePress = ({ id }) => {
+    // TODO: Stack Navigate to DiseaseDetail screen
+  };
+
+  renderDiseaseItem = ({ id, diseaseName, diseaseSubtitle, percentage }) => {
+    const severityColor = chroma
+      .scale([
+        COLORS.diseaseSeverityLow,
+        COLORS.diseaseSeverityMedium,
+        COLORS.diseaseSeverityHigh,
+      ])(percentage / 100)
+      .toString();
+
+    return (
+      <TouchableHighlight
+        style={[styles.listItemContainer, rtlView]} // TODO: based app language
+        activeOpacity={0.8}
+        underlayColor={"rgba(0,0,0,0.05)"}
+        onPress={() => this.handleDiseasePress(id)}
+        key={id}
+      >
+        <>
+          <View
+            style={[styles.severityContainer, { backgroundColor: severityColor }]}
+          >
+            <Text style={styles.severityPercentage}>
+              {percentage}
+              <Text style={{ fontSize: 8 }}>%</Text>
+            </Text>
+          </View>
+          <DetailListItem
+            title={diseaseName}
+            subtitle={diseaseSubtitle}
+            isRtl={true} // TODO: based app language
+            style={styles.detailListItem}
+          />
+        </>
+      </TouchableHighlight>
+    );
+  };
+
+  handleSymptomPress = ({ id }) => {
+    // TODO: Stack Navigate to SymptomDetail screen
+  };
+
+  renderSymptomItem = ({ id, symptomName }) => {
+    return (
+      <TouchableHighlight
+        style={[styles.listItemContainer, rtlView]} // TODO: based app language
+        activeOpacity={0.8}
+        underlayColor={"rgba(0,0,0,0.05)"}
+        onPress={() => this.handleSymptomPress(id)}
+        key={id}
+      >
+        <DetailListItem
+          title={"+ " + symptomName}
+          isRtl={true} // TODO: based app language
+          style={styles.detailListItem}
+        />
+      </TouchableHighlight>
+    );
+  };
+
+  render() {
+    const { loading, error, possibleDiseases, selectedSymptoms, date } = this.state;
 
     return (
       <SafeAreaView style={styles.container}>
@@ -167,32 +201,46 @@ export default class AssessmentDetail extends React.Component {
           <View style={styles.titleContainer}>
             <Text style={[styles.title, rtlText]}>نتيجة التشخيص</Text>
           </View>
-          {date && (
-            <Text style={[styles.date, rtlText]}>التاريخ {date}</Text>
+
+          {loading && (
+            <ActivityIndicator size={"large"} color={COLORS.primaryText} />
           )}
 
-          {/* TODO: No Result Message */}
-          <View style={styles.sectionContainer}>
-            <View style={styles.sectionTitleContainer}>
-              <Text style={[styles.sectionTitle, rtlText]}>
-                الأمراض المحتملة
-              </Text>
-            </View>
-            <View style={styles.listContainer}>
-              {possibleDiseases.map(this.renderDiseaseItem)}
-            </View>
-          </View>
+          {error && <Text style={{textAlign:"center"}}>Error: error occured</Text> /*TODO*/} 
+          
+          {!loading && !error && (
+            <>
+              {date && (
+                <View style={styles.dateContainer}>
+                  <Text style={[styles.date, rtlText]}>التاريخ</Text>
+                  <Text style={styles.date}>{date}</Text>
+                </View>
+              )}
 
-          <View style={styles.sectionContainer}>
-            <View style={styles.sectionTitleContainer}>
-              <Text style={[styles.sectionTitle, rtlText]}>
-                الاعراض المختارة
-              </Text>
-            </View>
-            <View style={styles.listContainer}>
-              {selectedSymptoms.map(this.renderSymptomItem)}
-            </View>
-          </View>
+              {/* TODO: No Result Message */}
+              <View style={styles.sectionContainer}>
+                <View style={styles.sectionTitleContainer}>
+                  <Text style={[styles.sectionTitle, rtlText]}>
+                    الأمراض المحتملة
+                  </Text>
+                </View>
+                <View style={styles.listContainer}>
+                  {possibleDiseases.map(this.renderDiseaseItem)}
+                </View>
+              </View>
+
+              <View style={styles.sectionContainer}>
+                <View style={styles.sectionTitleContainer}>
+                  <Text style={[styles.sectionTitle, rtlText]}>
+                    الاعراض المختارة
+                  </Text>
+                </View>
+                <View style={styles.listContainer}>
+                  {selectedSymptoms.map(this.renderSymptomItem)}
+                </View>
+              </View>
+            </>
+          )}
         </ScrollView>
       </SafeAreaView>
     );
@@ -231,11 +279,13 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     color: COLORS.primaryText,
   },
+  dateContainer: {
+    alignItems: "center",
+  },
   date: {
     fontSize: 12,
     fontWeight: "bold",
     color: COLORS.secondaryText,
-    alignSelf: "center",
   },
 
   sectionContainer: {
@@ -264,6 +314,8 @@ const styles = StyleSheet.create({
   },
   listItemContainer: {
     alignItems: "center",
+    paddingVertical: 7,
+    paddingHorizontal: 5,
   },
   severityContainer: {
     width: 42,
@@ -280,7 +332,7 @@ const styles = StyleSheet.create({
     color: COLORS.primaryText,
   },
   detailListItem: {
-    paddingVertical: 2,
+    paddingVertical: 0,
     paddingHorizontal: 10,
   },
 });

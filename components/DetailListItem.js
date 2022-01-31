@@ -2,6 +2,7 @@ import { StyleSheet, Text, View } from "react-native";
 import PropTypes from "prop-types";
 
 import { COLORS } from "../utils/colors";
+import { STYLES } from "../utils/styles";
 
 export default function DetailListItem({
   title,
@@ -11,7 +12,7 @@ export default function DetailListItem({
   isRtl,
   style,
 }) {
-  const rtlText = isRtl && { textAlign: "right", writingDirection: "rtl" };
+  const rtlText = isRtl && STYLES.rtlText;
 
   const titleStyle = {
     color,
@@ -26,7 +27,7 @@ export default function DetailListItem({
       <Text style={[styles.title, rtlText, titleStyle]}>{title}</Text>
       {subtitle && (
         <View style={styles.subtitleContainer}>
-          <Text style={[styles.subtitle, rtlText, subtitleStyle]}>
+          <Text style={[styles.subtitle, rtlText, subtitleStyle]} numberOfLines={2}>
             {subtitle}
           </Text>
         </View>
@@ -42,7 +43,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   title: {
-    fontSize: 20,
+    fontSize: 18,
     fontWeight: "bold",
     color: COLORS.primaryText,
   },
