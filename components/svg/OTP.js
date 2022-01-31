@@ -11,10 +11,12 @@ import Svg, {
 const SvgComponent = (props) => (
   <Svg
     width="100%"
+    height="35%"
+    preserveAspectRatio="XMinYMin slice"
+    viewBox="0 0 400 310"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
     {...props}
-    style={{width: 10, height: 10}}
   >
     <G clipPath="url(#a)">
       <Path
