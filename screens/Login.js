@@ -3,108 +3,88 @@ import PropTypes from "prop-types";
 import { StatusBar } from 'expo-status-bar';
 import {
   StyleSheet, Text, View, Image,
-  TouchableOpacity, ScrollView, TextInput,
+  TouchableOpacity, ScrollView,
   SafeAreaView, KeyboardAvoidingView
 } from 'react-native';
 import { Entypo } from '@expo/vector-icons';
 import { Ionicons } from '@expo/vector-icons';
+import LoginSvg from '../components/svg/Login';
+import TextInput  from '../components/TextInput';
 
-import LoginSvg from "../components/svg/Login";
+export default class Login extends React.Component {
+  // static propTypes = {
+  //   prop1: PropTypes.string,
+  //   prop2: PropTypes.number.isRequired,
+  //   prop3: PropTypes.func,
+  
 
-export default class ComponentName extends React.Component {
-  static propTypes = {
-    prop1: PropTypes.string,
-    prop2: PropTypes.number.isRequired,
-    prop3: PropTypes.func,
-  };
-
-  render() {
+  
     // const { ... } = this.props;
+   
+  render() {
+   // const { loading, error, possibleDiseases, selectedSymptoms, date } = this.state;
 
     return (
-        <KeyboardAvoidingView behavior="padding" style={styles.container}>
-        {/* <SafeAreaView style={}> */}
-            <Ionicons  style={{
     
-              alignSelf: 'flex-start',
-              paddingHorizontal: 30
-            }} name="arrow-back-sharp" size={33} color="black" />
-            {/* <Home />   */}
-            <Text style={styles.text}>تسجيل الدخول</Text>
-            <LoginSvg />
+      <SafeAreaView style={styles.container}>
+        
+        
+        <Text style={styles.text}>تسجيل الدخول</Text>
+       
+        <LoginSvg />
+        
+        <View style={styles.viewTextIcon} >
+       <TextInput
+        icon="at"
+        isRtl={true}
+      /> 
+    </View>
+
+    <View style={styles.viewTextIcon}>
+       <TextInput
+        icon="key"
+        isRtl={true}
+      />
+    </View>
     
-            <View style={styles.viewTextIcon} >
-              <TextInput
-                style={styles.input}
-                //multiline={true}
-                returnKeyType='next'
-                placeholder="الايميل"
-                keyboardType="default"
-                underlineColorAndroid="black"
-                inlineImageLeft='username'
-                inlineImagePadding={2}
-                underlineColorAndroid='transparent'
+    <TouchableOpacity style={styles.botton}>
+      <Text style={{
+        fontWeight: "bold",
+        color: "rgba(0,0,0,0.65)",
+      }}>تسجيل الدخول</Text>
+    </TouchableOpacity>
+
     
-              />
-              <Entypo style={{ color: 'rgba(0,0,0,0.5)', }} name="email" size={24} color="black" />
-            </View>
-    
-            <View style={styles.viewTextIcon}>
-              <TextInput
-                style={styles.input}
-                returnKeyType='done'
-                placeholder="كلمة السر"
-                keyboardType="default"
-                underlineColorAndroid="black"
-                secureTextEntry
-              />
-              <Entypo style={{ color: 'rgba(0,0,0,0.5)', }} name="key" size={24} color="black" />
-            </View>
-            
-            <TextInput
-                style={styles.input}
-                returnKeyType='done'
-                placeholder="كلمة السر"
-                keyboardType="default"
-                underlineColorAndroid="black"
-                secureTextEntry
-              />
-    
-            <TouchableOpacity style={styles.botton}>
-              <Text style={{
-                fontWeight: "bold",
-                color: "rgba(0,0,0,0.65)",
-              }}>تسجيل الدخول</Text>
-            </TouchableOpacity>
-    
-            <TouchableOpacity style={{ paddingVertical: 5 }}>
-              <Text style={{
-                color: "rgba(0,0,0,0.5)",
-              }}>تسجيل</Text>
-            </TouchableOpacity>
-    
-            <StatusBar style="auto" />
-        {/* </SafeAreaView> */}
-          </KeyboardAvoidingView>
-    
+     <TouchableOpacity style={{ paddingVertical: 5 }}>
+       <Text style={{
+        color: "rgba(0,0,0,0.5)",
+      }}>تسجيل</Text>
+     </TouchableOpacity>
+     
+      </SafeAreaView>
+      
     );
   }
 }
 
 
-const styles = StyleSheet.create({
+
+const styles = StyleSheet.create(
+  {
     container: {
       flex: 1,
       backgroundColor: '#fff',
       alignItems: 'center',
+      justifyContent: 'center',
       marginTop: StatusBar.currentHeight,
     },
+
     text: {
       color: "rgba(0,0,0,0.5)",
       fontSize: 35,
       marginVertical: 10,
       fontWeight: "700",
-      height: 50,
+      height: 70,
     },
     botton: {
       flex: 0,
@@ -116,21 +96,67 @@ const styles = StyleSheet.create({
       borderWidth: 1.5,
       alignItems: 'center',
     },
-    input: {
-      width: '75%',
-      margin: 5,
-      padding: 10,
-      alignSelf: 'center',
-      borderBottomColor: 'rgba(0,0,0,0.5)',
-      borderBottomWidth: 2,
-      textAlign: 'right',
-  
-    },
+    
     viewTextIcon: {
-      flexDirection: 'row',
+    
       alignItems: 'center',
+    },
+    scrollView: {
+      paddingHorizontal: 20,
     },
   
   });
   
-  
+//   // <KeyboardAvoidingView> //behavior="padding" style={styles.container}>
+//   <SafeAreaView style={styles.container> 
+         
+            
+            
+//     <Text style={styles.text}>تسجيل الدخول</Text>
+
+//  //   <LoginSvg />
+// <>
+//     <View style={styles.viewTextIcon} >
+
+//       <TextInput
+//         style={styles.input}
+//         //multiline={true}
+//         returnKeyType='next'
+//         placeholder="الايميل"
+//         keyboardType="default"
+//         underlineColorAndroid="black"
+//         inlineImageLeft='username'
+//         inlineImagePadding={2}
+//         underlineColorAndroid='transparent'
+
+//       />
+//       <Entypo style={{ color: 'rgba(0,0,0,0.5)', }} name="email" size={24} color="black" />
+//     </View>
+
+    // <View style={styles.viewTextIcon}>
+    //   <TextInput
+    //     style={styles.input}
+    //     returnKeyType='done'
+    //     placeholder="كلمة السر"
+    //     keyboardType="default"
+    //     underlineColorAndroid="black"
+    //     secureTextEntry
+    //   />
+    //   <Entypo style={{ color: 'rgba(0,0,0,0.5)', }} name="key" size={24} color="black" />
+    // </View>
+//     </>
+    // <TouchableOpacity style={styles.botton}>
+    //   <Text style={{
+    //     fontWeight: "bold",
+    //     color: "rgba(0,0,0,0.65)",
+    //   }}>تسجيل الدخول</Text>
+    // </TouchableOpacity>
+
+//     <TouchableOpacity style={{ paddingVertical: 5 }}>
+//       <Text style={{
+//         color: "rgba(0,0,0,0.5)",
+//       }}>تسجيل</Text>
+//     </TouchableOpacity>
+
+//     <StatusBar style="auto" />
+//  </SafeAreaView> 
