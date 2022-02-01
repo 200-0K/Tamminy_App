@@ -9,6 +9,8 @@ import {
 import { Entypo } from '@expo/vector-icons';
 import { Ionicons } from '@expo/vector-icons';
 
+import LoginSvg from "../components/svg/Login";
+
 export default class ComponentName extends React.Component {
   static propTypes = {
     prop1: PropTypes.string,
@@ -29,8 +31,7 @@ export default class ComponentName extends React.Component {
             }} name="arrow-back-sharp" size={33} color="black" />
             {/* <Home />   */}
             <Text style={styles.text}>تسجيل الدخول</Text>
-            <Image source={require("./assets/Login.svg")}
-            />
+            <LoginSvg />
     
             <View style={styles.viewTextIcon} >
               <TextInput
@@ -95,8 +96,7 @@ const styles = StyleSheet.create({
     container: {
       flex: 1,
       backgroundColor: '#fff',
-      alignItems: 'center', 
-      justifyContent: 'center',
+      alignItems: 'center',
       marginTop: StatusBar.currentHeight,
     },
     text: {

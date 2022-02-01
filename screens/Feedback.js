@@ -1,6 +1,17 @@
 import React from "react";
-import { SafeAreaView, StyleSheet, Text, View, TextInput, Button, Image, ScrollView } from 'react-native';
+import {
+  SafeAreaView,
+  StyleSheet,
+  Text,
+  View,
+  TextInput,
+  Button,
+  ScrollView,
+} from "react-native";
 import PropTypes from "prop-types";
+
+import FeedbackSvg from "../components/svg/Feedback";
+import { COLORS } from "../utils/colors";
 
 export default class Feedback extends React.Component {
   static propTypes = {
@@ -13,62 +24,61 @@ export default class Feedback extends React.Component {
     // const { ... } = this.props;
 
     return (
-      <ScrollView>
-        
-        <SafeAreaView style={styles.container}>
-          <Text style={{
-            fontSize: 57, fontFamily: "CourierNewPS-BoldMT", fontWeight: 'bold',
-            color: 'rgba(76,74,94,0.7)', marginTop: 90, textAlign: "center"
-          }}>ماذا تقترح؟</Text>
+      <SafeAreaView style={styles.container}>
+        <ScrollView>
+          <Text
+            style={{
+              fontSize: 57,
+              fontWeight: "bold",
+              color: COLORS.primaryText,
+              marginTop: 90,
+              textAlign: "center",
+              flex: 1,
+            }}
+          >
+            ماذا تقترح؟
+          </Text>
 
-          <View>
-            <Image style={{ marginTop: 40 }} source={require('../assets/Feedback.png')} />
-          </View>
-          
+          <FeedbackSvg height={350} style={{ aspectRatio: 1 }} />
+
           <TextInput
-            style={styles.TextInput}
-            placeholder='0/500' />
+            style={styles.textInput}
+            placeholder="0/500"
+            //TODO: TextArea component
+          />
 
-          <StatusBar style="auto" />
-
-          <View style={styles.ButtonStyle}>
-            <Button
-              title="ارسال" />
+          <View style={[styles.buttonContainer]}>
+            <Button style={styles.button} title="ارسال"  />
           </View>
-
-
-        </SafeAreaView>
-      </ScrollView>
+        </ScrollView>
+      </SafeAreaView>
     );
   }
 }
 
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FFF',
-    alignItems: 'center',
+    backgroundColor: "#FFF",
+    alignItems: "center",
   },
-  TextInput: {
-    textAlign: 'center',
-    height: 300,
-    width: '90%',
-    fontWeight: '500',
+  textInput: {
+    textAlign: "center",
+    height: 250,
+    fontWeight: "500",
     fontSize: 20,
-    color: 'rgba(76,74,94,0.7)',
-    marginTop: 20,
+    color: COLORS.primaryText,
     borderWidth: 1.8,
     padding: 0,
     borderRadius: 10,
   },
-  ButtonStyle: {
+  buttonContainer: {
     marginVertical: 10,
-    flexBasis: 45,
     borderWidth: 2,
     borderRadius: 10,
-    height: 40,
-    width: '25%',
+    alignSelf: "center"
   },
+  button: {
+    height: 40,
+  }
 });
-
