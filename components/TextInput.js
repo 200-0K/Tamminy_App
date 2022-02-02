@@ -40,7 +40,7 @@ TextInput.propTypes = {
   isRtl: PropTypes.boolean,
 }
 
-TextInput.defaultValues = {
+TextInput.defaultProps = {
   icon: null,
   isRtl: false ,
 }

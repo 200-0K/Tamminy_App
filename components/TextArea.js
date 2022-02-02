@@ -13,7 +13,7 @@ export default class TextArea extends React.Component {
     hideCounter: PropTypes.bool,
   };
 
-  static defaultValues = {
+  static defaultProps = {
     isRtl: false,
     max: null,
     containerStyle: null,
