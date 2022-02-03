@@ -38,8 +38,7 @@ export default function DetailListItem({
 
 const styles = StyleSheet.create({
   container: {
-    paddingVertical: 8,
-    paddingHorizontal: 10,
+    paddingVertical: 5,
     flex: 1,
   },
   title: {
