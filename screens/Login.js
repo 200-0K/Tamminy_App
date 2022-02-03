@@ -25,18 +25,29 @@ export default class Login extends React.Component {
    // const { loading, error, possibleDiseases, selectedSymptoms, date } = this.state;
 
     return (
-    
+      <ScrollView 
+      showsVerticalScrollIndicator={false}>
       <SafeAreaView style={styles.container}>
         
         
-        <Text style={styles.text}>تسجيل الدخول</Text>
+        <Text style={{
+          color: "rgba(0,0,0,0.55)",
+          fontSize: 35,
+          //marginVertical: 30,
+          fontWeight: "700",
+          paddingVertical:10
+         // height: 300,
+      }}>تسجيل الدخول</Text>
        
         <LoginSvg />
-        
+
+       
         <View style={styles.viewTextIcon} >
-       <TextInput
+       <TextInput 
         icon="at"
         isRtl={true}
+        placeholder="الايميل"
+        returnKeyType="next"
       /> 
     </View>
 
@@ -44,16 +55,18 @@ export default class Login extends React.Component {
        <TextInput
         icon="key"
         isRtl={true}
+        placeholder="كلمة السر"
+        returnKeyType="done"
       />
     </View>
-    
+  
     <TouchableOpacity style={styles.botton}>
       <Text style={{
         fontWeight: "bold",
         color: "rgba(0,0,0,0.65)",
       }}>تسجيل الدخول</Text>
     </TouchableOpacity>
-
+    
     
      <TouchableOpacity style={{ paddingVertical: 5 }}>
        <Text style={{
@@ -62,7 +75,7 @@ export default class Login extends React.Component {
      </TouchableOpacity>
      
       </SafeAreaView>
-      
+      </ScrollView>
     );
   }
 }
@@ -75,7 +88,7 @@ const styles = StyleSheet.create(
       flex: 1,
       backgroundColor: '#fff',
       alignItems: 'center',
-      justifyContent: 'center',
+      //justifyContent: 'center',
       marginTop: StatusBar.currentHeight,
     },
 
@@ -98,7 +111,6 @@ const styles = StyleSheet.create(
     },
     
     viewTextIcon: {
-    
       alignItems: 'center',
     },
     scrollView: {
