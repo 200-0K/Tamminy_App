@@ -25,10 +25,12 @@ export default class Login extends React.Component {
    // const { loading, error, possibleDiseases, selectedSymptoms, date } = this.state;
 
     return (
+     
       <ScrollView 
       showsVerticalScrollIndicator={false}>
+         <KeyboardAvoidingView behavior='padding'>
       <SafeAreaView style={styles.container}>
-        
+      
         
         <Text style={{
           color: "rgba(0,0,0,0.55)",
@@ -41,7 +43,7 @@ export default class Login extends React.Component {
        
         <LoginSvg />
 
-       
+        
         <View style={styles.viewTextIcon} >
        <TextInput 
         icon="at"
@@ -59,6 +61,7 @@ export default class Login extends React.Component {
         returnKeyType="done"
       />
     </View>
+    
   
     <TouchableOpacity style={styles.botton}>
       <Text style={{
@@ -73,9 +76,12 @@ export default class Login extends React.Component {
         color: "rgba(0,0,0,0.5)",
       }}>تسجيل</Text>
      </TouchableOpacity>
+    
      
       </SafeAreaView>
+      </KeyboardAvoidingView>
       </ScrollView>
+      
     );
   }
 }
