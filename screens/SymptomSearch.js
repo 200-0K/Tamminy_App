@@ -258,7 +258,7 @@ export default class SymptomSearch extends React.Component {
     const { symptoms, selectedSymptoms } = this.state;
 
     return (
-      <SafeAreaView style={[STYLES.mainContainer, styles.container]}>
+      <SafeAreaView style={STYLES.mainContainer}>
         <View style={styles.topContainer}>
           <View style={STYLES.titleContainer}>
             <Text style={STYLES.title}>ما الذي تشعر به؟</Text>
@@ -310,10 +310,6 @@ export default class SymptomSearch extends React.Component {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    paddingHorizontal: 19,
-  },
-
   /* Selected Symptoms */
   selectedSymptomsScroller: {
     paddingVertical: 5,

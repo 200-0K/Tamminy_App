@@ -14,6 +14,7 @@ export const STYLES = StyleSheet.create({
   mainContainer: {
     flex: 1,
     paddingTop: StatusBar.currentHeight,
+    paddingHorizontal: 20,
     backgroundColor: "#fff",
   },
   titleContainer: {

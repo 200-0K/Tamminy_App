@@ -1,34 +1,66 @@
-import { StyleSheet, View, TextInput as TI } from "react-native";
+import { StyleSheet, View, Animated, TextInput as TI } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import PropTypes from "prop-types";
 
 import { COLORS } from "../utils/colors";
 import { STYLES } from "../utils/styles";
+import React from "react";
 
-export default function TextInput(props) {
-  const { icon, style, isRtl } = props;
-  const rtlView = isRtl && STYLES.rtlView;
-  const rtlText = isRtl && STYLES.rtlText;
+const initialOpacityValue = .6;
+export default class TextInput extends React.Component {
+  state = {
+    opacityAnim: new Animated.Value(initialOpacityValue)
+  }
 
-  return (
-    <View style={[styles.container, rtlView]}>
-      {icon && <Ionicons name={icon} size={24} style={{ color: COLORS.primaryText }} />}
-      <TI {...props} style={[styles.Textinput, rtlText, style]}/>
-    </View>
-  );
+  handleFocus = () => {
+    const { onFocus } = this.props;
+
+    Animated.timing(this.state.opacityAnim, {
+      toValue: 1,
+      duration: 340,
+      useNativeDriver: true,
+    }).start();
+
+    onFocus?.();
+  }
+
+  handleBlur = () => {
+    const { onBlur } = this.props;
+
+    Animated.timing(this.state.opacityAnim, {
+      toValue: initialOpacityValue,
+      duration: 340,
+      useNativeDriver: true,
+    }).start();
+
+    onBlur?.();
+  }
+
+  render() {
+    const { icon, style, isRtl } = this.props;
+    const { opacityAnim } = this.state;
+
+    const rtlView = isRtl && STYLES.rtlView;
+    const rtlText = isRtl && STYLES.rtlText;
+  
+    return (
+      <Animated.View style={[styles.container, rtlView, {opacity: opacityAnim}]}>
+        {icon && <Ionicons name={icon} size={18} style={{ color: COLORS.primaryText }} />}
+        <TI {...this.props} style={[styles.Textinput, rtlText, style]} onFocus={this.handleFocus} onBlur={this.handleBlur}/>
+      </Animated.View>
+    );
+  }
 }
 
 const styles = StyleSheet.create({
   container: {
     flexDirection: "row",
     alignItems: "center",
-    marginHorizontal: 15
   },
   Textinput: {
     flex: 1, 
-    height: 45, 
     borderBottomWidth: 2,
-    borderBottomColor: 'rgba(0,0,0,0.25)',
+    borderBottomColor: COLORS.primaryText,
     borderRadius: 3,
     borderColor: COLORS.primaryText, 
     paddingHorizontal: 10,
