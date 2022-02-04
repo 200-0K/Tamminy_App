@@ -1,4 +1,5 @@
 import React from "react";
+import { StatusBar } from "expo-status-bar";
 import {
   SafeAreaView,
   StyleSheet,
@@ -7,11 +8,19 @@ import {
   TextInput,
   Button,
   ScrollView,
+  KeyboardAvoidingView,
+  Platform,
+  Keyboard,
+  TouchableWithoutFeedback 
 } from "react-native";
-import PropTypes from "prop-types";
 
+import BirthdayPicker from '../utils/BirthdayPicker';
+
+import PropTypes from "prop-types";
 import FeedbackSvg from "../components/svg/Feedback";
 import { COLORS } from "../utils/colors";
+import TextArea from "../components/TextArea";
+import Buttons from "../components/Button";
 
 export default class Feedback extends React.Component {
   static propTypes = {
@@ -24,33 +33,35 @@ export default class Feedback extends React.Component {
     // const { ... } = this.props;
 
     return (
+
       <SafeAreaView style={styles.container}>
-        <ScrollView>
-          <Text
-            style={{
-              fontSize: 57,
-              fontWeight: "bold",
-              color: COLORS.primaryText,
-              marginTop: 90,
-              textAlign: "center",
-              flex: 1,
-            }}
-          >
-            ماذا تقترح؟
-          </Text>
 
-          <FeedbackSvg height={350} style={{ aspectRatio: 1 }} />
+        <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"}  style={styles.container}>
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+          <ScrollView>
+            <Text
+              style={{
+                fontSize: 60,
+                fontWeight: "bold",
+                color: COLORS.primaryText,
+                marginTop: 60,
+                textAlign: "center",
+                flex: 1,
+              }}
+            >
+              ماذا تقترح؟
+            </Text>
 
-          <TextInput
-            style={styles.textInput}
-            placeholder="0/500"
-            //TODO: TextArea component
-          />
+            <FeedbackSvg height={350} style={{ aspectRatio: 1 }} />
+            <TextArea isRtl={true} fontSize={18} max={180} placeholder="ماذا تقترح؟" />
 
-          <View style={[styles.buttonContainer]}>
-            <Button style={styles.button} title="ارسال"  />
-          </View>
-        </ScrollView>
+            <View style={[styles.buttonContainer]}>
+              <Buttons title="ارسال" fontSize={25} />
+            </View>
+
+          </ScrollView>
+          </TouchableWithoutFeedback>
+        </KeyboardAvoidingView>
       </SafeAreaView>
     );
   }
@@ -59,26 +70,13 @@ export default class Feedback extends React.Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#FFF",
+    //marginTop: 20,
+    backgroundColor: "#fff",
     alignItems: "center",
-  },
-  textInput: {
-    textAlign: "center",
-    height: 250,
-    fontWeight: "500",
-    fontSize: 20,
-    color: COLORS.primaryText,
-    borderWidth: 1.8,
-    padding: 0,
-    borderRadius: 10,
+    marginTop: StatusBar.currentHeight,
   },
   buttonContainer: {
-    marginVertical: 10,
-    borderWidth: 2,
-    borderRadius: 10,
+    marginTop: 15,
     alignSelf: "center"
   },
-  button: {
-    height: 40,
-  }
 });

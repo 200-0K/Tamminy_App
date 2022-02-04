@@ -14,13 +14,19 @@ import {
   Input,
   KeyboardAvoidingView,
 } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
+
 import { Entypo } from "@expo/vector-icons";
 import { EvilIcons } from "@expo/vector-icons";
 import PropTypes from "prop-types";
-
 import RegisterSvg from "../components/svg/Register";
-export default class ComponentName extends React.Component {
+import TextIn from "../components/TextInput";
+import Buttons from "../components/Button";
+import BirthdayPicker from '../utils/BirthdayPicker';
+import RadiuBo from '../utils/BirthdayPicker';
+
+
+
+export default class Register extends React.Component {
   static propTypes = {
     prop1: PropTypes.string,
     prop2: PropTypes.number.isRequired,
@@ -32,69 +38,57 @@ export default class ComponentName extends React.Component {
 
     return (
       //TODO: fix KeyboardAvoidingView
-      <KeyboardAvoidingView  behavior="height" style={styles.container}>
+      <KeyboardAvoidingView behavior="height" style={styles.container}>
         <ScrollView>
-            <Text
-              style={{
-                fontSize: 65,
-                fontWeight: "bold",
-                color: "rgba(76,74,94,0.7)",
-                textAlign: "center",
-              }}
-            >
-              تسـجـيل
-            </Text>
+          <Text
+            style={{
+              marginTop: 50,
+              fontSize: 65,
+              fontWeight: "bold",
+              color: "rgba(76,74,94,0.7)",
+              textAlign: "center",
+            }}
+          >
+            تسـجـيل
+          </Text>
 
-            <RegisterSvg style={{ marginTop: 40 }} />
-            <View style={styles.Inputs}>
-              <TextInput style={styles.TextInput} placeholder="  الاسم " />
+          <RegisterSvg style={{ marginTop: 40 }} />
 
-              <Ionicons
-                options={{}}
-                name="person"
-                size={24}
-                color="rgba(76,74,94,0.7)"
-              />
-            </View>
+          <TextIn isRtl={true} icon="person" placeholder="  الاسم " />
 
-            <View style={styles.Inputs}>
-              <TextInput
-                style={styles.TextInput}
-                placeholder="  تاريخ الميلاد "
-              />
-              <EvilIcons name="calendar" size={24} color="rgba(76,74,94,0.7)" />
-            </View>
+          <View>
+            
+            <BirthdayPicker
+              selectedYear={2000}
+              selectedMonth={0}
+              selectedDay={1}
 
-            <View style={styles.Inputs}>
-              <TextInput style={styles.TextInput} placeholder="  الايميل " />
-              <Entypo name="email" size={24} color="rgba(76,74,94,0.7)" />
-            </View>
+              yearsBack={40}
 
-            <View style={styles.Inputs}>
-              <TextInput
-                style={{
-                  title: ";gm",
-                  height: 45,
-                  width: "95%",
-                  borderColor: "gray",
-                  borderWidth: 2,
-                }}
-                secureTextEntry={true}
-                style={styles.TextInput}
-                placeholder=" كلمة المرور"
-              />
-              <Ionicons
-                name="md-key-outline"
-                size={24}
-                color="rgba(76,74,94,0.7)"
-              />
-            </View>
+              onYearValueChange={(year, i) => console.log("Year was changed to: ", year)}
+              onMonthValueChange={(month, i) => console.log("Month was changed to: ", month)}
+              onDayValueChange={(day, i) => console.log("Day was changed to: ", day)}
+            />
+            {/* <TextInput
+              style={styles.TextInput}
+              placeholder="  تاريخ الميلاد "
+            />
+            <EvilIcons name="calendar" size={24} color="rgba(76,74,94,0.7)" /> */}
+          </View>
 
-            <View style={styles.ButtonStyle}>
-              <Button title="تسـجــيل " />
-            </View>
+          <View style={styles.Inputs}>
+            <TextInput style={styles.TextInput} placeholder="  الايميل " />
+            <Entypo name="email" size={24} color="rgba(76,74,94,0.7)" />
+          </View>
 
-            <StatusBar style="auto" />
+          <TextIn isRtl={true} icon="md-key-outline" secureTextEntry={true} placeholder="  الاسم " />
+
+          <View style={[styles.buttonContainer]}>
+            <Buttons title="تسجيل" fontSize={25} />
+          </View>
+
+
+          <StatusBar style="auto" />
         </ScrollView>
       </KeyboardAvoidingView>
     );
@@ -104,9 +98,10 @@ export default class ComponentName extends React.Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    marginTop: 20,
     backgroundColor: "#fff",
     alignItems: "center",
-    marginTop: StatusBar.currentHeight,
+   // marginTop: StatusBar.currentHeight,
   },
 
   TextInput: {
@@ -128,11 +123,8 @@ const styles = StyleSheet.create({
     alignSelf: "center",
     flexDirection: "row",
   },
-  ButtonStyle: {
-    marginVertical: 10,
-    justifyContent: "space-between",
-    borderWidth: 3,
-    borderRadius: 8,
-    width: "25%",
+  buttonContainer: {
+    marginTop: 30,
+    alignSelf: "center"
   },
 });

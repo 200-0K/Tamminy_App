@@ -61,7 +61,7 @@ export default class ComponentName extends React.Component {
               <Entypo style={{ color: 'rgba(0,0,0,0.5)', }} name="key" size={24} color="black" />
             </View>
             
-            <TextInput
+            {/* <TextInput
                 style={styles.input}
                 returnKeyType='done'
                 placeholder="كلمة السر"
@@ -69,7 +69,7 @@ export default class ComponentName extends React.Component {
                 underlineColorAndroid="black"
                 secureTextEntry
               />
-    
+     */}
             <TouchableOpacity style={styles.botton}>
               <Text style={{
                 fontWeight: "bold",
@@ -94,6 +94,7 @@ export default class ComponentName extends React.Component {
 
 const styles = StyleSheet.create({
     container: {
+      marginTop:60,
       flex: 1,
       backgroundColor: '#fff',
       alignItems: 'center',
