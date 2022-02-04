@@ -92,13 +92,15 @@ export default class Search extends React.Component {
     //
     
     // if no error update state:
-    this.setState({
-      loading: false,
-      error: false,
-      currentCategory: this.categories[0],
-      categories: this.categories,
-      searchText: ""
-    })
+    setTimeout(() => {
+      this.setState({
+        loading: false,
+        error: false,
+        currentCategory: this.categories[0],
+        categories: this.categories,
+        searchText: ""
+      })
+    }, 5000)
   }
 
   handleSymptomPress = id => {
@@ -173,6 +175,7 @@ export default class Search extends React.Component {
             {/* TODO */}
           </View>
 
+          {!loading && <>
           <TextInput
             icon="search"
             isRtl={true} // TODO
@@ -192,10 +195,12 @@ export default class Search extends React.Component {
             keyExtractor={() => Math.random().toString(32)}
             keyboardShouldPersistTaps="handled"
           />
+          </>}
+
         </View>
         
         {loading && (
-          <View styles={[StyleSheet.absoluteFill, {justifyContent: "center", alignItems: "center"}]}>
+          <View style={[{...StyleSheet.absoluteFill, justifyContent: "center", alignItems: "center"}]}>
             <ActivityIndicator size="large" color={COLORS.primaryText}/>
           </View>
         )}

@@ -175,11 +175,8 @@ export default class AssessmentDetail extends React.Component {
       this.state;
 
     return (
-      <SafeAreaView style={[STYLES.mainContainer, styles.container]}>
-        <ScrollView
-          style={styles.scrollView}
-          contentContainerStyle={styles.scrollViewContainer}
-        >
+      <SafeAreaView style={STYLES.mainContainer}>
+        <ScrollView contentContainerStyle={styles.scrollViewContainer}>
           <View style={[STYLES.titleContainer, styles.titleContainer]}>
             <Text style={[STYLES.title, styles.title, rtlText]}>
               نتيجة التشخيص
@@ -238,9 +235,6 @@ export default class AssessmentDetail extends React.Component {
 }
 
 const styles = StyleSheet.create({
-  scrollView: {
-    paddingHorizontal: 20,
-  },
   scrollViewContainer: {
     paddingBottom: 20,
   },
