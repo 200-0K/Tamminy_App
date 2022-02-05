@@ -10,9 +10,9 @@ import Svg, {
 
 const SvgComponent = (props) => (
   <Svg
-    width={350}//{400}
+    width={375}//{400}
     height={284}//284
-    viewBox="0 0 405 300"
+    viewBox="0 0 405 300" //
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
     {...props}
