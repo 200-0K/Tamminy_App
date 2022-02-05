@@ -11,6 +11,10 @@ import { FontAwesome } from '@expo/vector-icons';
 import { FontAwesome5 } from '@expo/vector-icons';
 import { MaterialIcons } from '@expo/vector-icons';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { COLORS } from "../utils/colors";
+import { formatDate } from "../utils/date";
+import { STYLES } from "../utils/styles";
+
 
 
 export default class Home extends React.Component {
@@ -24,14 +28,18 @@ export default class Home extends React.Component {
         // const { ... } = this.props;
 
         return (
-            <ScrollView>
+            <ScrollView
+            showsVerticalScrollIndicator={false}
+            >
             <SafeAreaView style={styles.SafeAreaView}>
                 
-                <View style={{flexDirection: 'row',alignItems:'center',alignSelf:'flex-end'}}>
-                <MaterialCommunityIcons style={{paddingHorizontal:220,paddingVertical:10}} name="text-search" size={24} color="black" />
+                <View style={{flexDirection: 'row',alignItems:'center',alignSelf:'flex-end',paddingTop:2}}>
+                   <View>
+                  <MaterialCommunityIcons style={{paddingHorizontal:220,paddingVertical:10}} name="text-search" size={24} color={COLORS.buttonText} />
+                  </View>  
                     <TouchableOpacity style={{paddingHorizontal:5}}>
                         <Text style={{
-                            color: "rgba(0,0,0,0.65)",
+                            color: COLORS.primaryText,
                             fontSize: 20,
                             fontWeight: "bold",
                             
@@ -40,41 +48,45 @@ export default class Home extends React.Component {
                 </View>
 
                 <View >
+                    <View>
                     <HomeSvg />
+                    </View>
+                    <View>
                     <Text style={{
                         fontSize: 60,
                         textAlign: 'right',
-                        color: "rgba(0,0,0,0.75)",
+                        color: COLORS.primaryText,
                     }}>هل تعاني </Text>
                     <Text style={{
                         fontSize: 60,
                         textAlign: 'left',
-                        color: "rgba(0,0,0,0.75)",
+                        color: COLORS.primaryText,
                     }}>من شيء؟</Text>
+                    </View>
 
-                    <View style={{ flexDirection: 'row', alignItems: 'flex-end', alignSelf: 'flex-end', paddingVertical: 20, paddingHorizontal: 5 }}>
+                    <View style={{ flexDirection: 'row', alignItems: 'flex-end', alignSelf: 'flex-end', paddingTop: 20, paddingHorizontal: 5 }}>
                         <TouchableOpacity style={{ paddingHorizontal: 10 }}  >
                             <Text style={{
-                                color: "rgba(0,0,0,0.65)",
+                                color: COLORS.buttonText,
                                 fontSize: 30,
 
                             }}>تشخيص</Text>
                         </TouchableOpacity>
-                        <FontAwesome style={{}} name="stethoscope" size={30} color="rgba(0,0,0,0.65)" />
+                        <FontAwesome name="stethoscope" size={30} color={COLORS.buttonText} />
                     </View>
 
-                    <View style={{ flexDirection: 'row', alignItems: 'flex-end', alignSelf: 'flex-end', paddingVertical: 0, paddingHorizontal: 5 }}>
+                    <View style={{ flexDirection: 'row', alignItems: 'flex-end', alignSelf: 'flex-end', paddingTop: 12, paddingHorizontal: 5 }}>
                         <TouchableOpacity style={{ paddingHorizontal: 10 }}  >
                             <Text style={{
-                                color: "rgba(0,0,0,0.65)",
+                                color: COLORS.buttonText,
                                 fontSize: 30,
 
                             }}>سجل التشخيصات</Text>
                         </TouchableOpacity>
-                        <FontAwesome5 name="notes-medical" size={30} color="rgba(0,0,0,0.65)" />
+                        <FontAwesome5 name="notes-medical" size={30} color={COLORS.buttonText} />
                     </View>
-                    <View style={{ paddingTop: 120, alignSelf: 'flex-end', paddingHorizontal: 5 }}>
-                        <MaterialIcons name="feedback" size={24} color="rgba(0,0,0,0.65)" />
+                    <View style={{ paddingTop: 120, alignSelf: 'flex-end', paddingHorizontal: 5,paddingBottom:5 }}>
+                        <MaterialIcons name="feedback" size={24} color={COLORS.buttonText} />
                     </View>
 
 
@@ -100,7 +112,8 @@ const styles = StyleSheet.create({
 
     },
     SafeAreaView: {
-        alignItems: 'center'
+        alignItems: 'center',
+        justifyContent: 'center'
     },
     buttonlogin: {
         flex: 0,
