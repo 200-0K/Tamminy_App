@@ -28,5 +28,18 @@ export const STYLES = StyleSheet.create({
     fontSize: 40,
     fontWeight: "bold",
     color: COLORS.primaryText,
-  }
+  },
+
+  sectionContainer: {
+    marginTop: 30,
+    paddingHorizontal: 4,
+  },
+  sectionTitleContainer: {
+    paddingVertical: 10,
+  },
+  sectionTitle: {
+    fontSize: 28,
+    fontWeight: "bold",
+    color: COLORS.primaryText,
+  },
 });
