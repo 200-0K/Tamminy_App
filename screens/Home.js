@@ -2,7 +2,6 @@ import {
   StyleSheet,
   View,
   Text,
-  ScrollView,
   SafeAreaView,
   TouchableOpacity,
 } from "react-native";
@@ -31,65 +30,56 @@ export default class Home extends React.Component {
 
     return (
       <SafeAreaView style={STYLES.mainContainer}>
-        <ScrollView
-          showsVerticalScrollIndicator={false}
-          showsHorizontalScrollIndicator={false}
-          contentContainerStyle={{flex:1 }}
+        <View
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            marginTop: 10,
+            paddingHorizontal: 5,
+          }}
         >
-          <View
-            style={{
-              flexDirection: "row",
-              alignItems: "center",
-              marginTop: 10,
-              paddingHorizontal:5
-            }}
-          >
-            <TouchableOpacity style={{ flex: 3}}>
-              <SearchIcon size={24} color={COLORS.buttonText} />
-            </TouchableOpacity>
-            <TouchableOpacity>
-              <Text
-                style={{
-                  color: COLORS.primaryText,
-                  fontSize: 20,
-                  fontWeight: "bold",
-                 
-                }}
-              >
-                تسجيل الدخول
-              </Text>
-            </TouchableOpacity>
-          </View>
-
-          <View style={{ flex: 1,backgroundColor:'red'}}>
-            <HomeSvg />
-            <View>
-              <Text style={[styles.title, { textAlign: "right" }]}>
-                هل تعاني{" "}
-              </Text>
-              <Text style={[styles.title, { textAlign: "left" }]}>من شيء؟</Text>
-            </View>
-
-            <View style={[styles.optionIcon]}>
-              <TouchableOpacity style={styles.optionTextContainer}>
-                <Text style={styles.optionText}>تشخيص</Text>
-              </TouchableOpacity>
-              <Stethoscope size={24} color={COLORS.buttonText} />
-            </View>
-
-            <View style={[styles.optionIcon]}>
-              <TouchableOpacity style={styles.optionTextContainer}>
-                <Text style={styles.optionText}>سجل التشخيصات</Text>
-              </TouchableOpacity>
-              <DoctorNote size={24} color={COLORS.buttonText} />
-            </View>
-          </View>
-
-          <TouchableOpacity style={styles.feedbackContainer}>
-            <Feedback size={24} color={COLORS.buttonText} />
+          <TouchableOpacity style={{ flex: 1 }}>
+            <SearchIcon size={24} color={COLORS.buttonText} />
           </TouchableOpacity>
-          <StatusBar style="auto" />
-        </ScrollView>
+          <TouchableOpacity>
+            <Text
+              style={{
+                color: COLORS.primaryText,
+                fontSize: 20,
+                fontWeight: "bold",
+              }}
+            >
+              تسجيل الدخول
+            </Text>
+          </TouchableOpacity>
+        </View>
+
+        <View style={{ flex: 1 }}>
+          <HomeSvg />
+          <View>
+            <Text style={[styles.title, { textAlign: "right" }]}>هل تعاني</Text>
+            <Text style={[styles.title, { textAlign: "left" }]}>من شيء؟</Text>
+          </View>
+
+          <View style={[styles.optionIcon]}>
+            <TouchableOpacity style={styles.optionTextContainer}>
+              <Text style={styles.optionText}>تشخيص</Text>
+            </TouchableOpacity>
+            <Stethoscope size={24} color={COLORS.buttonText} />
+          </View>
+
+          <View style={[styles.optionIcon]}>
+            <TouchableOpacity style={styles.optionTextContainer}>
+              <Text style={styles.optionText}>سجل التشخيصات</Text>
+            </TouchableOpacity>
+            <DoctorNote size={24} color={COLORS.buttonText} />
+          </View>
+        </View>
+
+        <TouchableOpacity style={styles.feedbackContainer}>
+          <Feedback size={24} color={COLORS.buttonText} />
+        </TouchableOpacity>
+        <StatusBar style="auto" />
       </SafeAreaView>
     );
   }
