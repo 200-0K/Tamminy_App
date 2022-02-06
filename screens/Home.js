@@ -34,16 +34,17 @@ export default class Home extends React.Component {
         <ScrollView
           showsVerticalScrollIndicator={false}
           showsHorizontalScrollIndicator={false}
-          contentContainerStyle={{ flex: 1 }}
+          contentContainerStyle={{flex:1 }}
         >
           <View
             style={{
               flexDirection: "row",
               alignItems: "center",
               marginTop: 10,
+              paddingHorizontal:5
             }}
           >
-            <TouchableOpacity style={{ flex: 1 }}>
+            <TouchableOpacity style={{ flex: 3}}>
               <SearchIcon size={24} color={COLORS.buttonText} />
             </TouchableOpacity>
             <TouchableOpacity>
@@ -52,6 +53,7 @@ export default class Home extends React.Component {
                   color: COLORS.primaryText,
                   fontSize: 20,
                   fontWeight: "bold",
+                 
                 }}
               >
                 تسجيل الدخول
@@ -59,7 +61,7 @@ export default class Home extends React.Component {
             </TouchableOpacity>
           </View>
 
-          <View style={{ flex: 1 }}>
+          <View style={{ flex: 1,backgroundColor:'red'}}>
             <HomeSvg />
             <View>
               <Text style={[styles.title, { textAlign: "right" }]}>
