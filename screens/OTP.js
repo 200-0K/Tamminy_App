@@ -15,7 +15,6 @@ import {
 import PropTypes from "prop-types";
 import OTPSvg from "../components/svg/OTP";
 import { COLORS } from "../utils/colors";
-import { OTPMass } from "../utils/OTPMass";
 import Buttons from "../components/Button";
 import OTPInputView from '@twotalltotems/react-native-otp-input'
 export default class Feedback extends React.Component {
@@ -48,7 +47,7 @@ export default class Feedback extends React.Component {
                 رمز التحقق
               </Text>
 
-              <OTPSvg height={350} style={{ aspectRatio: 1, marginTop: 30 }} />
+              <OTPSvg height={315} style={{ aspectRatio:1.3, marginTop: 30 }} />
 
               <OTPInputView
                 style={{ width: '500%', height: 100, marginTop:50 }, styles.container}
