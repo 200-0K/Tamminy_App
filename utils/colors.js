@@ -20,4 +20,7 @@ export const COLORS = {
   diseaseSeverityLow: colorValues.green_200,
   diseaseSeverityMedium: colorValues.yellow_400,
   diseaseSeverityHigh: colorValues.red_400,
+  warning: colorValues.red_400,
+  checkmark: colorValues.green_200,
+  close: colorValues.red_400,
 };

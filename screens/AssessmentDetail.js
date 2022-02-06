@@ -1,23 +1,21 @@
 import React from "react";
 import {
   StyleSheet,
-  Platform,
   View,
   Text,
   ScrollView,
   SafeAreaView,
   StatusBar,
-  TouchableOpacity,
   TouchableHighlight,
   ActivityIndicator,
 } from "react-native";
-import chroma from "chroma-js";
-
-import DetailListItem from "../components/DetailListItem";
 
 import { COLORS } from "../utils/colors";
 import { formatDate } from "../utils/date";
 import { STYLES } from "../utils/styles";
+
+import DetailListItem from "../components/DetailListItem";
+import SeverityIndicator from "../components/SeverityIndicator";
 
 const { rtlText, rtlView } = STYLES;
 export default class AssessmentDetail extends React.Component {
@@ -51,8 +49,8 @@ export default class AssessmentDetail extends React.Component {
     // if id != null then fetch assessment detail from the API
     // if id == null then get assessment detail from Navigate object and update the state
 
-    date = formatDate();
-    possibleDiseases = [
+    const date = formatDate();
+    const possibleDiseases = [
       {
         id: 118,
         diseaseName: "كورونا",
@@ -89,7 +87,7 @@ export default class AssessmentDetail extends React.Component {
         percentage: 20,
       },
     ];
-    selectedSymptoms = [
+    const selectedSymptoms = [
       {
         id: 96,
         symptomName: "صداع",
@@ -131,14 +129,6 @@ export default class AssessmentDetail extends React.Component {
   };
 
   renderDiseaseItem = ({ id, diseaseName, diseaseSubtitle, percentage }) => {
-    const severityColor = chroma
-      .scale([
-        COLORS.diseaseSeverityLow,
-        COLORS.diseaseSeverityMedium,
-        COLORS.diseaseSeverityHigh,
-      ])(percentage / 100)
-      .toString();
-
     return (
       <TouchableHighlight
         style={[styles.listItemContainer, rtlView]} // TODO: based app language
@@ -148,14 +138,7 @@ export default class AssessmentDetail extends React.Component {
         key={id}
       >
         <>
-          <View
-            style={[styles.severityContainer, { backgroundColor: severityColor }]}
-          >
-            <Text style={styles.severityPercentage}>
-              {percentage}
-              <Text style={{ fontSize: 8 }}>%</Text>
-            </Text>
-          </View>
+          <SeverityIndicator percentage={percentage} />
           <DetailListItem
             title={diseaseName}
             subtitle={diseaseSubtitle}
@@ -171,43 +154,47 @@ export default class AssessmentDetail extends React.Component {
     // TODO: Stack Navigate to SymptomDetail screen
   };
 
-  renderSymptomItem = ({ id, symptomName }) => {
-    return (
-      <TouchableHighlight
-        style={[styles.listItemContainer, rtlView]} // TODO: based app language
-        activeOpacity={0.8}
-        underlayColor={"rgba(0,0,0,0.05)"}
-        onPress={() => this.handleSymptomPress(id)}
-        key={id}
-      >
-        <DetailListItem
-          title={"+ " + symptomName}
-          isRtl={true} // TODO: based app language
-          style={styles.detailListItem}
-        />
-      </TouchableHighlight>
-    );
-  };
+  renderSymptomItem = ({ id, symptomName }) => (
+    <TouchableHighlight
+      style={[styles.listItemContainer, rtlView]} // TODO: based app language
+      activeOpacity={0.8}
+      underlayColor={"rgba(0,0,0,0.05)"}
+      onPress={() => this.handleSymptomPress(id)}
+      key={id}
+    >
+      <DetailListItem
+        title={"+ " + symptomName}
+        isRtl={true} // TODO: based app language
+        style={styles.detailListItem}
+      />
+    </TouchableHighlight>
+  );
 
   render() {
-    const { loading, error, possibleDiseases, selectedSymptoms, date } = this.state;
+    const { loading, error, possibleDiseases, selectedSymptoms, date } =
+      this.state;
 
     return (
-      <SafeAreaView style={styles.container}>
-        <ScrollView
-          style={styles.scrollView}
-          contentContainerStyle={styles.scrollViewContainer}
-        >
-          <View style={styles.titleContainer}>
-            <Text style={[styles.title, rtlText]}>نتيجة التشخيص</Text>
+      <SafeAreaView style={STYLES.mainContainer}>
+        <ScrollView contentContainerStyle={styles.scrollViewContainer}>
+          <View style={[STYLES.titleContainer, styles.titleContainer]}>
+            <Text style={[STYLES.title, styles.title, rtlText]}>
+              نتيجة التشخيص
+            </Text>
           </View>
 
           {loading && (
-            <ActivityIndicator size={"large"} color={COLORS.primaryText} />
+            <View style={{ marginTop: 15 }}>
+              <ActivityIndicator size={"large"} color={COLORS.primaryText} />
+            </View>
           )}
 
-          {error && <Text style={{textAlign:"center"}}>Error: error occured</Text> /*TODO*/} 
-          
+          {
+            error && (
+              <Text style={{ textAlign: "center" }}>Error: error occured</Text>
+            ) /*TODO*/
+          }
+
           {!loading && !error && (
             <>
               {date && (
@@ -247,38 +234,17 @@ export default class AssessmentDetail extends React.Component {
   }
 }
 
-const platformVersion =
-  Platform.OS === "ios" ? parseInt(Platform.Version, 10) : Platform.Version;
-
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    // marginTop: (Platform.OS === "android" || platformVersion < 11) ? Constants.statusBarHeight : 0,
-    paddingTop: StatusBar.currentHeight,
-    backgroundColor: "#fff",
-  },
-  scrollView: {
-    paddingHorizontal: 20,
-  },
   scrollViewContainer: {
     paddingBottom: 20,
   },
 
   titleContainer: {
-    paddingVertical: 4,
-    paddingHorizontal: 8,
-    marginTop: 15,
-    marginBottom: 5,
     borderBottomWidth: 2,
     borderColor: COLORS.primaryText,
     alignSelf: "center",
-    alignItems: "center",
   },
-  title: {
-    fontSize: 40,
-    fontWeight: "bold",
-    color: COLORS.primaryText,
-  },
+
   dateContainer: {
     alignItems: "center",
   },
@@ -316,20 +282,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingVertical: 7,
     paddingHorizontal: 5,
-  },
-  severityContainer: {
-    width: 42,
-    height: 42,
-    alignItems: "center",
-    justifyContent: "center",
-    borderRadius: 50,
-    borderWidth: 2,
-    borderColor: COLORS.primaryText,
-    backgroundColor: "red",
-  },
-  severityPercentage: {
-    fontSize: 15,
-    color: COLORS.primaryText,
   },
   detailListItem: {
     paddingVertical: 0,
