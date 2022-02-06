@@ -13,9 +13,6 @@ import {
   Keyboard,
   TouchableWithoutFeedback 
 } from "react-native";
-
-import BirthdayPicker from '../utils/BirthdayPicker';
-
 import PropTypes from "prop-types";
 import FeedbackSvg from "../components/svg/Feedback";
 import { COLORS } from "../utils/colors";
