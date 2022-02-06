@@ -15,7 +15,7 @@ import {
 import PropTypes from "prop-types";
 import OTPSvg from "../components/svg/OTP";
 import { COLORS } from "../utils/colors";
-//import { OTPMass } from "../utils/OTPMass";
+import { OTPMass } from "../utils/OTPMass";
 import Buttons from "../components/Button";
 import OTPInputView from '@twotalltotems/react-native-otp-input'
 export default class Feedback extends React.Component {
