@@ -10,6 +10,9 @@ import { Entypo } from '@expo/vector-icons';
 import { Ionicons } from '@expo/vector-icons';
 import LoginSvg from '../components/svg/Login';
 import TextInput  from '../components/TextInput';
+import { COLORS } from "../utils/colors";
+import { STYLES } from "../utils/styles";
+import Button  from '../components/Button';
 
 export default class Login extends React.Component {
   // static propTypes = {
@@ -25,24 +28,24 @@ export default class Login extends React.Component {
    // const { loading, error, possibleDiseases, selectedSymptoms, date } = this.state;
 
     return (
-     
-      <ScrollView 
-      showsVerticalScrollIndicator={false}>
-         <KeyboardAvoidingView behavior='padding'>
-      <SafeAreaView style={styles.container}>
-      
-        
-        <Text style={{
-          color: "rgba(0,0,0,0.55)",
+      <SafeAreaView style={STYLES.mainContainer}>
+         <ScrollView 
+      showsVerticalScrollIndicator={false}
+        showsHorizontalScrollIndicator={false}>
+
+         <View style={STYLES.titleContainer}>
+            <Text style={{
+          color: COLORS.primaryText,
           fontSize: 35,
           //marginVertical: 30,
           fontWeight: "700",
           paddingVertical:10
          // height: 300,
       }}>تسجيل الدخول</Text>
-       
-        <LoginSvg />
-
+       </View> 
+          <View>
+             <LoginSvg />
+          </View>
         
         <View style={styles.viewTextIcon} >
        <TextInput 
@@ -61,26 +64,27 @@ export default class Login extends React.Component {
         returnKeyType="done"
       />
     </View>
-    
+    <View  style={{alignItems: 'center',paddingTop: 10}} >
+    <Button 
+    title="تسجيل الدخول"
+    width={150}
+   
+    />
   
-    <TouchableOpacity style={styles.botton}>
-      <Text style={{
-        fontWeight: "bold",
-        color: "rgba(0,0,0,0.65)",
-      }}>تسجيل الدخول</Text>
-    </TouchableOpacity>
-    
-    
+   
+    <View>
      <TouchableOpacity style={{ paddingVertical: 5 }}>
        <Text style={{
         color: "rgba(0,0,0,0.5)",
       }}>تسجيل</Text>
      </TouchableOpacity>
-    
+     </View>
+     </View>
      
-      </SafeAreaView>
-      </KeyboardAvoidingView>
+      
+      
       </ScrollView>
+      </SafeAreaView>
       
     );
   }
