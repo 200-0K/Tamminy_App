@@ -55,9 +55,6 @@ export default class Feedback extends React.Component {
                 autoFocusOnLoad
                 codeInputFieldStyle={styles.underlineStyleBase}
                 codeInputHighlightStyle={styles.underlineStyleHighLighted}
-                onCodeFilled={(code) => {
-                  console.log(`Code is ${code}, you are good to go!`)
-                }}
               />
 
               <View style={[styles.buttonContainer]}>
