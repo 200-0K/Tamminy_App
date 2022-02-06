@@ -4,88 +4,98 @@ import { StatusBar } from 'expo-status-bar';
 import {
   StyleSheet, Text, View, Image,
   TouchableOpacity, ScrollView,
-  SafeAreaView, KeyboardAvoidingView
+  SafeAreaView, KeyboardAvoidingView, TouchableWithoutFeedback
 } from 'react-native';
-import { Entypo } from '@expo/vector-icons';
-import { Ionicons } from '@expo/vector-icons';
 import LoginSvg from '../components/svg/Login';
-import TextInput  from '../components/TextInput';
+import TextInput from '../components/TextInput';
 import { COLORS } from "../utils/colors";
 import { STYLES } from "../utils/styles";
-import Button  from '../components/Button';
+import Button from '../components/Button';
 
 export default class Login extends React.Component {
   // static propTypes = {
   //   prop1: PropTypes.string,
   //   prop2: PropTypes.number.isRequired,
   //   prop3: PropTypes.func,
-  
 
-  
-    // const { ... } = this.props;
-   
+
+
+  // const { ... } = this.props;
+
   render() {
-   // const { loading, error, possibleDiseases, selectedSymptoms, date } = this.state;
+    // const { loading, error, possibleDiseases, selectedSymptoms, date } = this.state;
 
     return (
+
       <SafeAreaView style={STYLES.mainContainer}>
-         <ScrollView 
-      showsVerticalScrollIndicator={false}
-        showsHorizontalScrollIndicator={false}>
-
-         <View style={STYLES.titleContainer}>
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={{ flex: 1 }}>
+          <View style={STYLES.titleContainer}>
             <Text style={{
-          color: COLORS.primaryText,
-          fontSize: 35,
-          //marginVertical: 30,
-          fontWeight: "700",
-          paddingVertical:10
-         // height: 300,
-      }}>تسجيل الدخول</Text>
-       </View> 
-          <View>
-             <LoginSvg />
+              color: COLORS.primaryText,
+              fontSize: 35,
+              //marginVertical: 30,
+              fontWeight: "700",
+              paddingVertical: 10
+              // height: 300,
+            }}>تسجيل الدخول</Text>
           </View>
-        
-        <View style={styles.viewTextIcon} >
-       <TextInput 
-        icon="at"
-        isRtl={true}
-        placeholder="الايميل"
-        returnKeyType="next"
-      /> 
-    </View>
 
-    <View style={styles.viewTextIcon}>
-       <TextInput
-        icon="key"
-        isRtl={true}
-        placeholder="كلمة السر"
-        returnKeyType="done"
-      />
-    </View>
-    <View  style={{alignItems: 'center',paddingTop: 10}} >
-    <Button 
-    title="تسجيل الدخول"
-    width={150}
-   
-    />
-  
-   
-    <View>
-     <TouchableOpacity style={{ paddingVertical: 5 }}>
-       <Text style={{
-        color: "rgba(0,0,0,0.5)",
-      }}>تسجيل</Text>
-     </TouchableOpacity>
-     </View>
-     </View>
-     
-      
-      
-      </ScrollView>
+          <LoginSvg />
+
+
+          <View style={[styles.viewTextIcon, { paddingBottom: 15 }]} >
+            <TextInput
+              icon="at"
+              isRtl={true}
+              placeholder="الايميل"
+              returnKeyType="next"
+              clearButtonMode={"while-editing"}
+            />
+          </View>
+
+          <View style={styles.viewTextIcon}>
+            <TextInput
+              icon="key"
+              isRtl={true}
+              placeholder="كلمة السر"
+              returnKeyType="done"
+              clearButtonMode={"while-editing"}
+              secureTextEntry
+              
+            />
+          </View>
+
+
+          <View style={{ alignItems: 'center', paddingTop: 20 }} >
+            <Button
+              title="تسجيل الدخول"
+              width={150}
+              borderRadius={5}
+            />
+
+
+            <View>
+              <TouchableOpacity style={{ paddingVertical: 5 }}>
+                <Text style={{
+                  color: COLORS.buttonText,
+                  fontSize: 15
+                }}>تسجيل</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+
+
+
+
+        </ScrollView>
       </SafeAreaView>
-      
+
+
+
+
     );
   }
 }
@@ -119,66 +129,13 @@ const styles = StyleSheet.create(
       borderWidth: 1.5,
       alignItems: 'center',
     },
-    
+
     viewTextIcon: {
-      alignItems: 'center',
+      paddingHorizontal: 10,
+
     },
     scrollView: {
       paddingHorizontal: 20,
     },
-  
+
   });
-  
-//   // <KeyboardAvoidingView> //behavior="padding" style={styles.container}>
-//   <SafeAreaView style={styles.container> 
-         
-            
-            
-//     <Text style={styles.text}>تسجيل الدخول</Text>
-
-//  //   <LoginSvg />
-// <>
-//     <View style={styles.viewTextIcon} >
-
-//       <TextInput
-//         style={styles.input}
-//         //multiline={true}
-//         returnKeyType='next'
-//         placeholder="الايميل"
-//         keyboardType="default"
-//         underlineColorAndroid="black"
-//         inlineImageLeft='username'
-//         inlineImagePadding={2}
-//         underlineColorAndroid='transparent'
-
-//       />
-//       <Entypo style={{ color: 'rgba(0,0,0,0.5)', }} name="email" size={24} color="black" />
-//     </View>
-
-    // <View style={styles.viewTextIcon}>
-    //   <TextInput
-    //     style={styles.input}
-    //     returnKeyType='done'
-    //     placeholder="كلمة السر"
-    //     keyboardType="default"
-    //     underlineColorAndroid="black"
-    //     secureTextEntry
-    //   />
-    //   <Entypo style={{ color: 'rgba(0,0,0,0.5)', }} name="key" size={24} color="black" />
-    // </View>
-//     </>
-    // <TouchableOpacity style={styles.botton}>
-    //   <Text style={{
-    //     fontWeight: "bold",
-    //     color: "rgba(0,0,0,0.65)",
-    //   }}>تسجيل الدخول</Text>
-    // </TouchableOpacity>
-
-//     <TouchableOpacity style={{ paddingVertical: 5 }}>
-//       <Text style={{
-//         color: "rgba(0,0,0,0.5)",
-//       }}>تسجيل</Text>
-//     </TouchableOpacity>
-
-//     <StatusBar style="auto" />
-//  </SafeAreaView> 
