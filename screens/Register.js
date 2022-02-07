@@ -73,7 +73,7 @@ export default class ComponentName extends React.Component {
             <View style={styles.Inputs}>
               <TextInput
                 style={{
-                  title: ";gm",
+                  title: "",
                   height: 45,
                   width: "95%",
                   borderColor: "gray",
