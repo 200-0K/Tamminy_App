@@ -1,16 +1,22 @@
-import React from "react"
-import PropTypes from "prop-types";
-import { StatusBar } from 'expo-status-bar';
+import React from "react";
 import {
-  StyleSheet, Text, View, Image,
-  TouchableOpacity, ScrollView,
+  StyleSheet,
+  Text,
+  View,
+  TouchableOpacity,
+  ScrollView,
   SafeAreaView,
-} from 'react-native';
-import LoginSvg from '../components/svg/Login';
-import TextInput from '../components/TextInput';
+  KeyboardAvoidingView,
+  Platform,
+} from "react-native";
+import PropTypes from "prop-types";
+
+import LoginSvg from "../components/svg/Login";
+import TextInput from "../components/TextInput";
+import Button from "../components/Button";
+
 import { COLORS } from "../utils/colors";
 import { STYLES } from "../utils/styles";
-import Button from '../components/Button';
 
 export default class Login extends React.Component {
   // static propTypes = {
@@ -18,66 +24,97 @@ export default class Login extends React.Component {
   //   prop2: PropTypes.number.isRequired,
   //   prop3: PropTypes.func,
   // const { ... } = this.props;
+  state = {
+    email: "",
+    password: "",
+    loading: false, // true -> while trying to login the user
+    error: false, // true -> if email/password is wrong
+  };
+
+  handleLogin = () => {
+    const { email, password } = this.state;
+    console.log(email, password); // check terminal!
+    // TODO
+    // Login via AccountApi
+    // Then setState({loading: true})
+    // if login is successful then navigate to home screen
+    // otherwise setState({loading: false, error: true})
+  };
+
+  handleRegister = () => {
+    // TODO: navigate to register screen
+  };
 
   render() {
-    // const { loading, error, possibleDiseases, selectedSymptoms, date } = this.state;
+    const { loading, error, email, password } = this.state;
 
     return (
-      <SafeAreaView style={STYLES.mainContainer}>
-        <ScrollView
-          showsVerticalScrollIndicator={false}
-          showsHorizontalScrollIndicator={false}
-          contentContainerStyle={{ flex: 1 }}>
-          <View style={STYLES.titleContainer}>
-            <Text style={{
-              color: COLORS.primaryText,
-              fontSize: 35,
-              fontWeight: "700",
-              paddingVertical: 10
-            }}>تسجيل الدخول</Text>
-          </View>
-          <LoginSvg />
-          <View style={[styles.viewTextIcon, { paddingBottom: 15 }]} >
-            <TextInput
-              icon="at"
-              isRtl={true}
-              placeholder="الايميل"
-              returnKeyType="next"
-              clearButtonMode={"while-editing"}
-            />
-          </View>
-          <View style={styles.viewTextIcon}>
-            <TextInput
-              icon="key"
-              isRtl={true}
-              placeholder="كلمة السر"
-              returnKeyType="done"
-              clearButtonMode={"while-editing"}
-              secureTextEntry />
-          </View>
-          <View style={{ alignItems: 'center', paddingTop: 20 }} >
-            <Button
-              title="تسجيل الدخول"
-              width={150}
-              borderRadius={5} />
-            <View>
-              <TouchableOpacity style={{ paddingVertical: 5 }}>
-                <Text style={{
-                  color: COLORS.buttonText,
-                  fontSize: 15
-                }}>تسجيل</Text>
-              </TouchableOpacity>
+      <SafeAreaView style={{ flex: 1 }}>
+        <KeyboardAvoidingView
+          behavior={Platform.OS === "ios" ? "padding" : null}
+          style={STYLES.mainContainer}
+        >
+          <ScrollView showsVerticalScrollIndicator={false}>
+            <View style={STYLES.titleContainer}>
+              <Text style={STYLES.title}>تسجيل الدخول</Text>
             </View>
-          </View>
-        </ScrollView>
+            <LoginSvg />
+            <View style={[styles.viewTextIcon, { paddingBottom: 15 }]}>
+              <TextInput
+                icon="at"
+                isRtl={true}
+                placeholder="الايميل"
+                returnKeyType="next"
+                clearButtonMode={"while-editing"}
+                value={email}
+                onChangeText={text => this.setState({ email: text })}
+              />
+            </View>
+            <View style={styles.viewTextIcon}>
+              <TextInput
+                icon="key"
+                isRtl={true}
+                placeholder="كلمة السر"
+                returnKeyType="done"
+                clearButtonMode={"while-editing"}
+                secureTextEntry
+                value={password}
+                onChangeText={text => this.setState({ password: text })}
+              />
+            </View>
+            <View style={{ alignItems: "center", paddingTop: 20 }}>
+              <Button
+                title="تسجيل الدخول"
+                width={150}
+                borderRadius={5}
+                onPress={this.handleLogin}
+              />
+              <View>
+                <TouchableOpacity
+                  style={{ paddingVertical: 5 }}
+                  onPress={this.handleRegister}
+                >
+                  <Text
+                    style={{
+                      color: COLORS.buttonText,
+                      fontSize: 15,
+                    }}
+                  >
+                    تسجيل
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </ScrollView>
+        </KeyboardAvoidingView>
       </SafeAreaView>
     );
   }
 }
 
-const styles = StyleSheet.create(
-  {
-    viewTextIcon: {
-      paddingHorizontal: 10,
-    },
-  });
+const styles = StyleSheet.create({
+  viewTextIcon: {
+    paddingHorizontal: 10,
+    paddingVertical: 18,
+  },
+});
