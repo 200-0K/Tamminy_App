@@ -1,136 +1,120 @@
-import React from "react"
-import PropTypes from "prop-types";
-import { StatusBar } from 'expo-status-bar';
+import React from "react";
 import {
-  StyleSheet, Text, View, Image,
-  TouchableOpacity, ScrollView, TextInput,
-  SafeAreaView, KeyboardAvoidingView
-} from 'react-native';
-import { Entypo } from '@expo/vector-icons';
-import { Ionicons } from '@expo/vector-icons';
+  StyleSheet,
+  Text,
+  View,
+  TouchableOpacity,
+  ScrollView,
+  SafeAreaView,
+  KeyboardAvoidingView,
+  Platform,
+} from "react-native";
+import PropTypes from "prop-types";
 
 import LoginSvg from "../components/svg/Login";
+import TextInput from "../components/TextInput";
+import Button from "../components/Button";
 
-export default class ComponentName extends React.Component {
-  static propTypes = {
-    prop1: PropTypes.string,
-    prop2: PropTypes.number.isRequired,
-    prop3: PropTypes.func,
+import { COLORS } from "../utils/colors";
+import { STYLES } from "../utils/styles";
+
+export default class Login extends React.Component {
+  // static propTypes = {
+  //   prop1: PropTypes.string,
+  //   prop2: PropTypes.number.isRequired,
+  //   prop3: PropTypes.func,
+  // const { ... } = this.props;
+  state = {
+    email: "",
+    password: "",
+    loading: false, // true -> while trying to login the user
+    error: false, // true -> if email/password is wrong
+  };
+
+  handleLogin = () => {
+    const { email, password } = this.state;
+    console.log(email, password); // check terminal!
+    // TODO
+    // Login via AccountApi
+    // Then setState({loading: true})
+    // if login is successful then navigate to home screen
+    // otherwise setState({loading: false, error: true})
+  };
+
+  handleRegister = () => {
+    // TODO: navigate to register screen
   };
 
   render() {
-    // const { ... } = this.props;
+    const { loading, error, email, password } = this.state;
 
     return (
-        <KeyboardAvoidingView behavior="padding" style={styles.container}>
-        {/* <SafeAreaView style={}> */}
-            <Ionicons  style={{
-    
-              alignSelf: 'flex-start',
-              paddingHorizontal: 30
-            }} name="arrow-back-sharp" size={33} color="black" />
-            {/* <Home />   */}
-            <Text style={styles.text}>تسجيل الدخول</Text>
-            <LoginSvg />
-    
-            <View style={styles.viewTextIcon} >
-              <TextInput
-                style={styles.input}
-                //multiline={true}
-                returnKeyType='next'
-                placeholder="الايميل"
-                keyboardType="default"
-                underlineColorAndroid="black"
-                inlineImageLeft='username'
-                inlineImagePadding={2}
-                underlineColorAndroid='transparent'
-    
-              />
-              <Entypo style={{ color: 'rgba(0,0,0,0.5)', }} name="email" size={24} color="black" />
+      <SafeAreaView style={{ flex: 1 }}>
+        <KeyboardAvoidingView
+          behavior={Platform.OS === "ios" ? "padding" : null}
+          style={STYLES.mainContainer}
+        >
+          <ScrollView showsVerticalScrollIndicator={false}>
+            <View style={STYLES.titleContainer}>
+              <Text style={STYLES.title}>تسجيل الدخول</Text>
             </View>
-    
+            <LoginSvg />
+            <View style={[styles.viewTextIcon, { paddingBottom: 15 }]}>
+              <TextInput
+                icon="at"
+                isRtl={true}
+                placeholder="الايميل"
+                returnKeyType="next"
+                clearButtonMode={"while-editing"}
+                value={email}
+                onChangeText={text => this.setState({ email: text })}
+              />
+            </View>
             <View style={styles.viewTextIcon}>
               <TextInput
-                style={styles.input}
-                returnKeyType='done'
+                icon="key"
+                isRtl={true}
                 placeholder="كلمة السر"
-                keyboardType="default"
-                underlineColorAndroid="black"
+                returnKeyType="done"
+                clearButtonMode={"while-editing"}
                 secureTextEntry
+                value={password}
+                onChangeText={text => this.setState({ password: text })}
               />
-              <Entypo style={{ color: 'rgba(0,0,0,0.5)', }} name="key" size={24} color="black" />
             </View>
-            
-            <TextInput
-                style={styles.input}
-                returnKeyType='done'
-                placeholder="كلمة السر"
-                keyboardType="default"
-                underlineColorAndroid="black"
-                secureTextEntry
+            <View style={{ alignItems: "center", paddingTop: 20 }}>
+              <Button
+                title="تسجيل الدخول"
+                width={150}
+                borderRadius={5}
+                onPress={this.handleLogin}
               />
-    
-            <TouchableOpacity style={styles.botton}>
-              <Text style={{
-                fontWeight: "bold",
-                color: "rgba(0,0,0,0.65)",
-              }}>تسجيل الدخول</Text>
-            </TouchableOpacity>
-    
-            <TouchableOpacity style={{ paddingVertical: 5 }}>
-              <Text style={{
-                color: "rgba(0,0,0,0.5)",
-              }}>تسجيل</Text>
-            </TouchableOpacity>
-    
-            <StatusBar style="auto" />
-        {/* </SafeAreaView> */}
-          </KeyboardAvoidingView>
-    
+              <View>
+                <TouchableOpacity
+                  style={{ paddingVertical: 5 }}
+                  onPress={this.handleRegister}
+                >
+                  <Text
+                    style={{
+                      color: COLORS.buttonText,
+                      fontSize: 15,
+                    }}
+                  >
+                    تسجيل
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </ScrollView>
+        </KeyboardAvoidingView>
+      </SafeAreaView>
     );
   }
 }
 
-
 const styles = StyleSheet.create({
-    container: {
-      flex: 1,
-      backgroundColor: '#fff',
-      alignItems: 'center',
-      marginTop: StatusBar.currentHeight,
-    },
-    text: {
-      color: "rgba(0,0,0,0.5)",
-      fontSize: 35,
-      marginVertical: 10,
-      fontWeight: "700",
-      height: 50,
-    },
-    botton: {
-      flex: 0,
-      backgroundColor: "#fff",
-      paddingHorizontal: 8,
-      paddingVertical: 10,
-      marginTop: 20,
-      borderRadius: 5,
-      borderWidth: 1.5,
-      alignItems: 'center',
-    },
-    input: {
-      width: '75%',
-      margin: 5,
-      padding: 10,
-      alignSelf: 'center',
-      borderBottomColor: 'rgba(0,0,0,0.5)',
-      borderBottomWidth: 2,
-      textAlign: 'right',
-  
-    },
-    viewTextIcon: {
-      flexDirection: 'row',
-      alignItems: 'center',
-    },
-  
-  });
-  
-  
+  viewTextIcon: {
+    paddingHorizontal: 10,
+    paddingVertical: 18,
+  },
+});
