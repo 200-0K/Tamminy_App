@@ -3,7 +3,6 @@ import {
     StyleSheet,
     SafeAreaView,
     View,
-    Image,
     FlatList,
     ScrollView,
     Text,
@@ -11,7 +10,7 @@ import {
     TouchableHighlight,
 } from "react-native";
 import PropTypes from "prop-types";
-
+import DetailListItem from "../components/DetailListItem";
 import { COLORS } from "../utils/colors";
 import { STYLES } from "../utils/styles";
 import SeverityIndicator from "../components/SeverityIndicator";
@@ -33,6 +32,12 @@ export default class DiseaseDetail extends React.Component {
             name: " كورونا",
             description:
                 "فيروسات كورونا فصيلة واسعة الانتشار معروفة بأنها تسبب أمراضاً تتراوح من نزلات البرد الشائعة إلى الاعتلالات الأشد وطأة مثل متلازمة الشرق الأوسط التنفسية (MERS) ومتلازمة الالتهاب الرئوي الحاد الوخيم.",
+            precautions: [
+                { precautionIs: "ابتعد مسافة متر واحد على الأقل عن الآخرين." },
+                { precautionIs: "اجعل من ارتداء الكمامة عادة عندما تكون مع أشخاص آخرين. إنّ استعمال الكمامات وحفظها وتنظيفها والتخلص منها بشكل سليم أمر ضروري لجعلها فعالة قدر الإمكان." },
+                { precautionIs: "نظّف يديك قبل أن ترتدي الكمامة، وقبل خلعها وبعده." },
+                { precautionIs: "تجنب الأماكن المزدحمة أو المغلقة." },
+            ],
 
             Symptom: [
                 {
@@ -87,6 +92,14 @@ export default class DiseaseDetail extends React.Component {
         // pass isReplaceOnNavigate = true along with navigation object to prevent stacking unnecessary screens
         console.log(id);
     };
+
+    renderprecautions = ({ precautionIs }) => {
+        return (
+            <View >
+                <Text style={[styles.precautions, this.rtlText,]}>{"- " + precautionIs}</Text>
+            </View>
+        )
+    }
 
     renderSymptom = ({ id, name, percentage }) => {
         return (
@@ -147,7 +160,7 @@ export default class DiseaseDetail extends React.Component {
             );
         }
 
-        const { name, description, Symptom } = DiseaseMeta;
+        const { name, description, precautions, Symptom } = DiseaseMeta;
         return (
             <SafeAreaView style={[STYLES.mainContainer, { paddingHorizontal: 0 }]}>
                 <ScrollView
@@ -159,6 +172,12 @@ export default class DiseaseDetail extends React.Component {
                     <View >
                         <Text style={[STYLES.title, this.rtlText]}>{name}</Text>
                         <Text style={[styles.description, this.rtlText]}>{description}</Text>
+                    </View>
+                    <View style={STYLES.sectionContainer}>
+                        <View style={STYLES.sectionTitleContainer}>
+                            <Text style={[STYLES.sectionTitle, this.rtlText]}>الاحترازات </Text>
+                        </View>
+                        {precautions.map(this.renderprecautions)}
                     </View>
                     <View style={STYLES.sectionContainer}>
                         <View style={STYLES.sectionTitleContainer}>
@@ -194,12 +213,9 @@ const styles = StyleSheet.create({
         fontSize: 14,
         color: COLORS.primaryText,
     },
-    description: {
+    precautions: {
         fontSize: 14,
         color: COLORS.primaryText,
-      },
-
-
-
-
+    paddingBottom:3
+    },
 });
