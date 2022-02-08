@@ -4,81 +4,80 @@ import {
   StyleSheet,
   Text,
   View,
-  TextInput,
-  Button,
   ScrollView,
+  KeyboardAvoidingView,
+  Platform,
 } from "react-native";
 import PropTypes from "prop-types";
 
+import TextArea from "../components/TextArea";
+import Buttons from "../components/Button";
 import FeedbackSvg from "../components/svg/Feedback";
-import { COLORS } from "../utils/colors";
+import { STYLES } from "../utils/styles";
 
+const MAX_CHARACTERS = 180;
 export default class Feedback extends React.Component {
-  static propTypes = {
-    prop1: PropTypes.string,
-    prop2: PropTypes.number.isRequired,
-    prop3: PropTypes.func,
-  };
+  // static propTypes = {
+  //   prop1: PropTypes.string,
+  //   prop2: PropTypes.number.isRequired,
+  //   prop3: PropTypes.func,
+  // };
+
+  state = {
+    text: "",
+    loading: false,
+    error: false,
+  }
+
+  sendFeedback = () => {
+    const {text} = this.state;
+    console.log(text); // check terminal!
+    // TODO
+    // if text.length > MAX_CHARACTERS then setState({error: true})
+    // otherwise, submit the feedback and setState({loading: true, error: false})
+    // if feedback submitted successfully then go to previous screen (Home screen/Question screen)
+    // otherwise show setState({loading: false, error: true})
+  }
 
   render() {
-    // const { ... } = this.props;
+    const { loading, error, text } = this.state;
 
     return (
-      <SafeAreaView style={styles.container}>
-        <ScrollView>
-          <Text
-            style={{
-              fontSize: 57,
-              fontWeight: "bold",
-              color: COLORS.primaryText,
-              marginTop: 90,
-              textAlign: "center",
-              flex: 1,
-            }}
+      <SafeAreaView style={{ flex: 1 }}>
+        <KeyboardAvoidingView
+          behavior={Platform.OS === "ios" ? "padding" : "height"}
+          style={STYLES.mainContainer}
+        >
+          <ScrollView
+            showsVerticalScrollIndicator={false}
           >
-            ماذا تقترح؟
-          </Text>
+            <View style={[STYLES.titleContainer, {marginBottom: 15}]}>
+              <Text style={STYLES.title}>ماذا تقترح؟</Text>
+              <FeedbackSvg />
+            </View>
 
-          <FeedbackSvg height={350} style={{ aspectRatio: 1 }} />
+            <TextArea
+              isRtl={true}
+              fontSize={18}
+              max={MAX_CHARACTERS}
+              placeholder="ماذا تقترح؟"
+              value={text}
+              onChangeText={text => this.setState({text})}
+            />
 
-          <TextInput
-            style={styles.textInput}
-            placeholder="0/500"
-            //TODO: TextArea component
-          />
-
-          <View style={[styles.buttonContainer]}>
-            <Button style={styles.button} title="ارسال"  />
-          </View>
-        </ScrollView>
+            <View style={[styles.buttonContainer]}>
+              <Buttons title="إرسال" fontSize={25} onPress={this.sendFeedback} />
+            </View>
+          </ScrollView>
+        </KeyboardAvoidingView>
       </SafeAreaView>
     );
   }
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#FFF",
-    alignItems: "center",
-  },
-  textInput: {
-    textAlign: "center",
-    height: 250,
-    fontWeight: "500",
-    fontSize: 20,
-    color: COLORS.primaryText,
-    borderWidth: 1.8,
-    padding: 0,
-    borderRadius: 10,
-  },
   buttonContainer: {
-    marginVertical: 10,
-    borderWidth: 2,
-    borderRadius: 10,
-    alignSelf: "center"
+    marginTop: 15,
+    alignSelf: "center",
   },
-  button: {
-    height: 40,
-  }
 });

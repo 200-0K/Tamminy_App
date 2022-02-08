@@ -1,5 +1,4 @@
 import * as React from "react"
-import { View } from "react-native"
 import Svg, {
   G,
   Path,
@@ -10,11 +9,10 @@ import Svg, {
 } from "react-native-svg"
 
 const SvgComponent = (props) => (
-  // <View style={{aspectRatio: .98, backgroundColor:"black"}}>
     <Svg
       width="100%"
-      height="380"
-      viewBox="0 0 250 180"
+      height={174}
+      viewBox="0 0 247 174"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
       {...props}
@@ -328,7 +326,6 @@ const SvgComponent = (props) => (
         </ClipPath>
       </Defs>
     </Svg>
-  // </View>
 )
 
 export default SvgComponent
