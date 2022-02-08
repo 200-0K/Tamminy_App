@@ -92,10 +92,12 @@ export default class DiseaseDetail extends React.Component {
 
   renderPrecaution = (precaution) => {
     return (
-      <View style={[styles.precautionContainer, this.rtlView]}>
+      <View style={[styles.precautionContainer, this.rtlView,]}>
         <Text>-</Text>
-        <View style={{marginHorizontal: 5}}></View>
-        <Text style={styles.precaution}>{precaution}</Text>
+        <View style={{paddingHorizontal: 4}}></View>
+        <View style={{flex: 1}}> 
+          <Text style={styles.precaution} textBreakStrategy="simple" selectable>{precaution}</Text>
+        </View>
       </View>
     );
   };
@@ -163,23 +165,25 @@ export default class DiseaseDetail extends React.Component {
           showsVerticalScrollIndicator={false}
           style={STYLES.mainContainer}
         >
-          <View style={{marginTop: 30}}>
-            <Text style={[STYLES.title, this.rtlText]}>{name}</Text>
-            <Text style={[styles.description, this.rtlText]}>
+          <View style={{marginTop: STYLES.titleContainer.marginTop}}>
+            <Text selectable style={[STYLES.title, this.rtlText]}>{name}</Text>
+            <Text selectable style={[styles.description, this.rtlText]}>
               {description}
             </Text>
           </View>
 
-          <View style={STYLES.sectionContainer}>
+          <View style={[STYLES.sectionContainer]}>
             <View style={STYLES.sectionTitleContainer}>
               <Text style={[STYLES.sectionTitle, this.rtlText]}>
                 الأحترازات
               </Text>
             </View>
-            {precautions.map(this.renderPrecaution)}
+            <View>
+              {precautions.map(this.renderPrecaution)}
+            </View>
           </View>
 
-          <View style={STYLES.sectionContainer}>
+          <View style={[STYLES.sectionContainer]}>
             <View style={STYLES.sectionTitleContainer}>
               <Text style={[STYLES.sectionTitle, this.rtlText]}>الاعراض</Text>
             </View>
@@ -211,6 +215,7 @@ const styles = StyleSheet.create({
 
   precautionContainer: {
     flexDirection: "row",
+    marginVertical: 1,
   },
   precaution: {
     fontSize: 14,
