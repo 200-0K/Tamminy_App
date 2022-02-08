@@ -1,17 +1,12 @@
 import React from 'react';
-import PropTypes from "prop-types";
 import { StatusBar } from "expo-status-bar";
 import {
     SafeAreaView,
     StyleSheet,
     Text,
     View,
-    CheckBox,
     ScrollView,
-    Input,
-    KeyboardAvoidingView,
     TouchableHighlight,
-
 } from "react-native";
 
 
@@ -25,45 +20,50 @@ import TextInput from "../components/TextInput";
 const { rtlText, rtlView } = STYLES;
 export default class AssessmentHistory extends React.Component {
     state = {
-        loading: true,
-        error: false,
-        id: null,
-        date: null,
-        PreviousAssessment: [],
+        // loading: true,
+        // error: false,
+        // id: null,
+        // date: null,
+        PreviousAssessment: [  {
+
+            id: 12,
+            AssessmentName: 'كورونا',
+            Description:'يُسبب الفيروس في البشر عداوَى في الجهاز التنفسي والتي تتضمن الزكام وعادةً ما تكون طفيفةً، ونادرًا ما تكون قاتلةً مثل المتلازمة التنفسية الحادة'
+        },
+        {
+
+            id: 13,
+            AssessmentName: 'حساسية',
+            Description:'يُسبب الفيروس في البشر عداوَى في الجهاز التنفسي والتي تتضمن الزكام وعادةً ما تكون طفيفةً، ونادرًا ما تكون قاتلةً مثل المتلازمة التنفسية الحادة'
+        
+        },
+        {
+
+            id: 14,
+            AssessmentName: 'نزلة برد',
+            Description:'يُسبب الفيروس في البشر عداوَى في الجهاز التنفسي والتي تتضمن الزكام وعادةً ما تكون طفيفةً، ونادرًا ما تكون قاتلةً مثل المتلازمة التنفسية الحادة'
+        
+        },
+        {
+
+            id: 15,
+            AssessmentName: 'انيميا',
+            Description:'يُسبب الفيروس في البشر عداوَى في الجهاز التنفسي والتي تتضمن الزكام وعادةً ما تكون طفيفةً، ونادرًا ما تكون قاتلةً مثل المتلازمة التنفسية الحادة'
+        
+        },
+        {
+
+            id: 16,
+            AssessmentName: 'اكزيما',
+            Description:'يُسبب الفيروس في البشر عداوَى في الجهاز التنفسي والتي تتضمن الزكام وعادةً ما تكون طفيفةً، ونادرًا ما تكون قاتلةً مثل المتلازمة التنفسية الحادة'
+        
+        }],
     };
 
 
     async componentPreviousAssessment() {
 
-        const date = formatDate();
-        const PreviousAssessment = [
-            
-            {
-
-            id: 12,
-            AssessmentName: 'كورونا'
-        },
-        {
-
-            id: 13,
-            AssessmentName: 'حساسية'
-        },
-        {
-
-            id: 14,
-            AssessmentName: 'نزلة برد'
-        },
-        {
-
-            id: 15,
-            AssessmentName: 'انيميا'
-        },
-        {
-
-            id: 16,
-            AssessmentName: 'اكزيما'
-        }];
-
+        // const date = formatDate();
         // try {
         //     setTimeout(() => {
         //         this.setState({
@@ -85,7 +85,7 @@ export default class AssessmentHistory extends React.Component {
 
     handleAssessmentNameOnPress = ({ id }) => {}
 
-    renderAssessmentHistory = ({ id, AssessmentName }) => (
+    renderAssessmentHistory = ({ id, AssessmentName, Description }) => (
 
         <TouchableHighlight 
         style={[styles.listItemContainer, rtlView]} // TODO: based app language
@@ -96,7 +96,7 @@ export default class AssessmentHistory extends React.Component {
         >
             <DetailListItem
                 title={AssessmentName}
-                //subtitle={AssessmentName}
+                subtitle={Description}
                 isRtl={true} // TODO: based app language
                 style={styles.detailListItem}
             />
@@ -105,10 +105,10 @@ export default class AssessmentHistory extends React.Component {
     );
 
     render() {
-
         const { PreviousAssessment } = this.state;
 
         return (
+            
             <SafeAreaView style={STYLES.mainContainer}>
                 <ScrollView contentContainerStyle={styles.scrollViewContainer}>
                     <View style={[STYLES.titleContainer, styles.titleContainer]}>
@@ -123,9 +123,8 @@ export default class AssessmentHistory extends React.Component {
                         isRtl={true} // TODO
                         placeholder="للبحث عن التشخيصات السابقة " //TODO
                         clearButtonMode={"while-editing"} // IOS only
-                        style={{ marginBottom: 15 }}
+                        style={{ marginBottom: 20 }}
                     />
-
                     <View style={styles.sectionContainer}>
                         <View style={styles.listContainer}>
                             {PreviousAssessment.map(this.renderAssessmentHistory)}
@@ -141,10 +140,9 @@ export default class AssessmentHistory extends React.Component {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        marginTop: 40, // need to fiex
         backgroundColor: "#fff",
         alignItems: "center",
-        //  marginTop: StatusBar.currentHeight,
+         marginTop: StatusBar.currentHeight,
     },
     titleContainer: {
         borderBottomWidth: 2,
@@ -159,7 +157,7 @@ const styles = StyleSheet.create({
     },
     listItemContainer: {
         alignItems: "center",
-        paddingVertical: 7,
+        paddingVertical: 8,
         paddingHorizontal: 5,
     },
     listContainer: {
@@ -174,15 +172,15 @@ const styles = StyleSheet.create({
         paddingVertical: 0,
         paddingHorizontal: 10,
     },
-    sectionTitleContainer: {
-        marginVertical: 4,
-        paddingVertical: 4,
-        paddingHorizontal: 8,
-        borderWidth: 2,
-        borderRadius: 12,
-        borderColor: COLORS.primaryText,
-        alignSelf: "center",
-        alignItems: "center",
-    },
+    // sectionTitleContainer: {
+    //     marginVertical: 4,
+    //     paddingVertical: 4,
+    //     paddingHorizontal: 8,
+    //     borderWidth: 2,
+    //     borderRadius: 12,
+    //     borderColor: COLORS.primaryText,
+    //     alignSelf: "center",
+    //     alignItems: "center",
+    // },
 
 });
