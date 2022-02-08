@@ -5,21 +5,15 @@ import {
   StyleSheet,
   Text,
   View,
-  FlatList,
-  TextInput,
-  Button,
-  Image,
-  CheckBox,
   ScrollView,
-  Input,
   KeyboardAvoidingView,
 } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
-import { Entypo } from "@expo/vector-icons";
-import { EvilIcons } from "@expo/vector-icons";
 import PropTypes from "prop-types";
 
+import Button from "../components/Button";
+import TextInput from "../components/TextInput";
 import RegisterSvg from "../components/svg/Register";
+import { STYLES } from "../utils/styles";
 export default class ComponentName extends React.Component {
   static propTypes = {
     prop1: PropTypes.string,
@@ -31,84 +25,59 @@ export default class ComponentName extends React.Component {
     // const { ... } = this.props;
 
     return (
-      //TODO: fix KeyboardAvoidingView
-      <KeyboardAvoidingView  behavior="height" style={styles.container}>
-        <ScrollView>
-            <Text
-              style={{
-                fontSize: 65,
-                fontWeight: "bold",
-                color: "rgba(76,74,94,0.7)",
-                textAlign: "center",
-              }}
-            >
-              تسـجـيل
-            </Text>
+      <SafeAreaView style={{ flex: 1 }}>
+        <KeyboardAvoidingView
+          behavior={Platform.OS === "ios" ? "padding" : null}
+          style={STYLES.mainContainer}
+        >
+          <ScrollView>
+            <View style={STYLES.titleContainer}>
+              <Text style={STYLES.title}>تسـجـيل</Text>
+              <RegisterSvg />
+            </View>
 
-            <RegisterSvg style={{ marginTop: 40 }} />
             <View style={styles.Inputs}>
-              <TextInput style={styles.TextInput} placeholder="  الاسم " />
-
-              <Ionicons
-                options={{}}
-                name="person"
-                size={24}
-                color="rgba(76,74,94,0.7)"
+              <TextInput
+                icon="person"
+                isRtl
+                placeholder="الاسم"
               />
             </View>
 
             <View style={styles.Inputs}>
               <TextInput
-                style={styles.TextInput}
-                placeholder="  تاريخ الميلاد "
+                icon="calendar"
+                isRtl
+                placeholder="تاريخ الميلاد"
               />
-              <EvilIcons name="calendar" size={24} color="rgba(76,74,94,0.7)" />
             </View>
 
             <View style={styles.Inputs}>
-              <TextInput style={styles.TextInput} placeholder="  الايميل " />
-              <Entypo name="email" size={24} color="rgba(76,74,94,0.7)" />
+              <TextInput icon="at" isRtl placeholder="الايميل" />
             </View>
 
             <View style={styles.Inputs}>
               <TextInput
-                style={{
-                  title: ";gm",
-                  height: 45,
-                  width: "95%",
-                  borderColor: "gray",
-                  borderWidth: 2,
-                }}
+                icon="md-key-outline"
+                isRtl
                 secureTextEntry={true}
-                style={styles.TextInput}
-                placeholder=" كلمة المرور"
-              />
-              <Ionicons
-                name="md-key-outline"
-                size={24}
-                color="rgba(76,74,94,0.7)"
+                placeholder="كلمة المرور"
               />
             </View>
 
             <View style={styles.ButtonStyle}>
-              <Button title="تسـجــيل " />
+              <Button title="تسجيل" />
             </View>
 
             <StatusBar style="auto" />
-        </ScrollView>
-      </KeyboardAvoidingView>
+          </ScrollView>
+        </KeyboardAvoidingView>
+      </SafeAreaView>
     );
   }
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#fff",
-    alignItems: "center",
-    marginTop: StatusBar.currentHeight,
-  },
-
   TextInput: {
     textAlign: "right",
     height: 60,
@@ -122,17 +91,10 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1.2,
   },
   Inputs: {
-    height: 80,
-    width: "93%",
-    alignItems: "center",
-    alignSelf: "center",
-    flexDirection: "row",
+    marginVertical: 25
   },
   ButtonStyle: {
     marginVertical: 10,
-    justifyContent: "space-between",
-    borderWidth: 3,
-    borderRadius: 8,
-    width: "25%",
+    alignItems: "center",
   },
 });
