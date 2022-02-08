@@ -36,7 +36,9 @@ export default class AssessmentHistory extends React.Component {
     async componentPreviousAssessment() {
 
         const date = formatDate();
-        const PreviousAssessment = [{
+        const PreviousAssessment = [
+            
+            {
 
             id: 12,
             AssessmentName: 'كورونا'
@@ -60,38 +62,33 @@ export default class AssessmentHistory extends React.Component {
 
             id: 16,
             AssessmentName: 'اكزيما'
-        }, {
-
-            id: 17,
-            AssessmentName: 'ملاريا'
         }];
 
-        try {
-            setTimeout(() => {
-                this.setState({
-                    loading: false,
-                    error: false,
-                    date,
-                    possibleDiseases,
-                    selectedSymptoms,
-                });
-            }, 5000); //! update the state after 5 second | For Testing
-        } catch (e) {
-            this.setState({
-                loading: false,
-                error: true,
-            });
-        }
+        // try {
+        //     setTimeout(() => {
+        //         this.setState({
+        //             loading: false,
+        //             error: false,
+        //             date,
+        //             possibleDiseases,
+        //             selectedSymptoms,
+        //         });
+        //     }, 5000); //! update the state after 5 second | For Testing
+        // } catch (e) {
+        //     this.setState({
+        //         loading: false,
+        //         error: true,
+        //     });
+        // }
 
     }
 
-    handleAssessmentNameOnPress = ({ id }) => {
+    handleAssessmentNameOnPress = ({ id }) => {}
 
-    }
+    renderAssessmentHistory = ({ id, AssessmentName }) => (
 
-    renderAssessmentHistory = ({ id, AssessmentName }) => {[
-
-        <TouchableHighlight style={[styles.listItemContainer, rtlView]} // TODO: based app language
+        <TouchableHighlight 
+        style={[styles.listItemContainer, rtlView]} // TODO: based app language
             activeOpacity={0.8}
             underlayColor={"rgba(0,0,0,0.05)"}
             onPress={() => this.handleAssessmentNameOnPress(id)}
@@ -105,18 +102,15 @@ export default class AssessmentHistory extends React.Component {
             />
         </TouchableHighlight>
 
-    ]}
+    );
 
     render() {
-
 
         const { PreviousAssessment } = this.state;
 
         return (
-
             <SafeAreaView style={STYLES.mainContainer}>
                 <ScrollView contentContainerStyle={styles.scrollViewContainer}>
-                  
                     <View style={[STYLES.titleContainer, styles.titleContainer]}>
                         <Text style={[STYLES.title, styles.title]}>
                             التشخيصات السابقة
@@ -130,7 +124,6 @@ export default class AssessmentHistory extends React.Component {
                         placeholder="للبحث عن التشخيصات السابقة " //TODO
                         clearButtonMode={"while-editing"} // IOS only
                         style={{ marginBottom: 15 }}
-
                     />
 
                     <View style={styles.sectionContainer}>
