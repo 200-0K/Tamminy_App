@@ -96,7 +96,7 @@ export default class DiseaseDetail extends React.Component {
         <Text>-</Text>
         <View style={{paddingHorizontal: 4}}></View>
         <View style={{flex: 1}}> 
-          <Text style={styles.precaution} textBreakStrategy="simple" selectable>{precaution}</Text>
+          <Text style={[styles.precaution,this.rtlText]} textBreakStrategy="simple" selectable>{precaution}</Text>
         </View>
       </View>
     );
