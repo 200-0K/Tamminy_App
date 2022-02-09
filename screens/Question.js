@@ -8,6 +8,8 @@ import { formatDate } from "../utils/date";
 import { STYLES } from "../utils/styles";
 import { LinearGradient } from 'expo-linear-gradient';
 import Feedback from "../components/svg/icons/Feedback";
+import { backgroundColor } from 'react-native/Libraries/Components/View/ReactNativeStyleAttributes';
+import chroma from "chroma-js";
 
 // node_modules
 // yarn add react-native-linear-gradient
@@ -79,7 +81,6 @@ export default class Question extends React.Component {
         isYes: false
       },
     ],
-    
     currentQuestionIndex: 0,
     progressBarValue: new Animated.Value(0),
   }
@@ -113,8 +114,8 @@ export default class Question extends React.Component {
 
     this.setState({
       currentQuestionIndex: (currentQuestionIndex+1) % questions.length, //! REMOVE
-      symptomsId: newSymptomsId,
-      // questions: newQuestions
+      symptomsId,
+      // questions: newQuesId: newSymptomstions
     }, () => {
       this.updateCurrentQuestionIndex();
     })
@@ -163,14 +164,14 @@ export default class Question extends React.Component {
     const q = questions[currentQuestionIndex];
 
     return (
-      <SafeAreaView style={{ flex: 1 }}>
+      <SafeAreaView style={{ flex: 1}}>
         <ScrollView
           showsVerticalScrollIndicator={false}
           contentContainerStyle={STYLES.mainContainer}
         >
           <View style={[styles.barContainer]}>
             <Animated.View style={[styles.parogressBar, { flex: progressBarValue }]}>
-              <LinearGradient colors={["#3F3D56", "#FF057D"]} style={{ flex: 1 }} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }}></LinearGradient>
+              <LinearGradient colors={["#3F3D56", "#FF057D"]} style={{ flex: 1 }} start={{ x: 0, y: .5 }} end={{ x: 1, y: .5 }}></LinearGradient>
             </Animated.View>
           </View>
           <View style={{ flex: 1 }}>
@@ -245,11 +246,11 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     borderRadius: 10,
     borderWidth: 1,
-    overflow: "hidden"
+    overflow: "hidden",
   },
   parogressBar: {
     flex: 0,
-    height: 20
+    height: 20,
   },
 
   buttonText: {
