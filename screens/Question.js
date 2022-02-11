@@ -103,12 +103,13 @@ export default class Question extends React.Component {
     // TODO: navigate to SymptomDetail screen with (symptom id == question id)
   };
 
-  updateProgressBar = () => {
+  updateProgressBar = callback => {
     const { newQuestions, progressBarValue } = this.state;
     Animated.timing(progressBarValue, {
       toValue: 1 - newQuestions.length / this.TOTAL_QUESTION,
       duration: 750,
-    }).start();
+      useNativeDriver: false,
+    }).start(callback);
   };
 
   // function handleAnswer(answer) { }
