@@ -7,8 +7,8 @@ import { STYLES } from "../utils/styles";
 
 const iconSizes = {
   small: 18,
-  large: 28
-}
+  large: 28,
+};
 export default function Button({
   title,
   fontSize,
@@ -19,7 +19,7 @@ export default function Button({
   width,
   icon,
   iconColor,
-  iconSize, 
+  iconSize,
   isRtl,
 }) {
   const containerStyle = {
@@ -27,7 +27,7 @@ export default function Button({
     borderColor: color,
     backgroundColor,
   };
-  const containerWidth = width && {width}
+  const containerWidth = width && { width };
 
   const titleStyle = {
     color,
@@ -38,17 +38,25 @@ export default function Button({
 
   return (
     <TouchableOpacity
-      style={[styles.container, containerStyle, containerWidth, rtlView]}
+      style={[
+        styles.container,
+        containerStyle,
+        containerWidth,
+        rtlView,
+        { justifyContent: icon ? "space-between" : "center" },
+      ]}
       onPress={onPress}
       activeOpacity={0.5}
     >
-      {icon && <>
-        <Ionicons 
-          name={icon} 
-          size={iconSizes[iconSize]} 
-          style={{color: iconColor}}
-        />
-      </>}
+      {icon && (
+        <>
+          <Ionicons
+            name={icon}
+            size={iconSizes[iconSize]}
+            style={{ color: iconColor }}
+          />
+        </>
+      )}
       <Text style={[styles.title, titleStyle]}>{title}</Text>
     </TouchableOpacity>
   );
@@ -60,7 +68,6 @@ const styles = StyleSheet.create({
     borderWidth: 1.5,
     paddingVertical: 5,
     paddingHorizontal: 15,
-    justifyContent: "space-between",
     alignItems: "center",
     backgroundColor: COLORS.buttonBackground,
   },
@@ -83,7 +90,7 @@ Button.propTypes = {
   iconColor: PropTypes.string,
   iconSize: PropTypes.string,
   isRtl: PropTypes.bool,
-}
+};
 
 Button.defaultProps = {
   fontSize: 20,
@@ -96,4 +103,4 @@ Button.defaultProps = {
   iconColor: COLORS.primaryText,
   iconSize: "small",
   isRtl: false,
-}
+};
