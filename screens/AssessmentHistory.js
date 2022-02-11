@@ -14,6 +14,7 @@ import { COLORS } from "../utils/colors";
 import { STYLES } from "../utils/styles";
 import { formatDate } from "../utils/date";
 import DetailListItem from "../components/DetailListItem";
+import SeverityIndicator from "../components/SeverityIndicator";
 
 export default class AssessmentHistory extends React.Component {
   state = {
@@ -45,6 +46,10 @@ export default class AssessmentHistory extends React.Component {
 
   async componentDidMount() {
     const { previousAssessments } = this.state;
+    this.isRtl = true; // TODO: based app language
+    this.rtlView = this.isRtl && STYLES.rtlView;
+    this.rtlText = this.isRtl && STYLES.rtlText;
+
     const prevAssessments = JSON.parse(JSON.stringify(previousAssessments));
     // prevAssessments.sort((a1, a2) => a2.date.localeCompare(a1.date)); // Sort in ascending order from oldest to latest
     prevAssessments.sort((a1, a2) => a2.date.localeCompare(a1.date)); // Sort in descending order from most recent to oldest
@@ -73,26 +78,32 @@ export default class AssessmentHistory extends React.Component {
   };
 
   renderAssessmentHistory = ({ id, date }, idx) => (
-    <TouchableHighlight
-      style={[this.rtlView]} // TODO: based app language
-      activeOpacity={0.8}
-      underlayColor={"rgba(0,0,0,0.05)"}
-      onPress={() => this.handleAssessmentPress(id)}
-      key={id}
-    >
-      <DetailListItem
-        title={`تشخيصة #${idx+1}`}
-        subtitle={date}
-        isRtl={true} // TODO: based app language
-        style={styles.detailListItem}
-      />
-    </TouchableHighlight>
+    <View style={[styles.assessmentItemContainer, this.rtlView]}>
+      <View style={{ opacity: 0.8 }}>
+        {/* TODO: based on most severe disease percentage on this assessment */}
+        <SeverityIndicator percentage={0} showText={false} />
+      </View>
+      <View style={{ paddingHorizontal: 5 }}></View>
+
+      <TouchableHighlight
+        style={[styles.detailListContainer]}
+        activeOpacity={0.8}
+        underlayColor={"rgba(0,0,0,0.05)"}
+        onPress={() => this.handleAssessmentPress(id)}
+        key={id}
+      >
+        <DetailListItem
+          title={`تشخيصة #${idx + 1}`}
+          subtitle={date}
+          isRtl={this.isRtl}
+          style={styles.detailListItem}
+        />
+      </TouchableHighlight>
+    </View>
   );
 
   render() {
     const { loading, error, previousAssessments } = this.state;
-    this.rtlView = STYLES.rtlView;
-    this.rtlText = STYLES.rtlText;
 
     if (loading) {
       // TODO: custom component
@@ -130,7 +141,7 @@ export default class AssessmentHistory extends React.Component {
 
     return (
       <SafeAreaView style={{ flex: 1 }}>
-        <ScrollView contentContainerStyle={STYLES.mainContainer}>
+        <ScrollView contentContainerStyle={[STYLES.mainContainer]}>
           <View style={STYLES.titleContainer}>
             <Text style={STYLES.title}>التشخيصات السابقة</Text>
           </View>
@@ -149,21 +160,21 @@ const styles = StyleSheet.create({
     marginVertical: 2,
     paddingHorizontal: 4,
   },
-  detailListItem: {
+
+  detailListContainer: {
+    flexDirection: "row",
+    flex: 1,
     marginVertical: 3,
+    borderRadius: 15,
+    backgroundColor: chroma(COLORS.primaryText).alpha(0.03).toString(),
+  },
+  detailListItem: {
     paddingVertical: 15,
     paddingHorizontal: 10,
-    borderRadius: 15,
-    backgroundColor: chroma(COLORS.primaryText).alpha(.03).toString()
   },
-  // sectionTitleContainer: {
-  //     marginVertical: 4,
-  //     paddingVertical: 4,
-  //     paddingHorizontal: 8,
-  //     borderWidth: 2,
-  //     borderRadius: 12,
-  //     borderColor: COLORS.primaryText,
-  //     alignSelf: "center",
-  //     alignItems: "center",
-  // },
+
+  assessmentItemContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
 });
