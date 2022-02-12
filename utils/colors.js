@@ -9,7 +9,10 @@ const colorValues = {
 
   yellow_400: "#EDFF82",
 
+  red_700: "#FF057D",
   red_400: "#FF5757",
+
+  purple_800: "#3F3D56",
 };
 
 export const COLORS = {
@@ -23,4 +26,5 @@ export const COLORS = {
   warning: colorValues.red_400,
   checkmark: colorValues.green_200,
   close: colorValues.red_400,
+  questionProgressBarGradient: [colorValues.purple_800, colorValues.red_700],
 };
