@@ -159,7 +159,7 @@ export default class Question extends React.Component {
     }
 
     return (
-      <SafeAreaView style={{ flex: 1 }}>
+      <SafeAreaView style={STYLES.safeAreaView}>
         <View style={[styles.progressBarContainer]}>
           <ProgressBar
             toValue={1 - newQuestions.length / this.TOTAL_QUESTION}
@@ -219,7 +219,7 @@ export default class Question extends React.Component {
           </View>
         </ScrollView>
         <TouchableOpacity
-          style={styles.feedbackContainer}
+          style={STYLES.feedbackContainer}
           onPress={this.handleFeedbackPress}
         >
           <Feedback size={25} color={COLORS.buttonText} />
@@ -252,12 +252,5 @@ const styles = StyleSheet.create({
     alignSelf: "flex-end",
     paddingVertical: 8,
     paddingHorizontal: 5,
-  },
-
-  feedbackContainer: {
-    position: "absolute",
-    bottom: 15,
-    right: 15,
-    opacity: 0.7,
   },
 });
