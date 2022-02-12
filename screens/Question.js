@@ -6,24 +6,17 @@ import {
   SafeAreaView,
   TouchableOpacity,
   ActivityIndicator,
-  Animated,
 } from "react-native";
 import React from "react";
-import { LinearGradient } from "expo-linear-gradient";
 
 import { COLORS } from "../utils/colors";
 import { STYLES } from "../utils/styles";
 import Feedback from "../components/svg/icons/Feedback";
 import Button from "../components/Button";
-
-// node_modules
-// yarn add react-native-linear-gradient
-// yarn remove react-native-linear-gradient
-// expo install expo-linear-gradient@~11.0.3
+import ProgressBar from "../components/ProgressBar";
 
 export default class Question extends React.Component {
   TOTAL_QUESTION = 0;
-  SELECTED_SYMPTOMS = [];
 
   state = {
     loading: true,
@@ -46,16 +39,20 @@ export default class Question extends React.Component {
       },
     ],
     oldQuestions: [],
-    progressBarValue: new Animated.Value(0),
   };
 
   async componentDidMount() {
+    this.isRtl = true;
+    this.rtlText = this.isRtl && STYLES.rtlText;
+    this.rtlView = this.isRtl && STYLES.rtlView;
+
     // TODO
     try {
-      // SELECTED_SYMPTOMS = Get selected symptoms from SymptomSearch screen
-
       // const newQuestions = this.getNewQuestions()
-      const newQuestions = this.state.newQuestions; //?TO BE CHANGED
+      const newQuestions = this.state.newQuestions; //!TO BE CHANGED
+
+      // TODO: Good?
+      if (newQuestions.length < 1) return this.navigateToAssessmentDetail();
 
       this.TOTAL_QUESTION = newQuestions.length;
       this.setState({
@@ -79,17 +76,12 @@ export default class Question extends React.Component {
   };
 
   navigateToAssessmentDetail = () => {
-    const { oldQuestions } = this.state;
+    const { oldQuestions, newQuestions } = this.state;
     // TODO navigate to navigate to AssessmentDetail screen with the selectedSymptoms
-    this.setState(
-      {
-        newQuestions: [...oldQuestions],
-        oldQuestions: [],
-      },
-      () => {
-        this.updateProgressBar();
-      }
-    );
+    this.setState({
+      newQuestions: [...oldQuestions, ...newQuestions],
+      oldQuestions: [],
+    });
   };
 
   handleFeedbackPress = () => {
@@ -101,15 +93,6 @@ export default class Question extends React.Component {
   handleQuestionInfoPress = () => {
     const { id } = this.state.newQuestions[0];
     // TODO: navigate to SymptomDetail screen with (symptom id == question id)
-  };
-
-  updateProgressBar = callback => {
-    const { newQuestions, progressBarValue } = this.state;
-    Animated.timing(progressBarValue, {
-      toValue: 1 - newQuestions.length / this.TOTAL_QUESTION,
-      duration: 750,
-      useNativeDriver: false,
-    }).start(callback);
   };
 
   // function handleAnswer(answer) { }
@@ -126,24 +109,19 @@ export default class Question extends React.Component {
     //   newQs = this.getNewQuestions();
     // }
 
-    this.setState(
-      {
-        loading: false,
-        error: false,
-        newQuestions: newQs,
-        oldQuestions: oldQs,
-      },
-      () => {
-        this.updateProgressBar();
-      }
-    );
+    // TODO: Good?
+    if (newQs.length < 1) return this.navigateToAssessmentDetail();
+
+    this.setState({
+      loading: false,
+      error: false,
+      newQuestions: newQs,
+      oldQuestions: oldQs,
+    });
   };
 
   render() {
-    // const { id, question, SymptomDescription } = questionDiseases;
-    const { loading, error, newQuestions, progressBarValue } = this.state;
-    this.rtlText = STYLES.rtlText;
-    this.rtlView = STYLES.rtlView;
+    const { loading, error, newQuestions } = this.state;
 
     if (loading) {
       // TODO: custom component
@@ -179,25 +157,13 @@ export default class Question extends React.Component {
       );
     }
 
-    // TODO: Good?
-    if (newQuestions.length < 1) {
-      this.navigateToAssessmentDetail();
-      return null;
-    }
-
     return (
       <SafeAreaView style={{ flex: 1 }}>
         <View style={[styles.progressBarContainer]}>
-          <Animated.View
-            style={[styles.progressBar, { flex: progressBarValue }]}
-          >
-            <LinearGradient
-              colors={["#3F3D56", "#FF057D"]}
-              style={{ flex: 1 }}
-              start={{ x: 0, y: 0.5 }}
-              end={{ x: 1, y: 0.5 }}
-            ></LinearGradient>
-          </Animated.View>
+          <ProgressBar
+            colors={COLORS.questionProgressBarGradient}
+            toValue={1 - newQuestions.length / this.TOTAL_QUESTION}
+          />
         </View>
 
         <ScrollView
@@ -225,7 +191,7 @@ export default class Question extends React.Component {
             <View style={styles.answerButtonContainer}>
               <Button
                 title="نعم"
-                isRtl={true}
+                isRtl={this.isRtl}
                 borderRadius={15}
                 width={95}
                 icon="checkmark-sharp"
@@ -238,7 +204,7 @@ export default class Question extends React.Component {
             <View style={styles.answerButtonContainer}>
               <Button
                 title="لا"
-                isRtl={true}
+                isRtl={this.isRtl}
                 borderRadius={15}
                 width={95}
                 icon="close-sharp"
@@ -271,13 +237,6 @@ const styles = StyleSheet.create({
     borderRadius: 0,
     borderWidth: 0,
   },
-  progressBar: {
-    overflow: 'hidden',
-    flex: 0,
-    height: 20,
-    borderTopEndRadius: 20,
-    borderBottomEndRadius: 20,
-  },
 
   questionContainer: {
     paddingVertical: 20,
@@ -298,6 +257,6 @@ const styles = StyleSheet.create({
     alignSelf: "flex-end",
     padding: 10,
     paddingBottom: 15,
-    opacity: .7
+    opacity: 0.7,
   },
 });
