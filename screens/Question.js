@@ -14,6 +14,7 @@ import { STYLES } from "../utils/styles";
 import Feedback from "../components/svg/icons/Feedback";
 import Button from "../components/Button";
 import ProgressBar from "../components/ProgressBar";
+import chroma from "chroma-js";
 
 export default class Question extends React.Component {
   TOTAL_QUESTION = 0;
@@ -161,14 +162,15 @@ export default class Question extends React.Component {
       <SafeAreaView style={{ flex: 1 }}>
         <View style={[styles.progressBarContainer]}>
           <ProgressBar
-            colors={COLORS.questionProgressBarGradient}
             toValue={1 - newQuestions.length / this.TOTAL_QUESTION}
+            gradientColors={COLORS.questionProgressBarGradient}
+            gradientLocations={[0, 0.5, 1]}
           />
         </View>
 
         <ScrollView
           showsVerticalScrollIndicator={false}
-          contentContainerStyle={STYLES.mainContainer}
+          contentContainerStyle={[STYLES.mainContainer, { marginTop: 100 }]}
         >
           <View style={{ flex: 1 }}>
             <View style={styles.questionContainer}>
@@ -215,14 +217,13 @@ export default class Question extends React.Component {
               />
             </View>
           </View>
-
-          <TouchableOpacity
-            style={styles.feedbackContainer}
-            onPress={this.handleFeedbackPress}
-          >
-            <Feedback size={25} color={COLORS.buttonText} />
-          </TouchableOpacity>
         </ScrollView>
+        <TouchableOpacity
+          style={styles.feedbackContainer}
+          onPress={this.handleFeedbackPress}
+        >
+          <Feedback size={25} color={COLORS.buttonText} />
+        </TouchableOpacity>
       </SafeAreaView>
     );
   }
@@ -232,10 +233,10 @@ const styles = StyleSheet.create({
   progressBarContainer: {
     overflow: "hidden",
     marginTop: 50,
-    marginBottom: 100,
     flexDirection: "row",
     borderRadius: 0,
     borderWidth: 0,
+    backgroundColor: chroma(COLORS.primaryText).brighten(3.7).toString(),
   },
 
   questionContainer: {
@@ -254,9 +255,9 @@ const styles = StyleSheet.create({
   },
 
   feedbackContainer: {
-    alignSelf: "flex-end",
-    padding: 10,
-    paddingBottom: 15,
+    position: "absolute",
+    bottom: 15,
+    right: 15,
     opacity: 0.7,
   },
 });
