@@ -11,11 +11,15 @@ export const STYLES = StyleSheet.create({
     flexDirection: "row-reverse"
   },
 
+  safeAreaView: {
+    flex: 1,
+    backgroundColor: COLORS.screenBackground
+  },
   mainContainer: {
     flex: 1,
     paddingTop: StatusBar.currentHeight,
     paddingHorizontal: 20,
-    backgroundColor: "#fff",
+    backgroundColor: COLORS.screenBackground,
   },
   titleContainer: {
     paddingVertical: 4,
