@@ -46,4 +46,11 @@ export const STYLES = StyleSheet.create({
     fontWeight: "bold",
     color: COLORS.primaryText,
   },
+
+  feedbackContainer: {
+    position: "absolute",
+    bottom: 15,
+    right: 15,
+    opacity: 0.7,
+  }
 });
