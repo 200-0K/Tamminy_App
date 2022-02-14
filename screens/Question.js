@@ -164,7 +164,6 @@ export default class Question extends React.Component {
           <ProgressBar
             toValue={1 - newQuestions.length / this.TOTAL_QUESTION}
             gradientColors={COLORS.questionProgressBarGradient}
-            gradientLocations={[0, 0.5, 1]}
           />
         </View>
 
