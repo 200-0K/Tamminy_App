@@ -20,8 +20,9 @@ import chroma from "chroma-js";
 import ScreenWrapper from "../components/ScreenWrapper";
 
 const activeColor = chroma(COLORS.primaryText).brighten(3.5).toString();
-const maximumDate = new Date(new Date().getFullYear() - 5, 11, 31);
-export default class ComponentName extends React.Component {
+const maximumDate = new Date(new Date().getFullYear() - 10, 11, 31);
+
+export default class Register extends React.Component {
   // static propTypes = {
   //   prop1: PropTypes.string,
   //   prop2: PropTypes.number.isRequired,
@@ -57,7 +58,7 @@ export default class ComponentName extends React.Component {
     const { open, date, gender, email, password, name } = this.state;
 
     return (
-      <ScreenWrapper style={STYLES.safeAreaView}>
+      <ScreenWrapper>
         <DateTimePickerModal
           isVisible={open}
           mode="date"
@@ -67,8 +68,12 @@ export default class ComponentName extends React.Component {
           onCancel={() => this.setState({ open: false })}
         />
 
-        <ScrollView showsVerticalScrollIndicator={false} style={STYLES.mainContainer}>
-          <View style={STYLES.titleContainer}>
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          style={STYLES.mainContainer}
+          contentContainerStyle={{ flex: 1 }}
+        >
+          <View style={[STYLES.titleContainer]}>
             <Text style={STYLES.title}>تسـجـيل</Text>
             <RegisterSvg />
           </View>
@@ -80,53 +85,9 @@ export default class ComponentName extends React.Component {
               icon="person"
               isRtl
               placeholder="الاسم"
+              textContentType="name"
             />
           </View>
-
-          <View style={[styles.GenderFieldContainer, this.rtlView]}>
-            <Text
-              style={{
-                fontSize: 18,
-                fontWeight: "bold",
-                color: "rgba(76,74,94,0.7)",
-              }}
-            >
-              الجنس :
-            </Text>
-            <View style={[styles.Inputs, styles.GenderButtonsContainer]}>
-              <Button
-                width={100}
-                borderRadius={5}
-                title="انثى"
-                backgroundColor={
-                  gender === "f" ? activeColor : COLORS.buttonBackground
-                }
-                onPress={() => this.setState({ gender: "f" })}
-              />
-              <Button
-                width={100}
-                borderRadius={5}
-                title="ذكر"
-                backgroundColor={
-                  gender === "m" ? activeColor : COLORS.buttonBackground
-                }
-                onPress={() => this.setState({ gender: "m" })}
-              />
-            </View>
-          </View>
-
-          <TouchableOpacity
-            onPress={this.handleCalendarPress}
-            style={[styles.Inputs, styles.dateContainer, this.rtlView]}
-          >
-            <Ionicons name="calendar" size={20} />
-            <View style={styles.dateTextContainer}>
-              <Text style={[styles.dateText, this.rtlText]}>
-                {date ? formatDate(date) : "تاريخ الميلاد"}
-              </Text>
-            </View>
-          </TouchableOpacity>
-
           <View style={styles.Inputs}>
             <TextInput
               onChangeText={text => this.setState({ email: text })}
@@ -134,6 +95,9 @@ export default class ComponentName extends React.Component {
               icon="at"
               isRtl
               placeholder="الايميل"
+              keyboardType="email-address"
+              textContentType="emailAddress"
+              autoComplete="email"
             />
           </View>
 
@@ -143,13 +107,55 @@ export default class ComponentName extends React.Component {
               isRtl
               secureTextEntry={true}
               placeholder="كلمة المرور"
+              textContentType="password"
               onChangeText={text => this.setState({ password: text })}
               value={password}
             />
           </View>
+          <TouchableOpacity
+            onPress={this.handleCalendarPress}
+            style={[styles.Inputs, styles.dateContainer, this.rtlView]}
+          >
+            <View style={[styles.dateTextContainer]} pointerEvents="none">
+              <TextInput
+                style={[styles.dateText, this.rtlText]}
+                icon="calendar"
+                editable={false}
+                isRtl={this.isRtl}
+                value={date ? formatDate(date) : "تاريخ الميلاد"}
+              />
+            </View>
+          </TouchableOpacity>
+          <View style={[styles.GenderFieldContainer, this.rtlView]}>
+            <View style={[styles.Inputs, styles.GenderButtonsContainer]}>
+              <Button
+                borderRadius={15}
+                width={50}
+                icon="woman"
+                iconColor={gender === "f" ? COLORS.iconFemale : COLORS.primaryText}
+                hideBorder
+                iconSize="large"
+                onPress={() => this.setState({ gender: "f" })}
+              />
+              <Button
+                borderRadius={15}
+                width={50}
+                icon="man"
+                iconColor={gender === "m" ? COLORS.iconMale : COLORS.primaryText}
+                hideBorder
+                iconSize="large"
+                onPress={() => this.setState({ gender: "m" })}
+              />
+            </View>
+          </View>
 
           <View style={styles.ButtonStyle}>
-            <Button onPress={this.handleSubmit} title="تسجيل" />
+            <Button
+              onPress={this.handleSubmit}
+              width={200}
+              borderRadius={10}
+              title="تسجيل"
+            />
           </View>
         </ScrollView>
       </ScreenWrapper>
@@ -171,10 +177,10 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1.2,
   },
   Inputs: {
-    marginVertical: 18,
+    marginVertical: 20,
   },
   ButtonStyle: {
-    marginVertical: 10,
+    marginBottom: 20,
     alignItems: "center",
   },
   GenderFieldContainer: {
@@ -190,14 +196,10 @@ const styles = StyleSheet.create({
 
   dateContainer: {
     flexDirection: "row",
-    borderWidth: 1.5,
-    borderRadius: 5,
-    padding: 5,
   },
   dateTextContainer: {
     flex: 1,
     justifyContent: "center",
-    paddingHorizontal: 15,
   },
   dateText: {
     fontSize: 18,
