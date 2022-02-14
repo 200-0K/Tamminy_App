@@ -3,7 +3,6 @@ import {
   View,
   Text,
   ScrollView,
-  SafeAreaView,
   TouchableOpacity,
   ActivityIndicator,
 } from "react-native";
@@ -15,9 +14,18 @@ import Feedback from "../components/svg/icons/Feedback";
 import Button from "../components/Button";
 import ProgressBar from "../components/ProgressBar";
 import chroma from "chroma-js";
+import ScreenWrapper from "../components/ScreenWrapper";
 
 export default class Question extends React.Component {
   TOTAL_QUESTION = 0;
+
+  constructor(props) {
+    super(props);
+
+    this.isRtl = true; // TODO: based app language
+    this.rtlView = this.isRtl && STYLES.rtlView;
+    this.rtlText = this.isRtl && STYLES.rtlText;
+  }
 
   state = {
     loading: true,
@@ -43,10 +51,6 @@ export default class Question extends React.Component {
   };
 
   async componentDidMount() {
-    this.isRtl = true;
-    this.rtlText = this.isRtl && STYLES.rtlText;
-    this.rtlView = this.isRtl && STYLES.rtlView;
-
     // TODO
     try {
       // const newQuestions = this.getNewQuestions()
@@ -159,7 +163,7 @@ export default class Question extends React.Component {
     }
 
     return (
-      <SafeAreaView style={STYLES.safeAreaView}>
+      <ScreenWrapper>
         <View style={[styles.progressBarContainer]}>
           <ProgressBar
             toValue={1 - newQuestions.length / this.TOTAL_QUESTION}
@@ -169,7 +173,8 @@ export default class Question extends React.Component {
 
         <ScrollView
           showsVerticalScrollIndicator={false}
-          contentContainerStyle={[STYLES.mainContainer, { marginTop: 100 }]}
+          style={STYLES.mainContainer}
+          contentContainerStyle={[{ marginTop: 100 }]}
         >
           <View style={{ flex: 1 }}>
             <View style={styles.questionContainer}>
@@ -178,42 +183,46 @@ export default class Question extends React.Component {
               </Text>
               <TouchableOpacity onPress={this.handleQuestionInfoPress}>
                 <Text
-                  style={{
-                    fontSize: 15,
-                    color: COLORS.secondaryText,
-                    textAlign: "right",
-                  }}
+                  style={[
+                    {
+                      fontSize: 15,
+                      color: COLORS.secondaryText,
+                    },
+                    this.rtlText,
+                  ]}
                 >
                   ماذا تعني؟
                 </Text>
               </TouchableOpacity>
             </View>
 
-            <View style={styles.answerButtonContainer}>
-              <Button
-                title="نعم"
-                isRtl={this.isRtl}
-                borderRadius={15}
-                width={95}
-                icon="checkmark-sharp"
-                iconSize="large"
-                iconColor={COLORS.checkmark}
-                onPress={() => this.handleAnswer(true)}
-                fontSize={24}
-              />
-            </View>
-            <View style={styles.answerButtonContainer}>
-              <Button
-                title="لا"
-                isRtl={this.isRtl}
-                borderRadius={15}
-                width={95}
-                icon="close-sharp"
-                iconSize="large"
-                iconColor={COLORS.close}
-                onPress={() => this.handleAnswer(false)}
-                fontSize={24}
-              />
+            <View style={this.isRtl ? {alignItems: "flex-end"} : null}>
+              <View style={[styles.answerButtonContainer]}>
+                <Button
+                  title="نعم"
+                  isRtl={this.isRtl}
+                  borderRadius={15}
+                  width={95}
+                  icon="checkmark-sharp"
+                  iconSize="large"
+                  iconColor={COLORS.checkmark}
+                  onPress={() => this.handleAnswer(true)}
+                  fontSize={24}
+                />
+              </View>
+              <View style={[styles.answerButtonContainer]}>
+                <Button
+                  title="لا"
+                  isRtl={this.isRtl}
+                  borderRadius={15}
+                  width={95}
+                  icon="close-sharp"
+                  iconSize="large"
+                  iconColor={COLORS.close}
+                  onPress={() => this.handleAnswer(false)}
+                  fontSize={24}
+                />
+              </View>
             </View>
           </View>
         </ScrollView>
@@ -223,7 +232,7 @@ export default class Question extends React.Component {
         >
           <Feedback size={25} color={COLORS.buttonText} />
         </TouchableOpacity>
-      </SafeAreaView>
+      </ScreenWrapper>
     );
   }
 }
@@ -248,7 +257,6 @@ const styles = StyleSheet.create({
   },
 
   answerButtonContainer: {
-    alignSelf: "flex-end",
     paddingVertical: 8,
     paddingHorizontal: 5,
   },

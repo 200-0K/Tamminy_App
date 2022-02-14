@@ -15,8 +15,17 @@ import { STYLES } from "../utils/styles";
 import { formatDate } from "../utils/date";
 import DetailListItem from "../components/DetailListItem";
 import SeverityIndicator from "../components/SeverityIndicator";
+import ScreenWrapper from "../components/ScreenWrapper";
 
 export default class AssessmentHistory extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.isRtl = true; // TODO: based app language
+    this.rtlView = this.isRtl && STYLES.rtlView;
+    this.rtlText = this.isRtl && STYLES.rtlText;
+  }
+
   state = {
     loading: true,
     error: false,
@@ -46,9 +55,6 @@ export default class AssessmentHistory extends React.Component {
 
   async componentDidMount() {
     const { previousAssessments } = this.state;
-    this.isRtl = true; // TODO: based app language
-    this.rtlView = this.isRtl && STYLES.rtlView;
-    this.rtlText = this.isRtl && STYLES.rtlText;
 
     const prevAssessments = JSON.parse(JSON.stringify(previousAssessments));
     // prevAssessments.sort((a1, a2) => a2.date.localeCompare(a1.date)); // Sort in ascending order from oldest to latest
@@ -140,8 +146,8 @@ export default class AssessmentHistory extends React.Component {
     }
 
     return (
-      <SafeAreaView style={{ flex: 1 }}>
-        <ScrollView contentContainerStyle={[STYLES.mainContainer]}>
+      <ScreenWrapper>
+        <ScrollView style={STYLES.mainContainer} contentContainerStyle={[STYLES.mainContainer]}>
           <View style={STYLES.titleContainer}>
             <Text style={STYLES.title}>التشخيصات السابقة</Text>
           </View>
@@ -150,7 +156,7 @@ export default class AssessmentHistory extends React.Component {
             {previousAssessments.map(this.renderAssessmentHistory)}
           </View>
         </ScrollView>
-      </SafeAreaView>
+      </ScreenWrapper>
     );
   }
 }

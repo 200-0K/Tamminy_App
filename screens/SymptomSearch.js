@@ -2,12 +2,12 @@ import React from "react";
 import {
   StyleSheet,
   View,
-  SafeAreaView,
   Text,
   FlatList,
   ScrollView,
   TouchableHighlight,
   TouchableOpacity,
+  ActivityIndicator,
 } from "react-native";
 import PropTypes from "prop-types";
 
@@ -17,8 +17,8 @@ import Button from "../components/Button";
 
 import { STYLES } from "../utils/styles";
 import { COLORS } from "../utils/colors";
+import ScreenWrapper from "../components/ScreenWrapper";
 
-const { rtlView } = STYLES;
 const keyExtractor = ({ id }) => Math.random().toString(32).slice(2); // TODO: change to id.toString()
 
 export default class SymptomSearch extends React.Component {
@@ -27,6 +27,13 @@ export default class SymptomSearch extends React.Component {
   //   prop2: PropTypes.number.isRequired,
   //   prop3: PropTypes.func,
   // };
+  constructor(props) {
+    super(props);
+
+    this.isRtl = true;
+    this.rtlView = this.isRtl && STYLES.rtlView;
+    this.rtlText = this.isRtl && STYLES.rtlText;
+  }
 
   allSymptoms = [
     {
@@ -134,6 +141,8 @@ export default class SymptomSearch extends React.Component {
   ];
 
   state = {
+    loading: true,
+    error: false,
     symptoms: this.allSymptoms,
     selectedSymptoms: [
       {
@@ -144,6 +153,12 @@ export default class SymptomSearch extends React.Component {
       },
     ],
   };
+
+  async componentDidMount() {
+    setTimeout(() => {
+      this.setState({ loading: false });
+    }, 2000);
+  }
 
   removeFromSelectedSymptoms = id => {
     const { selectedSymptoms } = this.state;
@@ -175,9 +190,9 @@ export default class SymptomSearch extends React.Component {
         onPress={() => this.handleSelectedSymptomPress(id)}
         style={[
           styles.selectedSymptomContainer,
-          rtlView,
+          this.rtlView,
           { transform: [{ scaleX: -1 }] },
-        ]} //TODO
+        ]}
         key={id}
       >
         <>
@@ -211,7 +226,7 @@ export default class SymptomSearch extends React.Component {
 
     return (
       <View
-        style={[styles.searchItemContainer, rtlView]} //TODO
+        style={[styles.searchItemContainer, this.rtlView]} //TODO
       >
         <TouchableOpacity
           style={styles.searchItemSymbolContainer}
@@ -252,59 +267,95 @@ export default class SymptomSearch extends React.Component {
 
   handleButtonPress = () => {
     // TODO: navigate to question screen with the selected symptoms
-  }
+  };
 
   render() {
-    const { symptoms, selectedSymptoms } = this.state;
+    const { loading, error, symptoms, selectedSymptoms } = this.state;
+
+    if (loading) {
+      // TODO: custom component
+      return (
+        <View
+          style={[
+            {
+              ...StyleSheet.absoluteFill,
+              justifyContent: "center",
+              alignItems: "center",
+            },
+          ]}
+        >
+          <ActivityIndicator size="large" color={COLORS.primaryText} />
+        </View>
+      );
+    }
+
+    if (error) {
+      // TODO: custom component
+      return (
+        <View
+          style={[
+            {
+              ...StyleSheet.absoluteFill,
+              justifyContent: "center",
+              alignItems: "center",
+            },
+          ]}
+        >
+          <Text style={{ color: "red", fontSize: 42 }}>Error occurred</Text>
+        </View>
+      );
+    }
 
     return (
-      <SafeAreaView style={STYLES.mainContainer}>
-        <View style={styles.topContainer}>
-          <View style={STYLES.titleContainer}>
-            <Text style={STYLES.title}>ما الذي تشعر به؟</Text>
+      <ScreenWrapper>
+        <View style={STYLES.mainContainer}>
+          <View style={styles.topContainer}>
+            <View style={STYLES.titleContainer}>
+              <Text style={STYLES.title}>ما الذي تشعر به؟</Text>
+            </View>
+
+            <TextInput
+              icon="search"
+              isRtl={this.isRtl}
+              placeholder="بحث" //TODO
+              clearButtonMode={"while-editing"} // IOS only
+              style={{ marginBottom: 5 }}
+              onChangeText={this.handleSearch}
+            />
+
+            {!!selectedSymptoms.length && (
+              <ScrollView
+                style={[
+                  styles.selectedSymptomsScroller,
+                  { marginTop: 5 },
+                  { transform: [{ scaleX: -1 }] },
+                ]} //TODO
+                horizontal={true}
+                fadingEdgeLength={400} // Android only
+                showsHorizontalScrollIndicator={false}
+              >
+                {selectedSymptoms.map(this.renderSelectedSymptoms)}
+              </ScrollView>
+            )}
           </View>
 
-          <TextInput
-            icon="search"
-            isRtl={true} // TODO
-            placeholder="بحث" //TODO
-            clearButtonMode={"while-editing"} // IOS only
-            style={{ marginBottom: 5 }}
-            onChangeText={this.handleSearch}
+          <FlatList
+            data={symptoms}
+            renderItem={this.renderSymptoms}
+            keyExtractor={keyExtractor}
+            extraData={selectedSymptoms}
+            showsVerticalScrollIndicator={false}
+            keyboardShouldPersistTaps="handled"
           />
 
-          {!!selectedSymptoms.length && (
-            <ScrollView
-              style={[
-                styles.selectedSymptomsScroller,
-                { marginTop: 5 },
-                { transform: [{ scaleX: -1 }] },
-              ]} //TODO
-              horizontal={true}
-              fadingEdgeLength={400} // Android only
-              showsHorizontalScrollIndicator={false}
-            >
-              {selectedSymptoms.map(this.renderSelectedSymptoms)}
-            </ScrollView>
-          )}
+          <View style={styles.buttonContainer}>
+            <Button
+              title="التالي" //TODO
+              onPress={this.handleButtonPress}
+            />
+          </View>
         </View>
-
-        <FlatList
-          data={symptoms}
-          renderItem={this.renderSymptoms}
-          keyExtractor={keyExtractor}
-          extraData={selectedSymptoms}
-          showsVerticalScrollIndicator={false}
-          keyboardShouldPersistTaps="handled"
-        />
-
-        <View style={styles.buttonContainer}>
-          <Button
-            title="التالي" //TODO
-            onPress={this.handleButtonPress}
-          />
-        </View>
-      </SafeAreaView>
+      </ScreenWrapper>
     );
   }
 }
