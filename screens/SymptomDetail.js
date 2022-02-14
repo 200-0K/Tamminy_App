@@ -1,7 +1,6 @@
 import React from "react";
 import {
   StyleSheet,
-  SafeAreaView,
   View,
   Image,
   FlatList,
@@ -9,12 +8,14 @@ import {
   Text,
   ActivityIndicator,
   TouchableHighlight,
+  StatusBar,
 } from "react-native";
 import PropTypes from "prop-types";
 
 import { COLORS } from "../utils/colors";
 import { STYLES } from "../utils/styles";
 import SeverityIndicator from "../components/SeverityIndicator";
+import ScreenWrapper from "../components/ScreenWrapper";
 
 export default class SymptomDetail extends React.Component {
   static propTypes = {
@@ -22,6 +23,13 @@ export default class SymptomDetail extends React.Component {
     prop2: PropTypes.number.isRequired,
     prop3: PropTypes.func,
   };
+
+  constructor(props) {
+    super(props);
+    this.isRtl = true;
+    this.rtlText = this.isRtl && STYLES.rtlText;
+    this.rtlView = this.isRtl && STYLES.rtlView;
+  }
 
   state = {
     loading: true,
@@ -125,8 +133,6 @@ export default class SymptomDetail extends React.Component {
 
   render() {
     const { loading, error, symptomMeta } = this.state;
-    this.rtlText = STYLES.rtlText;
-    this.rtlView = STYLES.rtlView;
 
     if (loading) {
       // TODO: custom component
@@ -164,8 +170,8 @@ export default class SymptomDetail extends React.Component {
 
     const { name, description, images, diseases } = symptomMeta;
     return (
-      <SafeAreaView style={[STYLES.mainContainer, { paddingHorizontal: 0 }]}>
-        <View>
+      <ScreenWrapper>
+        <View style={{marginTop: StatusBar.currentHeight}}>
           <FlatList
             data={images}
             renderItem={this.renderImage}
@@ -178,6 +184,7 @@ export default class SymptomDetail extends React.Component {
         </View>
         <ScrollView
           showsVerticalScrollIndicator={false}
+          style={STYLES.mainContainer}
           contentContainerStyle={{
             paddingHorizontal: STYLES.mainContainer.paddingHorizontal,
           }}
@@ -194,7 +201,7 @@ export default class SymptomDetail extends React.Component {
             {diseases.map(this.renderDisease)}
           </View>
         </ScrollView>
-      </SafeAreaView>
+      </ScreenWrapper>
     );
   }
 }

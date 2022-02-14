@@ -2,7 +2,6 @@ import {
   StyleSheet,
   View,
   Text,
-  SafeAreaView,
   TouchableOpacity,
 } from "react-native";
 import React from "react";
@@ -16,12 +15,21 @@ import Feedback from "../components/svg/icons/Feedback";
 
 import { COLORS } from "../utils/colors";
 import { STYLES } from "../utils/styles";
+import ScreenWrapper from "../components/ScreenWrapper";
 
 const hitSlop = { top: 30, bottom: 30, left: 30, right: 30 };
 export default class Home extends React.Component {
   static propTypes = {
     navigation: PropTypes.object.isRequired,
   };
+
+  constructor(props) {
+    super(props);
+
+    this.isRtl = true; // TODO: based app language
+    this.rtlView = this.isRtl && STYLES.rtlView;
+    this.rtlText = this.isRtl && STYLES.rtlText;
+  }
 
   navigateToSearchScreen = () => {
     // const { navigation } = this.props;
@@ -35,7 +43,7 @@ export default class Home extends React.Component {
 
   render() {
     return (
-      <SafeAreaView style={[STYLES.safeAreaView]}>
+      <ScreenWrapper>
         <View style={STYLES.mainContainer}>
           <View style={styles.headerContainer}>
             <TouchableOpacity hitSlop={hitSlop} onPress={this.navigateToSearchScreen}>
@@ -86,7 +94,7 @@ export default class Home extends React.Component {
             <Feedback size={24} color={COLORS.buttonText} />
           </TouchableOpacity>
         </View>
-      </SafeAreaView>
+      </ScreenWrapper>
     );
   }
 }

@@ -4,8 +4,6 @@ import {
   View,
   Text,
   ScrollView,
-  SafeAreaView,
-  StatusBar,
   TouchableHighlight,
   ActivityIndicator,
 } from "react-native";
@@ -16,6 +14,7 @@ import { STYLES } from "../utils/styles";
 
 import DetailListItem from "../components/DetailListItem";
 import SeverityIndicator from "../components/SeverityIndicator";
+import ScreenWrapper from "../components/ScreenWrapper";
 
 const { rtlText, rtlView } = STYLES;
 export default class AssessmentDetail extends React.Component {
@@ -34,6 +33,14 @@ export default class AssessmentDetail extends React.Component {
   //     symptomName: PropTypes.string.isRequired
   //   })),
   // };
+
+  constructor(props) {
+    super(props);
+
+    this.isRtl = true;
+    this.rtlView = this.isRtl && STYLES.rtlView;
+    this.rtlText = this.isRtl && STYLES.rtlText;
+  }
 
   state = {
     loading: true,
@@ -131,7 +138,7 @@ export default class AssessmentDetail extends React.Component {
   renderDiseaseItem = ({ id, diseaseName, diseaseSubtitle, percentage }) => {
     return (
       <TouchableHighlight
-        style={[styles.listItemContainer, rtlView]} // TODO: based app language
+        style={[styles.listItemContainer, this.rtlView]}
         activeOpacity={0.8}
         underlayColor={"rgba(0,0,0,0.05)"}
         onPress={() => this.handleDiseasePress(id)}
@@ -142,7 +149,7 @@ export default class AssessmentDetail extends React.Component {
           <DetailListItem
             title={diseaseName}
             subtitle={diseaseSubtitle}
-            isRtl={true} // TODO: based app language
+            isRtl={this.isRtl}
             style={styles.detailListItem}
           />
         </>
@@ -156,17 +163,20 @@ export default class AssessmentDetail extends React.Component {
 
   renderSymptomItem = ({ id, symptomName }) => (
     <TouchableHighlight
-      style={[styles.listItemContainer, rtlView]} // TODO: based app language
+      style={[styles.listItemContainer, this.rtlView]}
       activeOpacity={0.8}
       underlayColor={"rgba(0,0,0,0.05)"}
       onPress={() => this.handleSymptomPress(id)}
       key={id}
     >
-      <DetailListItem
-        title={"+ " + symptomName}
-        isRtl={true} // TODO: based app language
-        style={styles.detailListItem}
-      />
+      <>
+        <Text>+ </Text>
+        <DetailListItem
+          title={symptomName}
+          isRtl={this.isRtl}
+          style={styles.detailListItem}
+        />
+      </>
     </TouchableHighlight>
   );
 
@@ -174,11 +184,48 @@ export default class AssessmentDetail extends React.Component {
     const { loading, error, possibleDiseases, selectedSymptoms, date } =
       this.state;
 
+    if (loading) {
+      // TODO: custom component
+      return (
+        <View
+          style={[
+            {
+              ...StyleSheet.absoluteFill,
+              justifyContent: "center",
+              alignItems: "center",
+            },
+          ]}
+        >
+          <ActivityIndicator size="large" color={COLORS.primaryText} />
+        </View>
+      );
+    }
+
+    if (error) {
+      // TODO: custom component
+      return (
+        <View
+          style={[
+            {
+              ...StyleSheet.absoluteFill,
+              justifyContent: "center",
+              alignItems: "center",
+            },
+          ]}
+        >
+          <Text style={{ color: "red", fontSize: 42 }}>Error occurred</Text>
+        </View>
+      );
+    }
+
     return (
-      <SafeAreaView style={STYLES.mainContainer}>
-        <ScrollView contentContainerStyle={styles.scrollViewContainer}>
+      <ScreenWrapper>
+        <ScrollView
+          style={STYLES.mainContainer}
+          contentContainerStyle={styles.scrollViewContainer}
+        >
           <View style={[STYLES.titleContainer, styles.titleContainer]}>
-            <Text style={[STYLES.title, styles.title, rtlText]}>
+            <Text style={[STYLES.title, styles.title, this.rtlText]}>
               نتيجة التشخيص
             </Text>
           </View>
@@ -199,7 +246,7 @@ export default class AssessmentDetail extends React.Component {
             <>
               {date && (
                 <View style={styles.dateContainer}>
-                  <Text style={[styles.date, rtlText]}>التاريخ</Text>
+                  <Text style={[styles.date, this.rtlText]}>التاريخ</Text>
                   <Text style={styles.date}>{date}</Text>
                 </View>
               )}
@@ -207,7 +254,7 @@ export default class AssessmentDetail extends React.Component {
               {/* TODO: No Result Message */}
               <View style={styles.sectionContainer}>
                 <View style={styles.sectionTitleContainer}>
-                  <Text style={[styles.sectionTitle, rtlText]}>
+                  <Text style={[styles.sectionTitle, this.rtlText]}>
                     الأمراض المحتملة
                   </Text>
                 </View>
@@ -218,7 +265,7 @@ export default class AssessmentDetail extends React.Component {
 
               <View style={styles.sectionContainer}>
                 <View style={styles.sectionTitleContainer}>
-                  <Text style={[styles.sectionTitle, rtlText]}>
+                  <Text style={[styles.sectionTitle, this.rtlText]}>
                     الاعراض المختارة
                   </Text>
                 </View>
@@ -229,7 +276,7 @@ export default class AssessmentDetail extends React.Component {
             </>
           )}
         </ScrollView>
-      </SafeAreaView>
+      </ScreenWrapper>
     );
   }
 }
@@ -279,6 +326,7 @@ const styles = StyleSheet.create({
     paddingVertical: 2,
   },
   listItemContainer: {
+    flexDirection: "row",
     alignItems: "center",
     paddingVertical: 7,
     paddingHorizontal: 5,
