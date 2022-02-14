@@ -81,26 +81,24 @@ export default class Question extends React.Component {
   };
 
   navigateToAssessmentDetail = () => {
-    const { oldQuestions, newQuestions } = this.state;
-    // TODO navigate to navigate to AssessmentDetail screen with the selectedSymptoms
-    this.setState({
-      newQuestions: [...oldQuestions, ...newQuestions],
-      oldQuestions: [],
-    });
+    const { oldQuestions } = this.state;
+    const { navigation } = this.props;
+    navigation.navigate("AssessmentDetail", oldQuestions.filter(question => question.answer));
   };
 
   handleFeedbackPress = () => {
     const { id } = this.state.newQuestions[0];
-    // TODO: navigate to feedback screen with question id
-    // Navigate("feedback", newQuestions[0].id)
+    const { navigation } = this.props;
+    navigation.navigate("Feedback", {id});
   };
 
   handleQuestionInfoPress = () => {
     const { id } = this.state.newQuestions[0];
-    // TODO: navigate to SymptomDetail screen with (symptom id == question id)
+    const {navigation} = this.props;
+    navigation.navigate("SymptomDetail", {id})
   };
 
-  // function handleAnswer(answer) { }
+  // function handleAnswer(answer) {}
   handleAnswer = answer => {
     const { newQuestions, oldQuestions } = this.state;
 
@@ -123,6 +121,8 @@ export default class Question extends React.Component {
       newQuestions: newQs,
       oldQuestions: oldQs,
     });
+
+    // TODO: navigat to another question screen
   };
 
   render() {
@@ -230,7 +230,7 @@ export default class Question extends React.Component {
           style={STYLES.feedbackContainer}
           onPress={this.handleFeedbackPress}
         >
-          <Feedback size={25} color={COLORS.buttonText} />
+          <Feedback size={25} color={COLORS.buttonText} onPress={this.handleFeedbackPress}/>
         </TouchableOpacity>
       </ScreenWrapper>
     );

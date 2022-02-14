@@ -15,7 +15,7 @@ import { COLORS } from "../utils/colors";
 import { STYLES } from "../utils/styles";
 import ScreenWrapper from "../components/ScreenWrapper";
 
-export default class Feedback extends React.Component {
+export default class OTP extends React.Component {
   // static propTypes = {
   //   prop1: PropTypes.string,
   //   prop2: PropTypes.number.isRequired,
@@ -27,7 +27,13 @@ export default class Feedback extends React.Component {
   };
 
   verifyOtp = () => {
-
+    const {otp} = this.state;
+    // TODO
+    // verify OTP
+    // if correct:
+    const {navigation} = this.props;
+    navigation.navigate("Login")
+    // else show error
   }
 
   render() {

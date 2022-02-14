@@ -9,6 +9,7 @@ import {
   ActivityIndicator,
   TouchableHighlight,
   StatusBar,
+  Alert,
 } from "react-native";
 import PropTypes from "prop-types";
 
@@ -19,9 +20,11 @@ import ScreenWrapper from "../components/ScreenWrapper";
 
 export default class SymptomDetail extends React.Component {
   static propTypes = {
-    prop1: PropTypes.string,
-    prop2: PropTypes.number.isRequired,
-    prop3: PropTypes.func,
+    navigation: PropTypes.object.isRequired,
+    route: PropTypes.objectOf({
+      params: PropTypes.objectOf({ id: PropTypes.number.isRequired })
+        .isRequired,
+    }).isRequired,
   };
 
   constructor(props) {
@@ -78,6 +81,8 @@ export default class SymptomDetail extends React.Component {
   };
 
   async componentDidMount() {
+    const { id } = this.props.route.params;
+    // Alert.alert("Symptom id", `${id}`);
     // TODO
     // fetch symptom detail by SymptomApi class
 
@@ -97,9 +102,12 @@ export default class SymptomDetail extends React.Component {
   }
 
   handleDiseasePress = id => {
+    const { navigation } = this.props;
     // TODO: navigate to disease detail screen,
     // pass isReplaceOnNavigate = true along with navigation object to prevent stacking unnecessary screens
+    // console.log(id);
     console.log(id);
+    navigation.replace("DiseaseDetail", { id });
   };
 
   renderImage = ({ item: uri }) => {
@@ -171,7 +179,7 @@ export default class SymptomDetail extends React.Component {
     const { name, description, images, diseases } = symptomMeta;
     return (
       <ScreenWrapper>
-        <View style={{marginTop: StatusBar.currentHeight}}>
+        <View style={{ marginTop: StatusBar.currentHeight }}>
           <FlatList
             data={images}
             renderItem={this.renderImage}

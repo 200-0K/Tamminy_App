@@ -30,7 +30,7 @@ export default class Register extends React.Component {
   // };
   constructor(props) {
     super(props);
-
+    
     this.isRtl = true;
     this.rtlView = this.isRtl && STYLES.rtlView;
     this.rtlText = this.isRtl && STYLES.rtlText;
@@ -51,7 +51,12 @@ export default class Register extends React.Component {
 
   handleSubmit = () => {
     const { date, gender, email, password, name } = this.state;
+    const {navigation} = this.props;
     // TODO
+    // register the user
+    // then navigate to OTP
+
+    navigation.navigate("OTP");
   };
 
   render() {
@@ -71,7 +76,6 @@ export default class Register extends React.Component {
         <ScrollView
           showsVerticalScrollIndicator={false}
           style={STYLES.mainContainer}
-          contentContainerStyle={{ flex: 1 }}
         >
           <View style={[STYLES.titleContainer]}>
             <Text style={STYLES.title}>تسـجـيل</Text>
@@ -83,7 +87,7 @@ export default class Register extends React.Component {
               onChangeText={text => this.setState({ name: text })}
               value={name}
               icon="person"
-              isRtl
+              isRtl={this.isRtl}
               placeholder="الاسم"
               textContentType="name"
             />
@@ -93,7 +97,7 @@ export default class Register extends React.Component {
               onChangeText={text => this.setState({ email: text })}
               value={email}
               icon="at"
-              isRtl
+              isRtl={this.isRtl}
               placeholder="الايميل"
               keyboardType="email-address"
               textContentType="emailAddress"

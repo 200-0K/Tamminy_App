@@ -1,4 +1,6 @@
-import { KeyboardAvoidingView, Platform, SafeAreaView, StyleSheet } from "react-native";
+import { KeyboardAvoidingView, Platform, StyleSheet } from "react-native";
+import {SafeAreaView} from "react-native-safe-area-context";
+import { COLORS } from "../utils/colors";
 
 
 export default function ScreenWrapper({children}) {
@@ -18,8 +20,11 @@ export default function ScreenWrapper({children}) {
 }
 
 
+// TODO
+// make background color a prop 
 const styles = StyleSheet.create({
   safeAreaView: {
     flex: 1,
+    backgroundColor: COLORS.screenBackground,
   },
 })

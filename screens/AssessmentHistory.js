@@ -70,7 +70,7 @@ export default class AssessmentHistory extends React.Component {
           error: false,
           previousAssessments: prevAssessments,
         });
-      }, 10); //! update the state after 5 second | For Testing
+      }, 100); //! update the state after 5 second | For Testing
     } catch (e) {
       this.setState({
         loading: false,
@@ -81,6 +81,8 @@ export default class AssessmentHistory extends React.Component {
 
   handleAssessmentPress = ({ id }) => {
     // TODO: navigate to AssessmentDetail screen
+    const {navigation} = this.props;
+    navigation.navigate("AssessmentDetail", {id})
   };
 
   renderAssessmentHistory = ({ id, date }, idx) => (
@@ -149,7 +151,7 @@ export default class AssessmentHistory extends React.Component {
       <ScreenWrapper>
         <ScrollView style={STYLES.mainContainer} contentContainerStyle={[STYLES.mainContainer]}>
           <View style={STYLES.titleContainer}>
-            <Text style={STYLES.title}>التشخيصات السابقة</Text>
+            <Text style={[STYLES.title, {fontSize: STYLES.title.fontSize-10}]}>التشخيصات السابقة</Text>
           </View>
 
           <View style={styles.listContainer}>

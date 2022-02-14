@@ -116,17 +116,19 @@ export default class Search extends React.Component {
         categories: this.categories,
         searchText: "",
       });
-    }, 5000);
+    }, 100);
   }
 
   handleSymptomPress = id => {
+    const { navigation } = this.props;
     // TODO: navigate to symptom detail screen
-    console.log("symptom", id);
+    navigation.navigate("SymptomDetail", { id });
   };
 
   handleDiseasePress = id => {
+    const { navigation } = this.props;
     // TODO: navigate to disease detail screen
-    console.log("disease", id);
+    navigation.navigate("DiseaseDetail", { id });
   };
 
   handleItemPress = id => {
@@ -164,7 +166,11 @@ export default class Search extends React.Component {
         underlayColor="rgba(0,0,0,0.2)"
         onPress={() => this.handleItemPress(id)}
       >
-        <DetailListItem title={name} subtitle={description} isRtl={this.isRtl} />
+        <DetailListItem
+          title={name}
+          subtitle={description}
+          isRtl={this.isRtl}
+        />
       </TouchableHighlight>
     );
   };
