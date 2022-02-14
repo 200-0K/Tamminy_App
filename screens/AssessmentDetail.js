@@ -132,6 +132,8 @@ export default class AssessmentDetail extends React.Component {
   }
 
   handleDiseasePress = ({ id }) => {
+    const {navigation} = this.props;
+    navigation.navigate("DiseaseDetail", {id})
     // TODO: Stack Navigate to DiseaseDetail screen
   };
 
@@ -158,6 +160,8 @@ export default class AssessmentDetail extends React.Component {
   };
 
   handleSymptomPress = ({ id }) => {
+    const {navigation} = this.props;
+    navigation.navigate("SymptomDetail", {id})
     // TODO: Stack Navigate to SymptomDetail screen
   };
 

@@ -7,6 +7,7 @@ import {
   Text,
   ActivityIndicator,
   TouchableHighlight,
+  Alert,
 } from "react-native";
 import PropTypes from "prop-types";
 import { COLORS } from "../utils/colors";
@@ -75,6 +76,8 @@ export default class DiseaseDetail extends React.Component {
   };
 
   async componentDidMount() {
+    const { id } = this.props.route.params;
+    // Alert.alert("Disease id", `${id}`);
     // TODO
     // fetch symptom detail by SymptomApi class
 
@@ -90,22 +93,30 @@ export default class DiseaseDetail extends React.Component {
         loading: false,
         error: false,
       });
-    }, 10);
+    }, 100);
   }
 
-  handleDiseasePress = id => {
+  handleSymptomPress = id => {
+    const { navigation } = this.props;
     // TODO: navigate to disease detail screen,
     // pass isReplaceOnNavigate = true along with navigation object to prevent stacking unnecessary screens
     console.log(id);
+    navigation.replace("SymptomDetail", { id });
   };
 
-  renderPrecaution = (precaution) => {
+  renderPrecaution = precaution => {
     return (
-      <View style={[styles.precautionContainer, this.rtlView,]}>
+      <View style={[styles.precautionContainer, this.rtlView]}>
         <Text>-</Text>
-        <View style={{paddingHorizontal: 4}}></View>
-        <View style={{flex: 1}}> 
-          <Text style={[styles.precaution,this.rtlText]} textBreakStrategy="simple" selectable>{precaution}</Text>
+        <View style={{ paddingHorizontal: 4 }}></View>
+        <View style={{ flex: 1 }}>
+          <Text
+            style={[styles.precaution, this.rtlText]}
+            textBreakStrategy="simple"
+            selectable
+          >
+            {precaution}
+          </Text>
         </View>
       </View>
     );
@@ -117,7 +128,7 @@ export default class DiseaseDetail extends React.Component {
         style={[styles.symptomContainer, this.rtlView]}
         activeOpacity={0.8}
         underlayColor="rgba(0,0,0,0.05)"
-        onPress={() => this.handleDiseasePress(id)}
+        onPress={() => this.handleSymptomPress(id)}
       >
         <>
           <SeverityIndicator showText={false} percentage={percentage} />
@@ -172,8 +183,10 @@ export default class DiseaseDetail extends React.Component {
           showsVerticalScrollIndicator={false}
           style={STYLES.mainContainer}
         >
-          <View style={{marginTop: STYLES.titleContainer.marginTop}}>
-            <Text selectable style={[STYLES.title, this.rtlText]}>{name}</Text>
+          <View style={{ marginTop: STYLES.titleContainer.marginTop }}>
+            <Text selectable style={[STYLES.title, this.rtlText]}>
+              {name}
+            </Text>
             <Text selectable style={[styles.description, this.rtlText]}>
               {description}
             </Text>
@@ -185,9 +198,7 @@ export default class DiseaseDetail extends React.Component {
                 الأحترازات
               </Text>
             </View>
-            <View>
-              {precautions.map(this.renderPrecaution)}
-            </View>
+            <View>{precautions.map(this.renderPrecaution)}</View>
           </View>
 
           <View style={[STYLES.sectionContainer]}>

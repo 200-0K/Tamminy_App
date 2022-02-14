@@ -204,7 +204,8 @@ export default class SymptomSearch extends React.Component {
   };
 
   handleSymptomPress = id => {
-    //TODO: navigate to symptomDetail screen
+    const {navigation} = this.props;
+    navigation.navigate("SymptomDetail", {id});
   };
 
   handleSymptomSymbolPress = id => {
@@ -266,7 +267,11 @@ export default class SymptomSearch extends React.Component {
   };
 
   handleButtonPress = () => {
-    // TODO: navigate to question screen with the selected symptoms
+    const {selectedSymptoms} = this.state;
+    if (selectedSymptoms.length < 1) return;
+    
+    const {navigation} = this.props;
+    navigation.navigate("Question", {selectedSymptoms});
   };
 
   render() {

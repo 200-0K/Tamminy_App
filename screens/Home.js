@@ -30,17 +30,38 @@ export default class Home extends React.Component {
     this.rtlView = this.isRtl && STYLES.rtlView;
     this.rtlText = this.isRtl && STYLES.rtlText;
   }
+  
+  navigateToRegister = () => {
+    const {navigation} = this.props;
+    navigation.navigate("Register");
+  }
 
   navigateToSearchScreen = () => {
-    // const { navigation } = this.props;
-    // navigation.navigate("Search");
+    const { navigation } = this.props;
+    navigation.navigate("Search");
+  };
+  
+  navigateToAssessmentHistory = () => {
+    const { navigation } = this.props;
+    navigation.navigate("AssessmentHistory")
+  }
+
+  navigateToStartAssessment = () => {
+    const { navigation } = this.props;
+    navigation.navigate("SymptomSearch");
   };
 
-  startAssessment = () => {
-    // const { navigation } = this.props;
-    // navigation.navigate("SymptomSearch");
+  navigateToFeedback = () => {
+    const { navigation } = this.props;
+    navigation.navigate("Feedback");
   };
 
+
+  navigateToLogin= () => {
+    const { navigation } = this.props;
+    navigation.navigate("Login");
+  };
+  
   render() {
     return (
       <ScreenWrapper>
@@ -50,7 +71,7 @@ export default class Home extends React.Component {
               <SearchIcon size={24} color={COLORS.buttonText} />
             </TouchableOpacity>
             {/* TODO: if user is logged in then hide this */}
-            <TouchableOpacity>
+            <TouchableOpacity onPress={this.navigateToLogin}>
               <Text
                 style={{
                   color: COLORS.primaryText,
@@ -75,7 +96,7 @@ export default class Home extends React.Component {
             <View style={[styles.optionIcon]}>
               <TouchableOpacity
                 style={styles.optionTextContainer}
-                onPress={this.startAssessment}
+                onPress={this.navigateToStartAssessment}
               >
                 <Text style={styles.optionText}>تشخيص</Text>
               </TouchableOpacity>
@@ -83,14 +104,14 @@ export default class Home extends React.Component {
             </View>
 
             <View style={[styles.optionIcon]}>
-              <TouchableOpacity style={styles.optionTextContainer}>
+              <TouchableOpacity style={styles.optionTextContainer} onPress={this.navigateToAssessmentHistory}>
                 <Text style={styles.optionText}>سجل التشخيصات</Text>
               </TouchableOpacity>
               <DoctorNote size={24} color={COLORS.buttonText} />
             </View>
           </View>
 
-          <TouchableOpacity hitSlop={hitSlop} style={STYLES.feedbackContainer}>
+          <TouchableOpacity hitSlop={hitSlop} style={STYLES.feedbackContainer} onPress={this.navigateToFeedback}>
             <Feedback size={24} color={COLORS.buttonText} />
           </TouchableOpacity>
         </View>

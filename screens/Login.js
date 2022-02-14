@@ -40,16 +40,21 @@ export default class Login extends React.Component {
 
   handleLogin = () => {
     const { email, password } = this.state;
-    console.log(email, password); // check terminal!
+
     // TODO
     // Login via AccountApi
     // Then setState({loading: true})
     // if login is successful then navigate to home screen
     // otherwise setState({loading: false, error: true})
+
+    const {navigation} = this.props;
+    navigation.navigate("Home");
   };
 
   handleRegister = () => {
     // TODO: navigate to register screen
+    const {navigation} = this.props;
+    navigation.navigate("Register");
   };
 
   render() {
