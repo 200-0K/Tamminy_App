@@ -1,5 +1,13 @@
 import React from "react";
-import { SafeAreaView, StyleSheet, View, Text, FlatList, ActivityIndicator, TouchableOpacity, TouchableHighlight } from "react-native";
+import {
+  StyleSheet,
+  View,
+  Text,
+  FlatList,
+  ActivityIndicator,
+  TouchableOpacity,
+  TouchableHighlight,
+} from "react-native";
 import PropTypes from "prop-types";
 
 import TextInput from "../components/TextInput";
@@ -7,7 +15,7 @@ import TextInput from "../components/TextInput";
 import { STYLES } from "../utils/styles";
 import { COLORS } from "../utils/colors";
 import DetailListItem from "../components/DetailListItem";
-
+import ScreenWrapper from "../components/ScreenWrapper";
 
 const keyExtractor = (category, id) => `${category}.${id}`;
 
@@ -17,6 +25,14 @@ export default class Search extends React.Component {
   //   prop2: PropTypes.number.isRequired,
   //   prop3: PropTypes.func,
   // };
+
+  constructor(props) {
+    super(props);
+
+    this.isRtl = true; // TODO: based app language
+    this.rtlView = this.isRtl && STYLES.rtlView;
+    this.rtlText = this.isRtl && STYLES.rtlText;
+  }
 
   categories = [
     {
@@ -41,7 +57,7 @@ export default class Search extends React.Component {
           description: "ارتفاع في درجة حرارة الجسم.",
         },
       ],
-      itemPressHanlder: id => this.handleSymptomPress(id)
+      itemPressHanlder: id => this.handleSymptomPress(id),
       // fetchItems: // initialize API class & call fetch
     },
     {
@@ -51,13 +67,13 @@ export default class Search extends React.Component {
         {
           id: 1,
           name: "كورونا",
-          description :
+          description:
             "فيروسات كورونا فصيلة واسعة الانتشار معروفة بأنها تسبب أمراضاً تتراوح من نزلات البرد الشائعة إلى الاعتلالات الأشد وطأة مثل متلازمة الشرق الأوسط التنفسية (MERS) ومتلازمة الالتهاب الرئوي الحاد الوخيم.",
         },
         {
           id: 2,
           name: "نزلة برد",
-          description :
+          description:
             "فيروسات كورونا فصيلة واسعة الانتشار معروفة بأنها تسبب أمراضاً تتراوح من نزلات البرد الشائعة إلى الاعتلالات الأشد وطأة مثل متلازمة الشرق الأوسط التنفسية (MERS) ومتلازمة الالتهاب الرئوي الحاد الوخيم.",
         },
         {
@@ -65,12 +81,12 @@ export default class Search extends React.Component {
           name: "حساسية",
           description:
             "فيروسات كورونا فصيلة واسعة الانتشار معروفة بأنها تسبب أمراضاً تتراوح من نزلات البرد الشائعة إلى الاعتلالات الأشد وطأة مثل متلازمة الشرق الأوسط التنفسية (MERS) ومتلازمة الالتهاب الرئوي الحاد الوخيم.",
-        }
+        },
       ],
       itemPressHanlder: id => this.handleDiseasePress(id),
       // fetchItems: // initialize API class & call fetch
     },
-  ]
+  ];
 
   state = {
     loading: true,
@@ -83,14 +99,14 @@ export default class Search extends React.Component {
   async componentDidMount() {
     // TODO
     // Otherwise:
-      // this.categories.forEach(categoryMeta => {
-        // categoryMeta.items = await categoryMeta.fetchItems(); // fetch id, name, description of all symptoms & diseases
-          // Check local storage; if category available, check if up-to-date (by hash? || expiry date?) Then:
-          // return local storage category
-          // if not avaliable then fetch it from API and save it, then return it
-      // })
+    // this.categories.forEach(categoryMeta => {
+    // categoryMeta.items = await categoryMeta.fetchItems(); // fetch id, name, description of all symptoms & diseases
+    // Check local storage; if category available, check if up-to-date (by hash? || expiry date?) Then:
+    // return local storage category
+    // if not avaliable then fetch it from API and save it, then return it
+    // })
     //
-    
+
     // if no error update state:
     setTimeout(() => {
       this.setState({
@@ -98,138 +114,153 @@ export default class Search extends React.Component {
         error: false,
         currentCategory: this.categories[0],
         categories: this.categories,
-        searchText: ""
-      })
-    }, 5000)
+        searchText: "",
+      });
+    }, 5000);
   }
 
   handleSymptomPress = id => {
     // TODO: navigate to symptom detail screen
-    console.log("symptom", id)
-  }
+    console.log("symptom", id);
+  };
 
   handleDiseasePress = id => {
     // TODO: navigate to disease detail screen
-    console.log("disease", id)
-  }
+    console.log("disease", id);
+  };
 
   handleItemPress = id => {
     const { currentCategory } = this.state;
     currentCategory.itemPressHanlder(id);
-  }
+  };
 
   handleCategoryChange = category => {
     this.setState({
       currentCategory: category,
-    })
-  }
+    });
+  };
 
-  renderCategory = ({item: category}) => {
+  renderCategory = ({ item: category }) => {
     const { currentCategory } = this.state;
     const categoryStyle = {
-      opacity: (category.name == currentCategory.name) ? 1 : .5
-    }
+      opacity: category.name == currentCategory.name ? 1 : 0.5,
+    };
 
     return (
-      <TouchableOpacity 
+      <TouchableOpacity
         style={[styles.categoryContainer, categoryStyle]}
-        activeOpacity={.6}
+        activeOpacity={0.6}
         onPress={() => this.handleCategoryChange(category)}
       >
         <Text style={styles.categoryText}>{category.ar}</Text>
       </TouchableOpacity>
     );
-  }
+  };
 
-  renderSearchItem = ({item: {id, name, description}}) => {
+  renderSearchItem = ({ item: { id, name, description } }) => {
     return (
       <TouchableHighlight
-        activeOpacity={.8}
+        activeOpacity={0.8}
         underlayColor="rgba(0,0,0,0.2)"
         onPress={() => this.handleItemPress(id)}
       >
-        <DetailListItem
-          title={name}
-          subtitle={description}
-          isRtl={true}
-        />
+        <DetailListItem title={name} subtitle={description} isRtl={this.isRtl} />
       </TouchableHighlight>
-    )
-  }
+    );
+  };
 
   handleSearch = text => {
     this.setState({
-      searchText: text
+      searchText: text,
     });
   };
 
   render() {
-    const { loading, error, searchText, categories, currentCategory } = this.state;
+    const { loading, error, searchText, categories, currentCategory } =
+      this.state;
     const items = currentCategory?.items;
 
     return (
-      <SafeAreaView style={[STYLES.mainContainer, styles.container]}>
-        <View>
-          <View style={STYLES.titleContainer}>
-            <Text style={STYLES.title}>بحث</Text> 
-            {/* TODO */}
+      <ScreenWrapper>
+        <View style={STYLES.mainContainer}>
+          <View>
+            <View style={STYLES.titleContainer}>
+              <Text style={STYLES.title}>بحث</Text>
+              {/* TODO: Lang */}
+            </View>
+
+            {!loading && (
+              <>
+                <TextInput
+                  icon="search"
+                  isRtl={this.isRtl}
+                  placeholder="بحث" //TODO
+                  clearButtonMode={"while-editing"} // IOS only
+                  onChangeText={this.handleSearch}
+                />
+
+                <FlatList
+                  data={categories}
+                  renderItem={this.renderCategory}
+                  extraData={currentCategory} // if current category change then re-render flatlist
+                  horizontal={true}
+                  inverted={true}
+                  showsHorizontalScrollIndicator={false}
+                  contentContainerStyle={styles.categoriesContainer}
+                  keyExtractor={() => Math.random().toString(32)}
+                  keyboardShouldPersistTaps="handled"
+                />
+              </>
+            )}
           </View>
 
-          {!loading && <>
-          <TextInput
-            icon="search"
-            isRtl={true} // TODO
-            placeholder="بحث" //TODO
-            clearButtonMode={"while-editing"} // IOS only
-            onChangeText={this.handleSearch}
-          />
+          {loading && (
+            <View
+              style={[
+                {
+                  ...StyleSheet.absoluteFill,
+                  justifyContent: "center",
+                  alignItems: "center",
+                },
+              ]}
+            >
+              <ActivityIndicator size="large" color={COLORS.primaryText} />
+            </View>
+          )}
 
-          <FlatList 
-            data={categories}
-            renderItem={this.renderCategory}
-            extraData={currentCategory} // if current category change then re-render flatlist
-            horizontal={true}
-            inverted={true}
-            showsHorizontalScrollIndicator={false}
-            contentContainerStyle={styles.categoriesContainer}
-            keyExtractor={() => Math.random().toString(32)}
-            keyboardShouldPersistTaps="handled"
-          />
-          </>}
-
-        </View>
-        
-        {loading && (
-          <View style={[{...StyleSheet.absoluteFill, justifyContent: "center", alignItems: "center"}]}>
-            <ActivityIndicator size="large" color={COLORS.primaryText}/>
-          </View>
-        )}
-
-        {/* {error && (
+          {/* {error && (
           // TODO
         )} */}
 
-        {!loading && !error && (
-          <FlatList 
-            data={searchText ? items.filter(({name, description}) => (name.includes(searchText) || description.includes(searchText))) : items}
-            renderItem={this.renderSearchItem}
-            showsVerticalScrollIndicator={false}
-            contentContainerStyle={styles.bodyContainerFlatList}
-            keyExtractor={({id}) => keyExtractor(id, currentCategory.name)}
-            // keyExtractor={() => Math.random().toString(32)}
-            keyboardShouldPersistTaps="handled"
-          />
-          // TODO: if there is no result show something
-        )}
-      </SafeAreaView>
+          {!loading && !error && (
+            <FlatList
+              data={
+                searchText
+                  ? items.filter(
+                      ({ name, description }) =>
+                        name.includes(searchText) ||
+                        description.includes(searchText)
+                    )
+                  : items
+              }
+              renderItem={this.renderSearchItem}
+              showsVerticalScrollIndicator={false}
+              contentContainerStyle={styles.bodyContainerFlatList}
+              keyExtractor={({ id }) => keyExtractor(id, currentCategory.name)}
+              // keyExtractor={() => Math.random().toString(32)}
+              keyboardShouldPersistTaps="handled"
+            />
+            // TODO: if there is no result show something
+          )}
+        </View>
+      </ScreenWrapper>
     );
   }
 }
 
 const styles = StyleSheet.create({
-
   categoriesContainer: {
-    flex: 1, 
+    flex: 1,
     justifyContent: "center",
     marginVertical: 10,
   },
@@ -246,6 +277,6 @@ const styles = StyleSheet.create({
   },
 
   bodyContainerFlatList: {
-    paddingBottom: 20
+    paddingBottom: 20,
   },
 });

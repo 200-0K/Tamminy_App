@@ -12,13 +12,22 @@ import PropTypes from "prop-types";
 import { COLORS } from "../utils/colors";
 import { STYLES } from "../utils/styles";
 import SeverityIndicator from "../components/SeverityIndicator";
+import ScreenWrapper from "../components/ScreenWrapper";
 
 export default class DiseaseDetail extends React.Component {
-  static propTypes = {
-    prop1: PropTypes.string,
-    prop2: PropTypes.number.isRequired,
-    prop3: PropTypes.func,
-  };
+  // static propTypes = {
+  //   prop1: PropTypes.string,
+  //   prop2: PropTypes.number.isRequired,
+  //   prop3: PropTypes.func,
+  // };
+
+  constructor(props) {
+    super(props);
+
+    this.isRtl = true; // TODO: based app language
+    this.rtlView = this.isRtl && STYLES.rtlView;
+    this.rtlText = this.isRtl && STYLES.rtlText;
+  }
 
   state = {
     loading: true,
@@ -121,8 +130,6 @@ export default class DiseaseDetail extends React.Component {
 
   render() {
     const { loading, error, DiseaseMeta } = this.state;
-    this.rtlText = STYLES.rtlText;
-    this.rtlView = STYLES.rtlView;
 
     if (loading) {
       // TODO: custom component
@@ -160,7 +167,7 @@ export default class DiseaseDetail extends React.Component {
 
     const { name, description, precautions, symptoms } = DiseaseMeta;
     return (
-      <SafeAreaView style={{flex: 1}}>
+      <ScreenWrapper>
         <ScrollView
           showsVerticalScrollIndicator={false}
           style={STYLES.mainContainer}
@@ -190,7 +197,7 @@ export default class DiseaseDetail extends React.Component {
             {symptoms.map(this.renderSymptom)}
           </View>
         </ScrollView>
-      </SafeAreaView>
+      </ScreenWrapper>
     );
   }
 }

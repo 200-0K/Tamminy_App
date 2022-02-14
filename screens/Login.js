@@ -5,9 +5,6 @@ import {
   View,
   TouchableOpacity,
   ScrollView,
-  SafeAreaView,
-  KeyboardAvoidingView,
-  Platform,
 } from "react-native";
 import PropTypes from "prop-types";
 
@@ -17,13 +14,23 @@ import Button from "../components/Button";
 
 import { COLORS } from "../utils/colors";
 import { STYLES } from "../utils/styles";
+import ScreenWrapper from "../components/ScreenWrapper";
 
 export default class Login extends React.Component {
   // static propTypes = {
   //   prop1: PropTypes.string,
   //   prop2: PropTypes.number.isRequired,
   //   prop3: PropTypes.func,
-  // const { ... } = this.props;
+  // }
+
+  constructor(props) {
+    super(props);
+
+    this.isRtl = true; // TODO: based app language
+    this.rtlView = this.isRtl && STYLES.rtlView;
+    this.rtlText = this.isRtl && STYLES.rtlText;
+  }
+  
   state = {
     email: "",
     password: "",
@@ -48,13 +55,43 @@ export default class Login extends React.Component {
   render() {
     const { loading, error, email, password } = this.state;
 
-    return (
-      <SafeAreaView style={{ flex: 1 }}>
-        <KeyboardAvoidingView
-          behavior={Platform.OS === "ios" ? "padding" : null}
-          style={STYLES.mainContainer}
+    if (loading) {
+      // TODO: custom component
+      return (
+        <View
+          style={[
+            {
+              ...StyleSheet.absoluteFill,
+              justifyContent: "center",
+              alignItems: "center",
+            },
+          ]}
         >
-          <ScrollView showsVerticalScrollIndicator={false}>
+          <ActivityIndicator size="large" color={COLORS.primaryText} />
+        </View>
+      );
+    }
+
+    if (error) {
+      // TODO: custom component
+      return (
+        <View
+          style={[
+            {
+              ...StyleSheet.absoluteFill,
+              justifyContent: "center",
+              alignItems: "center",
+            },
+          ]}
+        >
+          <Text style={{ color: "red", fontSize: 42 }}>Error occurred</Text>
+        </View>
+      );
+    }
+
+    return (
+      <ScreenWrapper>
+          <ScrollView showsVerticalScrollIndicator={false} style={STYLES.mainContainer}>
             <View style={STYLES.titleContainer}>
               <Text style={STYLES.title}>تسجيل الدخول</Text>
             </View>
@@ -62,7 +99,7 @@ export default class Login extends React.Component {
             <View style={[styles.viewTextIcon, { paddingBottom: 15 }]}>
               <TextInput
                 icon="at"
-                isRtl={true}
+                isRtl={this.isRtl}
                 placeholder="الايميل"
                 returnKeyType="next"
                 clearButtonMode={"while-editing"}
@@ -73,7 +110,7 @@ export default class Login extends React.Component {
             <View style={styles.viewTextIcon}>
               <TextInput
                 icon="key"
-                isRtl={true}
+                isRtl={this.isRtl}
                 placeholder="كلمة السر"
                 returnKeyType="done"
                 clearButtonMode={"while-editing"}
@@ -106,8 +143,7 @@ export default class Login extends React.Component {
               </View>
             </View>
           </ScrollView>
-        </KeyboardAvoidingView>
-      </SafeAreaView>
+      </ScreenWrapper>
     );
   }
 }
