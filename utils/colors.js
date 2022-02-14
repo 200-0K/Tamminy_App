@@ -26,6 +26,7 @@ export const COLORS = {
   warning: colorValues.red_400,
   checkmark: colorValues.green_200,
   close: colorValues.red_400,
-  questionProgressBarGradient: [colorValues.purple_800, colorValues.red_700, "rgba(255,255,255,0)"],
-  screenBackground: colorValues.white
+  questionProgressBarGradient: [colorValues.purple_800, colorValues.red_700],
+  screenBackground: colorValues.white,
+  otpUnderline: colorValues.red_700,
 };
