@@ -13,6 +13,9 @@ const colorValues = {
   red_400: "#FF5757",
 
   purple_800: "#3F3D56",
+
+  pink_500: "#FF5733",
+  blue_300: "#56E1FC"
 };
 
 export const COLORS = {
@@ -29,4 +32,6 @@ export const COLORS = {
   questionProgressBarGradient: [colorValues.purple_800, colorValues.red_700],
   screenBackground: colorValues.white,
   otpUnderline: colorValues.red_700,
+  iconMale: colorValues.blue_300,
+  iconFemale: colorValues.pink_500,
 };

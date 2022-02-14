@@ -15,6 +15,7 @@ export default function Button({
   backgroundColor,
   color,
   borderRadius,
+  hideBorder,
   onPress,
   width,
   icon,
@@ -26,6 +27,7 @@ export default function Button({
     borderRadius,
     borderColor: color,
     backgroundColor,
+    borderWidth: hideBorder ? 0 : 1.5,
   };
   const containerWidth = width && { width };
 
@@ -43,7 +45,7 @@ export default function Button({
         containerStyle,
         containerWidth,
         rtlView,
-        { justifyContent: icon ? "space-between" : "center" },
+        { justifyContent: (title && icon) ? "space-between" : "center" },
       ]}
       onPress={onPress}
       activeOpacity={0.5}
@@ -65,7 +67,6 @@ export default function Button({
 const styles = StyleSheet.create({
   container: {
     flexDirection: "row",
-    borderWidth: 1.5,
     paddingVertical: 5,
     paddingHorizontal: 15,
     alignItems: "center",

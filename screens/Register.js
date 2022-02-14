@@ -1,114 +1,169 @@
 import React from "react";
-import { StatusBar } from "expo-status-bar";
 import {
-  SafeAreaView,
   StyleSheet,
   Text,
   View,
-  FlatList,
-  TextInput,
-  Button,
-  Image,
-  CheckBox,
   ScrollView,
-  Input,
-  KeyboardAvoidingView,
+  TouchableOpacity,
 } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
-import { Entypo } from "@expo/vector-icons";
-import { EvilIcons } from "@expo/vector-icons";
 import PropTypes from "prop-types";
+import { Ionicons } from "@expo/vector-icons";
+import DateTimePickerModal from "react-native-modal-datetime-picker";
 
+import Button from "../components/Button";
+import TextInput from "../components/TextInput";
 import RegisterSvg from "../components/svg/Register";
-export default class ComponentName extends React.Component {
-  static propTypes = {
-    prop1: PropTypes.string,
-    prop2: PropTypes.number.isRequired,
-    prop3: PropTypes.func,
+import { STYLES } from "../utils/styles";
+import { COLORS } from "../utils/colors";
+import { formatDate } from "../utils/date";
+import chroma from "chroma-js";
+import ScreenWrapper from "../components/ScreenWrapper";
+
+const activeColor = chroma(COLORS.primaryText).brighten(3.5).toString();
+const maximumDate = new Date(new Date().getFullYear() - 10, 11, 31);
+
+export default class Register extends React.Component {
+  // static propTypes = {
+  //   prop1: PropTypes.string,
+  //   prop2: PropTypes.number.isRequired,
+  //   prop3: PropTypes.func,
+  // };
+  constructor(props) {
+    super(props);
+
+    this.isRtl = true;
+    this.rtlView = this.isRtl && STYLES.rtlView;
+    this.rtlText = this.isRtl && STYLES.rtlText;
+  }
+
+  state = {
+    name: null,
+    gender: null,
+    email: null,
+    password: null,
+    open: false,
+    date: null,
+  };
+
+  handleCalendarPress = () => {
+    this.setState({ open: true });
+  };
+
+  handleSubmit = () => {
+    const { date, gender, email, password, name } = this.state;
+    // TODO
   };
 
   render() {
-    // const { ... } = this.props;
+    const { open, date, gender, email, password, name } = this.state;
 
     return (
-      //TODO: fix KeyboardAvoidingView
-      <KeyboardAvoidingView  behavior="height" style={styles.container}>
-        <ScrollView>
-            <Text
-              style={{
-                fontSize: 65,
-                fontWeight: "bold",
-                color: "rgba(76,74,94,0.7)",
-                textAlign: "center",
-              }}
-            >
-              تسـجـيل
-            </Text>
+      <ScreenWrapper>
+        <DateTimePickerModal
+          isVisible={open}
+          mode="date"
+          date={date ?? maximumDate}
+          maximumDate={maximumDate}
+          onConfirm={date => this.setState({ open: false, date })}
+          onCancel={() => this.setState({ open: false })}
+        />
 
-            <RegisterSvg style={{ marginTop: 40 }} />
-            <View style={styles.Inputs}>
-              <TextInput style={styles.TextInput} placeholder="  الاسم " />
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          style={STYLES.mainContainer}
+          contentContainerStyle={{ flex: 1 }}
+        >
+          <View style={[STYLES.titleContainer]}>
+            <Text style={STYLES.title}>تسـجـيل</Text>
+            <RegisterSvg />
+          </View>
 
-              <Ionicons
-                options={{}}
-                name="person"
-                size={24}
-                color="rgba(76,74,94,0.7)"
-              />
-            </View>
+          <View style={styles.Inputs}>
+            <TextInput
+              onChangeText={text => this.setState({ name: text })}
+              value={name}
+              icon="person"
+              isRtl
+              placeholder="الاسم"
+              textContentType="name"
+            />
+          </View>
+          <View style={styles.Inputs}>
+            <TextInput
+              onChangeText={text => this.setState({ email: text })}
+              value={email}
+              icon="at"
+              isRtl
+              placeholder="الايميل"
+              keyboardType="email-address"
+              textContentType="emailAddress"
+              autoComplete="email"
+            />
+          </View>
 
-            <View style={styles.Inputs}>
+          <View style={styles.Inputs}>
+            <TextInput
+              icon="md-key-outline"
+              isRtl
+              secureTextEntry={true}
+              placeholder="كلمة المرور"
+              textContentType="password"
+              onChangeText={text => this.setState({ password: text })}
+              value={password}
+            />
+          </View>
+          <TouchableOpacity
+            onPress={this.handleCalendarPress}
+            style={[styles.Inputs, styles.dateContainer, this.rtlView]}
+          >
+            <View style={[styles.dateTextContainer]} pointerEvents="none">
               <TextInput
-                style={styles.TextInput}
-                placeholder="  تاريخ الميلاد "
-              />
-              <EvilIcons name="calendar" size={24} color="rgba(76,74,94,0.7)" />
-            </View>
-
-            <View style={styles.Inputs}>
-              <TextInput style={styles.TextInput} placeholder="  الايميل " />
-              <Entypo name="email" size={24} color="rgba(76,74,94,0.7)" />
-            </View>
-
-            <View style={styles.Inputs}>
-              <TextInput
-                style={{
-                  title: ";gm",
-                  height: 45,
-                  width: "95%",
-                  borderColor: "gray",
-                  borderWidth: 2,
-                }}
-                secureTextEntry={true}
-                style={styles.TextInput}
-                placeholder=" كلمة المرور"
-              />
-              <Ionicons
-                name="md-key-outline"
-                size={24}
-                color="rgba(76,74,94,0.7)"
+                style={[styles.dateText, this.rtlText]}
+                icon="calendar"
+                editable={false}
+                isRtl={this.isRtl}
+                value={date ? formatDate(date) : "تاريخ الميلاد"}
               />
             </View>
-
-            <View style={styles.ButtonStyle}>
-              <Button title="تسـجــيل " />
+          </TouchableOpacity>
+          <View style={[styles.GenderFieldContainer, this.rtlView]}>
+            <View style={[styles.Inputs, styles.GenderButtonsContainer]}>
+              <Button
+                borderRadius={15}
+                width={50}
+                icon="woman"
+                iconColor={gender === "f" ? COLORS.iconFemale : COLORS.primaryText}
+                hideBorder
+                iconSize="large"
+                onPress={() => this.setState({ gender: "f" })}
+              />
+              <Button
+                borderRadius={15}
+                width={50}
+                icon="man"
+                iconColor={gender === "m" ? COLORS.iconMale : COLORS.primaryText}
+                hideBorder
+                iconSize="large"
+                onPress={() => this.setState({ gender: "m" })}
+              />
             </View>
+          </View>
 
-            <StatusBar style="auto" />
+          <View style={styles.ButtonStyle}>
+            <Button
+              onPress={this.handleSubmit}
+              width={200}
+              borderRadius={10}
+              title="تسجيل"
+            />
+          </View>
         </ScrollView>
-      </KeyboardAvoidingView>
+      </ScreenWrapper>
     );
   }
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#fff",
-    alignItems: "center",
-    marginTop: StatusBar.currentHeight,
-  },
-
   TextInput: {
     textAlign: "right",
     height: 60,
@@ -122,17 +177,31 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1.2,
   },
   Inputs: {
-    height: 80,
-    width: "93%",
-    alignItems: "center",
-    alignSelf: "center",
-    flexDirection: "row",
+    marginVertical: 20,
   },
   ButtonStyle: {
-    marginVertical: 10,
-    justifyContent: "space-between",
-    borderWidth: 3,
-    borderRadius: 8,
-    width: "25%",
+    marginBottom: 20,
+    alignItems: "center",
+  },
+  GenderFieldContainer: {
+    alignItems: "baseline",
+    flexDirection: "row",
+    justifyContent: "space-around",
+  },
+  GenderButtonsContainer: {
+    flexDirection: "row",
+    justifyContent: "space-evenly",
+    flex: 1,
+  },
+
+  dateContainer: {
+    flexDirection: "row",
+  },
+  dateTextContainer: {
+    flex: 1,
+    justifyContent: "center",
+  },
+  dateText: {
+    fontSize: 18,
   },
 });
