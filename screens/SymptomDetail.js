@@ -154,7 +154,7 @@ export default class SymptomDetail extends React.Component {
     const { name, description, images, diseases } = symptomMeta;
     return (
       <ScreenWrapper>
-        <View style={{ marginTop: StatusBar.currentHeight }}>
+        <View>
           <FlatList
             data={images}
             renderItem={this.renderImage}

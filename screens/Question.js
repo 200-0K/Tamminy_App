@@ -161,6 +161,8 @@ export default class Question extends React.Component {
                 <DLeftArrow color={COLORS.primaryText} />
               </TouchableOpacity>
 
+              <View style={{marginHorizontal: 5}}></View>
+
               <TouchableOpacity onPress={this.showPreviousQuestion}>
                 <LeftArrow color={COLORS.primaryText} />
               </TouchableOpacity>
