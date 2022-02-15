@@ -55,7 +55,7 @@ export default class AssessmentDetail extends React.Component {
 
   async componentDidMount() {
     const {route} = this.props;
-    console.log(route.params) // [{id}] -- array of symptoms ids
+    // console.log(route.params) // [{id}] -- array of symptoms ids
     // TODO
     // if id != null then fetch assessment detail from the API
     // if id == null then get assessment detail from Navigate object and update the state
@@ -135,7 +135,7 @@ export default class AssessmentDetail extends React.Component {
     }
   }
 
-  handleDiseasePress = ({ id }) => {
+  handleDiseasePress = id => {
     const {navigation} = this.props;
     navigation.navigate("DiseaseDetail", {id})
   };
@@ -162,12 +162,13 @@ export default class AssessmentDetail extends React.Component {
     );
   };
 
-  handleSymptomPress = ({ id }) => {
+  handleSymptomPress = id => {
     const {navigation} = this.props;
     navigation.navigate("SymptomDetail", {id})
   };
 
-  renderSymptomItem = ({ id, symptomName }) => (
+  renderSymptomItem = ({ id, symptomName }) => {
+    return (
     <TouchableHighlight
       style={[styles.listItemContainer, this.rtlView]}
       activeOpacity={0.8}
@@ -184,7 +185,7 @@ export default class AssessmentDetail extends React.Component {
         />
       </>
     </TouchableHighlight>
-  );
+  )};
 
   render() {
     const { loading, error, possibleDiseases, selectedSymptoms, date } = this.state;

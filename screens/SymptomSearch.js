@@ -205,8 +205,8 @@ export default class SymptomSearch extends React.Component {
 
   // Navigate to SymptomDetail
   handleSymptomPress = id => {
-    const {navigation} = this.props;
-    navigation.navigate("SymptomDetail", {id});
+    const { navigation } = this.props;
+    navigation.navigate("SymptomDetail", { id });
   };
 
   handleSymptomSymbolPress = id => {
@@ -269,11 +269,11 @@ export default class SymptomSearch extends React.Component {
 
   // Navigate to Question
   handleButtonPress = () => {
-    const {selectedSymptoms} = this.state;
+    const { selectedSymptoms } = this.state;
     if (selectedSymptoms.length < 1) return;
-    
-    const {navigation} = this.props;
-    navigation.navigate("Question", {selectedSymptoms});
+
+    const { navigation } = this.props;
+    navigation.navigate("Question", { selectedSymptoms });
   };
 
   render() {

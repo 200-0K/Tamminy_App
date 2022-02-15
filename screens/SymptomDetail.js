@@ -17,13 +17,16 @@ import { COLORS } from "../utils/colors";
 import { STYLES } from "../utils/styles";
 import SeverityIndicator from "../components/SeverityIndicator";
 import ScreenWrapper from "../components/ScreenWrapper";
+import LoadingIndicator from "../components/LoadingIndicator";
+import ErrorIndicator from "../components/ErrorIndicator";
 
 export default class SymptomDetail extends React.Component {
   static propTypes = {
     navigation: PropTypes.object.isRequired,
-    route: PropTypes.objectOf({
-      params: PropTypes.objectOf({ id: PropTypes.number.isRequired })
-        .isRequired,
+    route: PropTypes.shape({
+      params: PropTypes.shape({
+        id: PropTypes.number.isRequired,
+      }).isRequired,
     }).isRequired,
   };
 
@@ -82,6 +85,7 @@ export default class SymptomDetail extends React.Component {
 
   async componentDidMount() {
     const { id } = this.props.route.params;
+    console.log(this.props.route)
     // Alert.alert("Symptom id", `${id}`);
     // TODO
     // fetch symptom detail by SymptomApi class
@@ -103,15 +107,12 @@ export default class SymptomDetail extends React.Component {
 
   handleDiseasePress = id => {
     const { navigation } = this.props;
-    // pass isReplaceOnNavigate = true along with navigation object to prevent stacking unnecessary screens
-    // console.log(id);
-    console.log(id);
     navigation.replace("DiseaseDetail", { id });
   };
 
   renderImage = ({ item: uri }) => {
     return (
-      <View style={{ position: "relative" }}>
+      <View style={{ position: "relative" }} key={uri}>
         <Image
           source={{ uri }}
           resizeMode="cover"
@@ -128,6 +129,7 @@ export default class SymptomDetail extends React.Component {
         activeOpacity={0.8}
         underlayColor="rgba(0,0,0,0.05)"
         onPress={() => this.handleDiseasePress(id)}
+        key={id}
       >
         <>
           <SeverityIndicator showText={false} percentage={percentage} />
@@ -142,37 +144,11 @@ export default class SymptomDetail extends React.Component {
     const { loading, error, symptomMeta } = this.state;
 
     if (loading) {
-      // TODO: custom component
-      return (
-        <View
-          style={[
-            {
-              ...StyleSheet.absoluteFill,
-              justifyContent: "center",
-              alignItems: "center",
-            },
-          ]}
-        >
-          <ActivityIndicator size="large" color={COLORS.primaryText} />
-        </View>
-      );
+      return <LoadingIndicator color={COLORS.primaryText} />;
     }
 
     if (error) {
-      // TODO: custom component
-      return (
-        <View
-          style={[
-            {
-              ...StyleSheet.absoluteFill,
-              justifyContent: "center",
-              alignItems: "center",
-            },
-          ]}
-        >
-          <Text style={{ color: "red", fontSize: 42 }}>Error occurred</Text>
-        </View>
-      );
+      return <ErrorIndicator />;
     }
 
     const { name, description, images, diseases } = symptomMeta;
