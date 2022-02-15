@@ -52,7 +52,7 @@ function App() {
         <Stack.Screen name="AssessmentHistory" component={AssessmentHistory} />
         <Stack.Screen name="SymptomSearch" component={SymptomSearch} />
         <Stack.Screen name="Search" component={Search} />
-        <Stack.Screen name="Question" component={Question} />
+        <Stack.Screen name="Question" component={Question} options={{headerShown: false}}/>
         <Stack.Screen name="Feedback" component={Feedback} />
         <Stack.Screen name="SymptomDetail" component={SymptomDetail} />
         <Stack.Screen name="DiseaseDetail" component={DiseaseDetail} />

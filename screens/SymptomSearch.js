@@ -203,6 +203,7 @@ export default class SymptomSearch extends React.Component {
     );
   };
 
+  // Navigate to SymptomDetail
   handleSymptomPress = id => {
     const {navigation} = this.props;
     navigation.navigate("SymptomDetail", {id});
@@ -246,7 +247,7 @@ export default class SymptomSearch extends React.Component {
           <DetailListItem
             title={symptomName}
             subtitle={symptomDescription}
-            isRtl={true} //TODO
+            isRtl={this.isRtl}
           />
         </TouchableHighlight>
       </View>
@@ -266,6 +267,7 @@ export default class SymptomSearch extends React.Component {
     });
   };
 
+  // Navigate to Question
   handleButtonPress = () => {
     const {selectedSymptoms} = this.state;
     if (selectedSymptoms.length < 1) return;

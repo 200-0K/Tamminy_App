@@ -52,7 +52,6 @@ export default class Login extends React.Component {
   };
 
   handleRegister = () => {
-    // TODO: navigate to register screen
     const {navigation} = this.props;
     navigation.navigate("Register");
   };

@@ -1,6 +1,5 @@
 import React from "react";
 import {
-  SafeAreaView,
   StyleSheet,
   Text,
   View,
@@ -80,7 +79,6 @@ export default class AssessmentHistory extends React.Component {
   }
 
   handleAssessmentPress = ({ id }) => {
-    // TODO: navigate to AssessmentDetail screen
     const {navigation} = this.props;
     navigation.navigate("AssessmentDetail", {id})
   };
