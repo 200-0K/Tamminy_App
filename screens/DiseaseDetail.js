@@ -14,6 +14,8 @@ import { COLORS } from "../utils/colors";
 import { STYLES } from "../utils/styles";
 import SeverityIndicator from "../components/SeverityIndicator";
 import ScreenWrapper from "../components/ScreenWrapper";
+import ErrorIndicator from "../components/ErrorIndicator";
+import LoadingIndicator from "../components/LoadingIndicator";
 
 export default class DiseaseDetail extends React.Component {
   // static propTypes = {
@@ -98,13 +100,12 @@ export default class DiseaseDetail extends React.Component {
 
   handleSymptomPress = id => {
     const { navigation } = this.props;
-    console.log(id);
     navigation.replace("SymptomDetail", { id });
   };
 
   renderPrecaution = precaution => {
     return (
-      <View style={[styles.precautionContainer, this.rtlView]}>
+      <View style={[styles.precautionContainer, this.rtlView]} key={precaution}>
         <Text>-</Text>
         <View style={{ paddingHorizontal: 4 }}></View>
         <View style={{ flex: 1 }}>
@@ -121,12 +122,14 @@ export default class DiseaseDetail extends React.Component {
   };
 
   renderSymptom = ({ id, name, percentage }) => {
+    console.log(id, name, percentage)
     return (
       <TouchableHighlight
         style={[styles.symptomContainer, this.rtlView]}
         activeOpacity={0.8}
         underlayColor="rgba(0,0,0,0.05)"
         onPress={() => this.handleSymptomPress(id)}
+        key={id}
       >
         <>
           <SeverityIndicator showText={false} percentage={percentage} />
@@ -141,40 +144,15 @@ export default class DiseaseDetail extends React.Component {
     const { loading, error, DiseaseMeta } = this.state;
 
     if (loading) {
-      // TODO: custom component
-      return (
-        <View
-          style={[
-            {
-              ...StyleSheet.absoluteFill,
-              justifyContent: "center",
-              alignItems: "center",
-            },
-          ]}
-        >
-          <ActivityIndicator size="large" color={COLORS.primaryText} />
-        </View>
-      );
+      return <LoadingIndicator />;
     }
 
     if (error) {
-      // TODO: custom component
-      return (
-        <View
-          style={[
-            {
-              ...StyleSheet.absoluteFill,
-              justifyContent: "center",
-              alignItems: "center",
-            },
-          ]}
-        >
-          <Text style={{ color: "red", fontSize: 42 }}>Error occurred</Text>
-        </View>
-      );
+      return <ErrorIndicator />;
     }
 
     const { name, description, precautions, symptoms } = DiseaseMeta;
+
     return (
       <ScreenWrapper>
         <ScrollView

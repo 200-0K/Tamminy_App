@@ -78,13 +78,13 @@ export default class AssessmentHistory extends React.Component {
     }
   }
 
-  handleAssessmentPress = ({ id }) => {
-    const {navigation} = this.props;
-    navigation.navigate("AssessmentDetail", {id})
+  handleAssessmentPress = id => {
+    const { navigation } = this.props;
+    navigation.navigate("AssessmentDetail", { id });
   };
 
   renderAssessmentHistory = ({ id, date }, idx) => (
-    <View style={[styles.assessmentItemContainer, this.rtlView]}>
+    <View style={[styles.assessmentItemContainer, this.rtlView]} key={id}>
       <View style={{ opacity: 0.8 }}>
         {/* TODO: based on most severe disease percentage on this assessment */}
         <SeverityIndicator percentage={0} showText={false} />
@@ -147,9 +147,16 @@ export default class AssessmentHistory extends React.Component {
 
     return (
       <ScreenWrapper>
-        <ScrollView style={STYLES.mainContainer} contentContainerStyle={[STYLES.mainContainer]}>
+        <ScrollView
+          style={STYLES.mainContainer}
+          contentContainerStyle={[STYLES.mainContainer]}
+        >
           <View style={STYLES.titleContainer}>
-            <Text style={[STYLES.title, {fontSize: STYLES.title.fontSize-10}]}>التشخيصات السابقة</Text>
+            <Text
+              style={[STYLES.title, { fontSize: STYLES.title.fontSize - 10 }]}
+            >
+              التشخيصات السابقة
+            </Text>
           </View>
 
           <View style={styles.listContainer}>

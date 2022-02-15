@@ -61,7 +61,7 @@ DetailListItem.propTypes = {
   color: PropTypes.string,
   subtitleColor: PropTypes.string,
   isRtl: PropTypes.bool,
-  style: PropTypes.object,
+  style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
 };
 
 DetailListItem.defaultProps = {

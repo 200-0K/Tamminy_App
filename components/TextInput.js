@@ -71,7 +71,7 @@ const styles = StyleSheet.create({
 
 TextInput.propTypes = {
   icon: PropTypes.string,
-  isRtl: PropTypes.boolean,
+  isRtl: PropTypes.bool,
 }
 
 TextInput.defaultProps = {
