@@ -5,16 +5,24 @@ import {
   ScrollView,
   TouchableOpacity,
   ActivityIndicator,
+  StatusBar,
 } from "react-native";
 import React from "react";
+import { HeaderHeightContext } from "@react-navigation/elements";
+import chroma from "chroma-js";
 
 import { COLORS } from "../utils/colors";
 import { STYLES } from "../utils/styles";
+
+import LeftArrow from "../components/svg/icons/LeftArrow";
+import DLeftArrow from "../components/svg/icons/D-LeftArrow";
+
 import Feedback from "../components/svg/icons/Feedback";
 import Button from "../components/Button";
 import ProgressBar from "../components/ProgressBar";
-import chroma from "chroma-js";
 import ScreenWrapper from "../components/ScreenWrapper";
+import LoadingIndicator from "../components/LoadingIndicator";
+import ErrorIndicator from "../components/ErrorIndicator";
 
 export default class Question extends React.Component {
   TOTAL_QUESTION = 0;
@@ -82,20 +90,36 @@ export default class Question extends React.Component {
 
   navigateToAssessmentDetail = () => {
     const { oldQuestions } = this.state;
+    const { navigation, route } = this.props;
+    navigation.replace(
+      "AssessmentDetail",
+      [...oldQuestions.filter(question => question.answer), ...route.params.selectedSymptoms]
+    );
+  };
+
+  navigateToPreviousScreen = () => {
     const { navigation } = this.props;
-    navigation.navigate("AssessmentDetail", oldQuestions.filter(question => question.answer));
+    navigation.pop();
+  };
+
+  showPreviousQuestion = () => {
+    const { newQuestions, oldQuestions } = this.state;
+    this.setState({
+      newQuestions: [oldQuestions[oldQuestions.length-1], ...newQuestions],
+      oldQuestions: oldQuestions.slice(0, oldQuestions.length - 1),
+    });
   };
 
   handleFeedbackPress = () => {
     const { id } = this.state.newQuestions[0];
     const { navigation } = this.props;
-    navigation.navigate("Feedback", {id});
+    navigation.navigate("Feedback", { id });
   };
 
   handleQuestionInfoPress = () => {
     const { id } = this.state.newQuestions[0];
-    const {navigation} = this.props;
-    navigation.navigate("SymptomDetail", {id})
+    const { navigation } = this.props;
+    navigation.navigate("SymptomDetail", { id });
   };
 
   // function handleAnswer(answer) {}
@@ -128,110 +152,105 @@ export default class Question extends React.Component {
   render() {
     const { loading, error, newQuestions } = this.state;
 
-    if (loading) {
-      // TODO: custom component
-      return (
-        <View
-          style={[
-            {
-              ...StyleSheet.absoluteFill,
-              justifyContent: "center",
-              alignItems: "center",
-            },
-          ]}
-        >
-          <ActivityIndicator size="large" color={COLORS.primaryText} />
-        </View>
-      );
-    }
-
-    if (error) {
-      // TODO: custom component
-      return (
-        <View
-          style={[
-            {
-              ...StyleSheet.absoluteFill,
-              justifyContent: "center",
-              alignItems: "center",
-            },
-          ]}
-        >
-          <Text style={{ color: "red", fontSize: 42 }}>Error occurred</Text>
-        </View>
-      );
-    }
-
     return (
       <ScreenWrapper>
-        <View style={[styles.progressBarContainer]}>
-          <ProgressBar
-            toValue={1 - newQuestions.length / this.TOTAL_QUESTION}
-            gradientColors={COLORS.questionProgressBarGradient}
-          />
+        <View style={styles.headerContainer}>
+          {newQuestions.length !== this.TOTAL_QUESTION ? (
+            <>
+              <TouchableOpacity onPress={this.navigateToPreviousScreen}>
+                <DLeftArrow color={COLORS.primaryText} />
+              </TouchableOpacity>
+
+              <TouchableOpacity onPress={this.showPreviousQuestion}>
+                <LeftArrow color={COLORS.primaryText} />
+              </TouchableOpacity>
+            </>
+          ) : (
+            <TouchableOpacity onPress={this.navigateToPreviousScreen}>
+              <LeftArrow color={COLORS.primaryText} />
+            </TouchableOpacity>
+          )}
         </View>
 
-        <ScrollView
-          showsVerticalScrollIndicator={false}
-          style={STYLES.mainContainer}
-          contentContainerStyle={[{ marginTop: 100 }]}
-        >
-          <View style={{ flex: 1 }}>
-            <View style={styles.questionContainer}>
-              <Text style={[styles.question, this.rtlText]}>
-                {newQuestions[0].question}
-              </Text>
-              <TouchableOpacity onPress={this.handleQuestionInfoPress}>
-                <Text
-                  style={[
-                    {
-                      fontSize: 15,
-                      color: COLORS.secondaryText,
-                    },
-                    this.rtlText,
-                  ]}
-                >
-                  ماذا تعني؟
-                </Text>
-              </TouchableOpacity>
-            </View>
+        {loading && <LoadingIndicator color={COLORS.primaryText} />}
+        {error && <ErrorIndicator />}
 
-            <View style={this.isRtl ? {alignItems: "flex-end"} : null}>
-              <View style={[styles.answerButtonContainer]}>
-                <Button
-                  title="نعم"
-                  isRtl={this.isRtl}
-                  borderRadius={15}
-                  width={95}
-                  icon="checkmark-sharp"
-                  iconSize="large"
-                  iconColor={COLORS.checkmark}
-                  onPress={() => this.handleAnswer(true)}
-                  fontSize={24}
-                />
-              </View>
-              <View style={[styles.answerButtonContainer]}>
-                <Button
-                  title="لا"
-                  isRtl={this.isRtl}
-                  borderRadius={15}
-                  width={95}
-                  icon="close-sharp"
-                  iconSize="large"
-                  iconColor={COLORS.close}
-                  onPress={() => this.handleAnswer(false)}
-                  fontSize={24}
-                />
-              </View>
+        {!loading && !error && (
+          <>
+            <View style={[styles.progressBarContainer]}>
+              <ProgressBar
+                toValue={1 - newQuestions.length / this.TOTAL_QUESTION}
+                gradientColors={COLORS.questionProgressBarGradient}
+              />
             </View>
-          </View>
-        </ScrollView>
-        <TouchableOpacity
-          style={STYLES.feedbackContainer}
-          onPress={this.handleFeedbackPress}
-        >
-          <Feedback size={25} color={COLORS.buttonText} onPress={this.handleFeedbackPress}/>
-        </TouchableOpacity>
+            <ScrollView
+              showsVerticalScrollIndicator={false}
+              style={STYLES.mainContainer}
+              contentContainerStyle={[{ marginTop: 100 }]}
+            >
+              <View style={{ flex: 1 }}>
+                <View style={styles.questionContainer}>
+                  <Text style={[styles.question, this.rtlText]}>
+                    {newQuestions[0].question}
+                  </Text>
+                  <TouchableOpacity onPress={this.handleQuestionInfoPress}>
+                    <Text
+                      style={[
+                        {
+                          fontSize: 15,
+                          color: COLORS.secondaryText,
+                        },
+                        this.rtlText,
+                      ]}
+                    >
+                      ماذا تعني؟
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+
+                <View style={this.isRtl ? { alignItems: "flex-end" } : null}>
+                  <View style={[styles.answerButtonContainer]}>
+                    <Button
+                      title="نعم"
+                      isRtl={this.isRtl}
+                      borderRadius={15}
+                      width={95}
+                      icon="checkmark-sharp"
+                      iconSize="large"
+                      iconColor={COLORS.checkmark}
+                      onPress={() => this.handleAnswer(true)}
+                      fontSize={24}
+                    />
+                  </View>
+                  <View style={[styles.answerButtonContainer]}>
+                    <Button
+                      title="لا"
+                      isRtl={this.isRtl}
+                      borderRadius={15}
+                      width={95}
+                      icon="close-sharp"
+                      iconSize="large"
+                      iconColor={COLORS.close}
+                      onPress={() => this.handleAnswer(false)}
+                      fontSize={24}
+                    />
+                  </View>
+                </View>
+              </View>
+            </ScrollView>
+
+            <TouchableOpacity
+              style={STYLES.feedbackContainer}
+              onPress={this.handleFeedbackPress}
+            >
+              <Feedback
+                size={25}
+                color={COLORS.buttonText}
+                onPress={this.handleFeedbackPress}
+              />
+            </TouchableOpacity>
+          </>
+        )}
       </ScreenWrapper>
     );
   }
@@ -259,5 +278,16 @@ const styles = StyleSheet.create({
   answerButtonContainer: {
     paddingVertical: 8,
     paddingHorizontal: 5,
+  },
+
+  headerContainer: {
+    position: "absolute",
+    top: StatusBar.currentHeight + 10,
+    left: 0,
+    right: 0,
+    flexDirection: "row",
+    alignItems: "center",
+    paddingHorizontal: 10,
+    opacity: 0.7,
   },
 });

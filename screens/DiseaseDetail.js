@@ -98,8 +98,6 @@ export default class DiseaseDetail extends React.Component {
 
   handleSymptomPress = id => {
     const { navigation } = this.props;
-    // TODO: navigate to disease detail screen,
-    // pass isReplaceOnNavigate = true along with navigation object to prevent stacking unnecessary screens
     console.log(id);
     navigation.replace("SymptomDetail", { id });
   };

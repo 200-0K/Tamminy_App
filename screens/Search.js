@@ -121,13 +121,11 @@ export default class Search extends React.Component {
 
   handleSymptomPress = id => {
     const { navigation } = this.props;
-    // TODO: navigate to symptom detail screen
     navigation.navigate("SymptomDetail", { id });
   };
 
   handleDiseasePress = id => {
     const { navigation } = this.props;
-    // TODO: navigate to disease detail screen
     navigation.navigate("DiseaseDetail", { id });
   };
 

@@ -15,6 +15,8 @@ import { STYLES } from "../utils/styles";
 import DetailListItem from "../components/DetailListItem";
 import SeverityIndicator from "../components/SeverityIndicator";
 import ScreenWrapper from "../components/ScreenWrapper";
+import LoadingIndicator from "../components/LoadingIndicator";
+import ErrorIndicator from "../components/ErrorIndicator";
 
 const { rtlText, rtlView } = STYLES;
 export default class AssessmentDetail extends React.Component {
@@ -52,6 +54,8 @@ export default class AssessmentDetail extends React.Component {
   };
 
   async componentDidMount() {
+    const {route} = this.props;
+    console.log(route.params) // [{id}] -- array of symptoms ids
     // TODO
     // if id != null then fetch assessment detail from the API
     // if id == null then get assessment detail from Navigate object and update the state
@@ -134,7 +138,6 @@ export default class AssessmentDetail extends React.Component {
   handleDiseasePress = ({ id }) => {
     const {navigation} = this.props;
     navigation.navigate("DiseaseDetail", {id})
-    // TODO: Stack Navigate to DiseaseDetail screen
   };
 
   renderDiseaseItem = ({ id, diseaseName, diseaseSubtitle, percentage }) => {
@@ -162,7 +165,6 @@ export default class AssessmentDetail extends React.Component {
   handleSymptomPress = ({ id }) => {
     const {navigation} = this.props;
     navigation.navigate("SymptomDetail", {id})
-    // TODO: Stack Navigate to SymptomDetail screen
   };
 
   renderSymptomItem = ({ id, symptomName }) => (
@@ -185,42 +187,7 @@ export default class AssessmentDetail extends React.Component {
   );
 
   render() {
-    const { loading, error, possibleDiseases, selectedSymptoms, date } =
-      this.state;
-
-    if (loading) {
-      // TODO: custom component
-      return (
-        <View
-          style={[
-            {
-              ...StyleSheet.absoluteFill,
-              justifyContent: "center",
-              alignItems: "center",
-            },
-          ]}
-        >
-          <ActivityIndicator size="large" color={COLORS.primaryText} />
-        </View>
-      );
-    }
-
-    if (error) {
-      // TODO: custom component
-      return (
-        <View
-          style={[
-            {
-              ...StyleSheet.absoluteFill,
-              justifyContent: "center",
-              alignItems: "center",
-            },
-          ]}
-        >
-          <Text style={{ color: "red", fontSize: 42 }}>Error occurred</Text>
-        </View>
-      );
-    }
+    const { loading, error, possibleDiseases, selectedSymptoms, date } = this.state;
 
     return (
       <ScreenWrapper>
@@ -234,17 +201,9 @@ export default class AssessmentDetail extends React.Component {
             </Text>
           </View>
 
-          {loading && (
-            <View style={{ marginTop: 15 }}>
-              <ActivityIndicator size={"large"} color={COLORS.primaryText} />
-            </View>
-          )}
+          {loading && <LoadingIndicator color={COLORS.primaryText} />}
 
-          {
-            error && (
-              <Text style={{ textAlign: "center" }}>Error: error occured</Text>
-            ) /*TODO*/
-          }
+          {error && <ErrorIndicator />}
 
           {!loading && !error && (
             <>
@@ -287,7 +246,7 @@ export default class AssessmentDetail extends React.Component {
 
 const styles = StyleSheet.create({
   scrollViewContainer: {
-    paddingBottom: 20,
+    paddingBottom: 50,
   },
 
   titleContainer: {
