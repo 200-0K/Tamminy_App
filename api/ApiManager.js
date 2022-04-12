@@ -37,8 +37,8 @@ export const ApiManager = options => {
 
       if (status === 401) {
         updateAxiosToken(axiosInstance, null, options.tokenChangedCallback)
-      } else if (response.data.token) {
-        updateAxiosToken(axiosInstance, response.data.token, options.tokenChangedCallback)
+      } else if (error.response.data.token) {
+        updateAxiosToken(axiosInstance, error.response.data.token, options.tokenChangedCallback)
       }
 
       return Promise.reject(error);

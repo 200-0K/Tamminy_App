@@ -18,11 +18,11 @@ export const SymptomApi = axios => {
   }
 
   instance = {
-    getAllSymptoms: async () => {
+    getAll: async () => {
       const res = await axios.get("/symptom/fetch/all");
       return res.data;
     },
-    getSymptom: async id => {
+    get: async id => {
       const res = await axios.get(`/symptom/fetch?id=${id}`);
       return res.data;
     }
