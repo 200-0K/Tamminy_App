@@ -32,7 +32,9 @@ describe("Symptom End-Point", () => {
   test("Get symptom id 1", async () => {
     const res = await symptomApi.get(1);
     expect(res).toBeDefined();
-    expect(res?.id).toBe(1);
+    expect(res.id).toBe(1);
+    expect(res.diseases).toBeDefined();
+    expect(res.images).toBeDefined();
   });
 });
 
@@ -59,6 +61,8 @@ describe("Disease End-Point", () => {
   test("Get disease id 1", async () => {
     const res = await diseaseApi.get(1);
     expect(res).toBeDefined();
-    expect(res?.id).toBe(1);
+    expect(res.id).toBe(1);
+    expect(res.symptoms).toBeDefined();
+    expect(res.precautions).toBeDefined();
   });
 });
