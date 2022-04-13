@@ -2,6 +2,9 @@ import { ApiManager } from "./ApiManager";
 import { AccountApi } from "./AccountApi";
 import { SymptomApi } from "./SymptomApi";
 import { DiseaseApi } from "./DiseaseApi";
+import { AssessmentApi } from "./AssessmentApi";
+
+let registerationData;
 
 let apiManager;
 beforeAll(() => {
@@ -27,7 +30,9 @@ describe("Account End-Point", () => {
   const data = {
     email: `${Math.random().toString(32).slice(2)}@tester.com`,
     password: "123123123465456464",
-    dob: new Date().toISOString(),
+    dob: new Date(
+      new Date().getTime() - 1000 * 60 * 60 * 24 * 365 * 2
+    ).toISOString(),
     name: `Tester-${Math.random().toFixed(4).slice(2, 4)}`,
     gender: ["male", "female"][Math.round(Math.random())],
   };
@@ -52,6 +57,49 @@ describe("Account End-Point", () => {
     const res = await accountApi.login(data.email, data.password);
     expect(res).toBe(accountApi.RESPONSE_CODES.login.success);
     expect(apiManager.defaults.headers.Authorization).not.toEqual(prevToken);
+  });
+});
+
+describe("Assessment End-Point", () => {
+  let assessmentApi;
+  beforeAll(() => {
+    assessmentApi = AssessmentApi(apiManager);
+  });
+
+  test("Instance already instantiated", () => {
+    expect(() => AssessmentApi({})).toThrow();
+  });
+
+  test("Get an instance", () => {
+    expect(AssessmentApi()).toBeDefined();
+  });
+
+  test("Get related questions", async () => {
+    const res = await assessmentApi.getQuestions([1, 2]);
+    expect(res.status).toBe(assessmentApi.RESPONSE_CODES.getQuestions.success);
+  });
+
+  let assessment;
+  test("Predict [With Save]", async () => {
+    const res = await assessmentApi.predict([1, 2]);
+    expect(res.status).toBe(assessmentApi.RESPONSE_CODES.predict.saved);
+    assessment = res.data;
+  });
+
+  test("Get all assessments", async () => {
+    const data = await assessmentApi.getAll();
+    expect(Array.isArray(data)).toBe(true);
+    expect(data[0].id).toEqual(assessment.id);
+  });
+
+  test("Get assessment", async () => {
+    const data = await assessmentApi.get(assessment.id);
+    expect(data).toBeDefined();
+    const index = Math.floor(Math.random() * data.diseases.length);
+    expect(data.diseases.length).toEqual(assessment.diseases.length);
+    expect(data.diseases[index].percentage).toEqual(
+      assessment.diseases[index].percentage
+    );
   });
 });
 
