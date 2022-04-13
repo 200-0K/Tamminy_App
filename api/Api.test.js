@@ -3,6 +3,7 @@ import { AccountApi } from "./AccountApi";
 import { SymptomApi } from "./SymptomApi";
 import { DiseaseApi } from "./DiseaseApi";
 import { AssessmentApi } from "./AssessmentApi";
+import { FeedbackApi } from "./FeedbackApi";
 
 let registerationData;
 
@@ -102,6 +103,31 @@ describe("Assessment End-Point", () => {
     );
   });
 });
+
+describe("Feedback End-Point", () => {
+  let feedbackApi;
+  beforeAll(() => {
+    feedbackApi = FeedbackApi(apiManager);
+  });
+
+  test("Instance already instantiated", () => {
+    expect(() => FeedbackApi({})).toThrow();
+  });
+
+  test("Get an instance", () => {
+    expect(FeedbackApi()).toBeDefined();
+  });
+
+  test("Submit feedback [Without ID]", async () => {
+    const res = await feedbackApi.save("Very good program");
+    expect(res).toBe(true);
+  })
+
+  test("Submit feedback [With Question ID]", async () => {
+    const res = await feedbackApi.save("I believe this question is a little too broad", 1);
+    expect(res).toBe(true);
+  })
+})
 
 describe("Symptom End-Point", () => {
   let symptomApi;
