@@ -26,3 +26,8 @@ $> git update-index --skip-worktree App.js
 > ```shell
 > $> git update-index --no-skip-worktree App.js
 > ```
+### Tests
+To run the tests, run the following inside repo root directory:
+```shell
+$> yarn test
+```
