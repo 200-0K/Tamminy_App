@@ -20,6 +20,7 @@ import chroma from "chroma-js";
 import ScreenWrapper from "../components/ScreenWrapper";
 
 const activeColor = chroma(COLORS.primaryText).brighten(3.5).toString();
+const errorColor = "red";
 const maximumDate = new Date(new Date().getFullYear() - 10, 11, 31);
 
 export default class Register extends React.Component {
@@ -37,12 +38,27 @@ export default class Register extends React.Component {
   }
 
   state = {
-    name: null,
-    gender: null,
-    email: null,
-    password: null,
+    name: {
+      value: null,
+      error: false,
+    },
+    gender: {
+      value: null,
+      error: false,
+    },
+    email: {
+      value: null,
+      error: false,
+    },
+    password: {
+      value: null,
+      error: false,
+    },
+    date: {
+      value: null,
+      error: false
+    },
     open: false,
-    date: null,
   };
 
   handleCalendarPress = () => {
@@ -52,9 +68,35 @@ export default class Register extends React.Component {
   handleSubmit = () => {
     const { date, gender, email, password, name } = this.state;
     const {navigation} = this.props;
-    // TODO
-    // register the user
-    // then navigate to OTP
+    
+    let isError = false;
+    
+    const validate = {};
+    if (!gender.value) {
+      isError = true;
+      validate.gender = {value: gender.value, error: true};
+    }
+    if (!email.value || !email.value.match(/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/)) {
+      isError = true;
+      validate.email = {value: email.value, error: true};
+    }
+    if (!password.value || password.value.length < 8) {
+      isError = true;
+      validate.password = {value: password.value, error: true};
+    }
+    if (!name.value) {
+      isError = true;
+      validate.name = {value: name.value, error: true};
+    }
+    if (!date.value) {
+      isError = true;
+      validate.date = {value: date.value, error: true};
+    }
+
+    if (isError) {
+      this.setState({...validate})
+      return;
+    }
 
     navigation.navigate("OTP");
   };
@@ -67,9 +109,9 @@ export default class Register extends React.Component {
         <DateTimePickerModal
           isVisible={open}
           mode="date"
-          date={date ?? maximumDate}
+          date={date.value ?? maximumDate}
           maximumDate={maximumDate}
-          onConfirm={date => this.setState({ open: false, date })}
+          onConfirm={date => this.setState({ open: false, date: {value: date, error: false} })}
           onCancel={() => this.setState({ open: false })}
         />
 
@@ -84,8 +126,9 @@ export default class Register extends React.Component {
 
           <View style={styles.Inputs}>
             <TextInput
-              onChangeText={text => this.setState({ name: text })}
-              value={name}
+              color={name.error ? errorColor : COLORS.primaryText}
+              onChangeText={text => this.setState({ name: {value: text, error: false} })}
+              value={name.value}
               icon="person"
               isRtl={this.isRtl}
               placeholder="الاسم"
@@ -94,8 +137,9 @@ export default class Register extends React.Component {
           </View>
           <View style={styles.Inputs}>
             <TextInput
-              onChangeText={text => this.setState({ email: text })}
-              value={email}
+              color={email.error ? errorColor : COLORS.primaryText}
+              onChangeText={text => this.setState({ email: {value: text, error: false} })}
+              value={email.value}
               icon="at"
               isRtl={this.isRtl}
               placeholder="الايميل"
@@ -107,13 +151,14 @@ export default class Register extends React.Component {
 
           <View style={styles.Inputs}>
             <TextInput
+              color={password.error ? errorColor : COLORS.primaryText}
               icon="md-key-outline"
               isRtl
               secureTextEntry={true}
               placeholder="كلمة المرور"
               textContentType="password"
-              onChangeText={text => this.setState({ password: text })}
-              value={password}
+              onChangeText={text => this.setState({ password: {value: text, error: false} })}
+              value={password.value}
             />
           </View>
           <TouchableOpacity
@@ -122,11 +167,11 @@ export default class Register extends React.Component {
           >
             <View style={[styles.dateTextContainer]} pointerEvents="none">
               <TextInput
-                style={[styles.dateText, this.rtlText]}
+                color={date.error ? errorColor : COLORS.primaryText}
                 icon="calendar"
                 editable={false}
                 isRtl={this.isRtl}
-                value={date ? formatDate(date) : "تاريخ الميلاد"}
+                value={date.value ? formatDate(date.value) : "تاريخ الميلاد"}
               />
             </View>
           </TouchableOpacity>
@@ -136,19 +181,27 @@ export default class Register extends React.Component {
                 borderRadius={15}
                 width={50}
                 icon="woman"
-                iconColor={gender === "f" ? COLORS.iconFemale : COLORS.primaryText}
+                iconColor={
+                  gender.error ? errorColor
+                  :
+                  gender.value === "f" ? COLORS.iconFemale : COLORS.primaryText
+                }
                 hideBorder
                 iconSize="large"
-                onPress={() => this.setState({ gender: "f" })}
+                onPress={() => this.setState({ gender: {value: "f", error: false} })}
               />
               <Button
                 borderRadius={15}
                 width={50}
                 icon="man"
-                iconColor={gender === "m" ? COLORS.iconMale : COLORS.primaryText}
+                iconColor={
+                  gender.error ? errorColor
+                  :
+                  gender.value === "m" ? COLORS.iconMale : COLORS.primaryText
+                }
                 hideBorder
                 iconSize="large"
-                onPress={() => this.setState({ gender: "m" })}
+                onPress={() => this.setState({ gender: {value: "m", error: false} })}
               />
             </View>
           </View>
@@ -168,7 +221,7 @@ export default class Register extends React.Component {
 }
 
 const styles = StyleSheet.create({
-  TextInput: {
+  TextInputt: {
     textAlign: "right",
     height: 60,
     width: "90%",
@@ -204,8 +257,5 @@ const styles = StyleSheet.create({
   dateTextContainer: {
     flex: 1,
     justifyContent: "center",
-  },
-  dateText: {
-    fontSize: 18,
   },
 });
