@@ -38,41 +38,38 @@ export const AccountApi = axios => {
   instance = {
     RESPONSE_CODES,
     register: async data => {
-      let res;
+      data.dob = new Date(data.dob).toISOString();
       try {
-        res = await axios.post("/account/register", new URLSearchParams(data), {
-          headers: { "Content-Type": "application/x-www-form-urlencoded;" },
+        const res = await axios.post(
+          "/account/register", 
+          new URLSearchParams(data).toString(), 
+          { headers: { "Content-Type": "application/x-www-form-urlencoded;" },
         });
-      } catch (e) {
-        return e.response?.status;
-      }
-      return res.status;
+        return res.status;
+      
+      } catch (e) {return e.response?.status;}
     },
     verify: async otp => {
-      let res;
       try {
-        res = await axios.post(
+        const res = await axios.post(
           "/account/verify",
-          new URLSearchParams({ otp }),
+          new URLSearchParams({ otp }).toString(),
           { headers: { "Content-Type": "application/x-www-form-urlencoded;" } }
         );
-      } catch (e) {
-        return e.response?.status;
-      }
-      return res.status;
+        return res.status;
+      
+      } catch (e) {return e.response?.status;}
     },
     login: async (email, password) => {
-      let res;
       try {
-        res = await axios.post(
+        const res = await axios.post(
           "/account/login",
-          new URLSearchParams({ email, password }),
+          new URLSearchParams({ email, password }).toString(),
           { headers: { "Content-Type": "application/x-www-form-urlencoded" } }
         );
-      } catch (e) {
-        return e.response?.status;
-      }
-      return res.status;
+        return res.status;
+      
+      } catch (e) {return e.response?.status;}
     },
   };
 
