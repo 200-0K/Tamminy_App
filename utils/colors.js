@@ -14,7 +14,7 @@ const colorValues = {
 
   purple_800: "#3F3D56",
 
-  pink_500: "#FF5733",
+  pink_500: "#F98FED",
   blue_300: "#56E1FC"
 };
 

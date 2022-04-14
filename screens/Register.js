@@ -6,32 +6,24 @@ import {
   ScrollView,
   TouchableOpacity,
 } from "react-native";
-import PropTypes from "prop-types";
-import { Ionicons } from "@expo/vector-icons";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
+
+import { STYLES } from "../utils/styles";
+import { COLORS } from "../utils/colors";
+import { formatDate } from "../utils/date";
 
 import Button from "../components/Button";
 import TextInput from "../components/TextInput";
 import RegisterSvg from "../components/svg/Register";
-import { STYLES } from "../utils/styles";
-import { COLORS } from "../utils/colors";
-import { formatDate } from "../utils/date";
-import chroma from "chroma-js";
 import ScreenWrapper from "../components/ScreenWrapper";
 
-const activeColor = chroma(COLORS.primaryText).brighten(3.5).toString();
 const errorColor = "red";
 const maximumDate = new Date(new Date().getFullYear() - 10, 11, 31);
 
 export default class Register extends React.Component {
-  // static propTypes = {
-  //   prop1: PropTypes.string,
-  //   prop2: PropTypes.number.isRequired,
-  //   prop3: PropTypes.func,
-  // };
   constructor(props) {
     super(props);
-    
+
     this.isRtl = true;
     this.rtlView = this.isRtl && STYLES.rtlView;
     this.rtlText = this.isRtl && STYLES.rtlText;
@@ -74,31 +66,35 @@ export default class Register extends React.Component {
     const validate = {};
     if (!gender.value) {
       isError = true;
-      validate.gender = {value: gender.value, error: true};
-    }
+      validate.gender = {value: gender.value, error: "حدد جنسك"};
+    } else {validate.gender = {value: gender.value, error: false};}
+
     if (!email.value || !email.value.match(/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/)) {
       isError = true;
-      validate.email = {value: email.value, error: true};
-    }
+      validate.email = {value: email.value, error: "• يجب كتابة الإيميل بشكل صحيح"};
+    } else  {validate.email = {value: email.value, error: false};}
+
     if (!password.value || password.value.length < 8) {
       isError = true;
-      validate.password = {value: password.value, error: true};
-    }
+      validate.password = {value: password.value, error: "• كلمة السر اقل من 8 حروف/ارقام"};
+    } else {validate.password = {value: password.value, error: false};}
+
     if (!name.value) {
       isError = true;
-      validate.name = {value: name.value, error: true};
-    }
+      validate.name = {value: name.value, error: "• يجب كتابة أسمك"};
+    } else {validate.name = {value: name.value, error: false};}
+
     if (!date.value) {
       isError = true;
-      validate.date = {value: date.value, error: true};
-    }
+      validate.date = {value: date.value, error: "• بجب تحديد تاريخ ميلادك"};
+    } else {validate.date = {value: date.value, error: false};}
 
     if (isError) {
       this.setState({...validate})
       return;
     }
 
-    navigation.navigate("OTP");
+    navigation.replace("OTP");
   };
 
   render() {
@@ -111,7 +107,7 @@ export default class Register extends React.Component {
           mode="date"
           date={date.value ?? maximumDate}
           maximumDate={maximumDate}
-          onConfirm={date => this.setState({ open: false, date: {value: date, error: false} })}
+          onConfirm={date => this.setState({ open: false, date: {value: date, error: date.error} })}
           onCancel={() => this.setState({ open: false })}
         />
 
@@ -127,18 +123,19 @@ export default class Register extends React.Component {
           <View style={styles.Inputs}>
             <TextInput
               color={name.error ? errorColor : COLORS.primaryText}
-              onChangeText={text => this.setState({ name: {value: text, error: false} })}
+              onChangeText={text => this.setState({ name: {value: text, error: name.error} })}
               value={name.value}
               icon="person"
               isRtl={this.isRtl}
               placeholder="الاسم"
               textContentType="name"
             />
+            {name.error && <Text style={[styles.errorHint, this.rtlView]}>{name.error}</Text>}
           </View>
           <View style={styles.Inputs}>
             <TextInput
               color={email.error ? errorColor : COLORS.primaryText}
-              onChangeText={text => this.setState({ email: {value: text, error: false} })}
+              onChangeText={text => this.setState({ email: {value: text, error: email.error} })}
               value={email.value}
               icon="at"
               isRtl={this.isRtl}
@@ -147,19 +144,21 @@ export default class Register extends React.Component {
               textContentType="emailAddress"
               autoComplete="email"
             />
+            {email.error && <Text style={[styles.errorHint, this.rtlView]}>{email.error}</Text>}
           </View>
 
           <View style={styles.Inputs}>
             <TextInput
               color={password.error ? errorColor : COLORS.primaryText}
               icon="md-key-outline"
-              isRtl
+              isRtl={this.isRtl}
               secureTextEntry={true}
               placeholder="كلمة المرور"
               textContentType="password"
-              onChangeText={text => this.setState({ password: {value: text, error: false} })}
+              onChangeText={text => this.setState({ password: {value: text, error: password.error} })}
               value={password.value}
             />
+            {password.error && <Text style={[styles.errorHint, this.rtlView]}>{password.error}</Text>}
           </View>
           <TouchableOpacity
             onPress={this.handleCalendarPress}
@@ -171,13 +170,16 @@ export default class Register extends React.Component {
                 icon="calendar"
                 editable={false}
                 isRtl={this.isRtl}
-                value={date.value ? formatDate(date.value) : "تاريخ الميلاد"}
+                placeholder={"تاريخ الميلاد"}
+                value={date.value && formatDate(date.value)}
               />
+              {date.error && <Text style={[styles.errorHint, this.rtlView]}>{date.error}</Text>}
             </View>
           </TouchableOpacity>
-          <View style={[styles.GenderFieldContainer, this.rtlView]}>
+          <View style={styles.GenderFieldContainer}>
             <View style={[styles.Inputs, styles.GenderButtonsContainer]}>
               <Button
+                title=""
                 borderRadius={15}
                 width={50}
                 icon="woman"
@@ -188,9 +190,10 @@ export default class Register extends React.Component {
                 }
                 hideBorder
                 iconSize="large"
-                onPress={() => this.setState({ gender: {value: "f", error: false} })}
+                onPress={() => this.setState({ gender: {value: "f", error: gender.error} })}
               />
               <Button
+                title=""
                 borderRadius={15}
                 width={50}
                 icon="man"
@@ -201,9 +204,10 @@ export default class Register extends React.Component {
                 }
                 hideBorder
                 iconSize="large"
-                onPress={() => this.setState({ gender: {value: "m", error: false} })}
+                onPress={() => this.setState({ gender: {value: "m", error: gender.error} })}
               />
             </View>
+            {gender.error && <Text style={[styles.errorHint, {textAlign: "center"}, this.rtlView]}>{gender.error}</Text>}
           </View>
 
           <View style={styles.ButtonStyle}>
@@ -221,34 +225,26 @@ export default class Register extends React.Component {
 }
 
 const styles = StyleSheet.create({
-  TextInputt: {
-    textAlign: "right",
-    height: 60,
-    width: "90%",
-    fontWeight: "500",
-    fontSize: 20,
-    color: "rgba(76,74,94,0.7)",
-    margin: 4,
-    padding: 3,
-    borderRadius: 3,
-    borderBottomWidth: 1.2,
-  },
   Inputs: {
-    marginVertical: 20,
+    marginVertical: 10,
   },
   ButtonStyle: {
-    marginBottom: 20,
+    margin: 20,
     alignItems: "center",
-  },
-  GenderFieldContainer: {
-    alignItems: "baseline",
-    flexDirection: "row",
-    justifyContent: "space-around",
   },
   GenderButtonsContainer: {
     flexDirection: "row",
     justifyContent: "space-evenly",
     flex: 1,
+  },
+
+  errorHint: {
+    fontSize: 9,
+    color: errorColor,
+    marginHorizontal: 10,
+    marginTop: 5,
+    fontWeight: "bold",
+    opacity: .8
   },
 
   dateContainer: {
