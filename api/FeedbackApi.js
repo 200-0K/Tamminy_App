@@ -27,12 +27,12 @@ export const FeedbackApi = axios => {
       try{
         await axios.post(
           "/feedback/add",
-          new URLSearchParams(params),
+          new URLSearchParams(params).toString(),
           { headers: { "Content-Type": "application/x-www-form-urlencoded;" } }
         );
+        return true;
+        
       } catch (e) {return false;}
-
-      return true;
     },
   };
 
