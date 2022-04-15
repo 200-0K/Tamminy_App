@@ -103,11 +103,13 @@ export default class Question extends React.Component {
   navigateToAssessmentDetail = () => {
     const { oldQuestions } = this.state;
     const { navigation, route } = this.props;
-    navigation.replace("AssessmentDetail", {
-      symptoms: [
-        ...oldQuestions.filter(question => question.answer),
-        ...route.params.symptoms,
-      ],
+    this.setState({loading: false}, () => {
+      navigation.replace("AssessmentDetail", {
+        symptoms: [
+          ...oldQuestions.filter(question => question.answer),
+          ...route.params.symptoms,
+        ],
+      })
     });
   };
 
