@@ -27,6 +27,7 @@ export const ApiManager = options => {
 
   axiosInstance = axios.create({
     baseURL: options.baseUrl,
+    timeout: 30000
   });
   if (options.token) updateAxiosToken(axiosInstance, options.token);
 
@@ -47,7 +48,7 @@ export const ApiManager = options => {
 
       if (status === 401) {
         updateAxiosToken(axiosInstance, null, options.tokenChangedCallback);
-      } else if (error.response.data.token) {
+      } else if (error.response?.data?.token) {
         updateAxiosToken(
           axiosInstance,
           error.response.data.token,
