@@ -10,6 +10,7 @@ const RESPONSE_CODES = {
     success: 201,
     incorrect: 400,
     unauth: 401,
+    alreadyExists: 409,
   },
   login: {
     success: 200,
@@ -26,6 +27,7 @@ let instance;
  * @returns {{
  *  register: (data: {email, password, dob, name, gender}) => responseCodeNumber,
  *  verify: (otp: number) => responseCodeNumber,
+ *  login: (email: string, password: string) => responseCodeNumber,
  *  RESPONSE_CODES: RESPONSE_CODES
  * }}
  */
