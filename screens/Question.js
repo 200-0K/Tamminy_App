@@ -71,16 +71,16 @@ export default class Question extends React.Component {
     } catch (e) {
       Toast.show({
         type: "error",
-        text1: "خطأ في تحميل الصفحة",
+        text1: "تعذر تحميل الصفحة",
         props: { isRtl: true },
       });
-      navigation.goBack();
+      return navigation.goBack();
     }
   }
 
   getNewQuestions = async (otherSymptoms = []) => {
     const { oldQuestions } = this.state;
-    const symptoms = this.props.route.params?.symptoms;
+    const symptoms = this.props.route.params.symptoms;
 
     const codes = this.assessmentApi.RESPONSE_CODES.getQuestions;
     const res = await this.assessmentApi.getQuestions([
@@ -100,13 +100,17 @@ export default class Question extends React.Component {
   };
 
   navigateToAssessmentDetail = () => {
+    const { navigation } = this.props;
+    const symptoms = this.props.route.params.symptoms;
     const { oldQuestions } = this.state;
-    const { navigation, route } = this.props;
+
     this.setState({ loading: false }, () => {
       navigation.replace("AssessmentDetail", {
         symptoms: [
-          ...oldQuestions.filter(question => question.answer),
-          ...route.params.symptoms,
+          ...oldQuestions
+            .filter(question => question.answer)
+            .map(symptom => symptom.id),
+          ...symptoms.map(symptom => symptom.id),
         ],
       });
     });
@@ -164,7 +168,16 @@ export default class Question extends React.Component {
       }
       newQs = newFetchedQs;
     }
-    if (!newQs || newQs.length < 1) return this.navigateToAssessmentDetail();
+
+    if (!newQs || newQs.length < 1) {
+      return this.setState(
+        {
+          newQuestions: newQs ?? [],
+          oldQuestions: oldQs,
+        },
+        this.navigateToAssessmentDetail
+      );
+    }
 
     this.setState({
       loading: false,

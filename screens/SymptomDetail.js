@@ -70,10 +70,10 @@ export default class SymptomDetail extends React.Component {
     } catch (e) {
       Toast.show({
         type: "error",
-        text1: "خطأ في تحميل الصفحة",
+        text1: "تعذر تحميل الصفحة",
         props: { isRtl: true },
       });
-      navigation.goBack();
+      return navigation.goBack();
     }
   }
 
@@ -114,6 +114,7 @@ export default class SymptomDetail extends React.Component {
         <ScrollView
           showsVerticalScrollIndicator={false}
           style={STYLES.mainContainer}
+          contentContainerStyle={STYLES.scrollViewContentContainer}
         >
           <View style={{ marginTop: STYLES.titleContainer.marginTop }}>
             <Text style={[STYLES.title, this.rtlText]}>{name}</Text>

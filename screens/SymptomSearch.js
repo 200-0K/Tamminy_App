@@ -64,10 +64,10 @@ export default class SymptomSearch extends React.Component {
     } catch {
       Toast.show({
         type: "error",
-        text1: "خطأ في تحميل الصفحة",
+        text1: "تعذر تحميل الصفحة",
         props: { isRtl: true },
       });
-      navigation.goBack();
+      return navigation.goBack();
     }
   }
 

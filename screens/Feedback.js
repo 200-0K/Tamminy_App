@@ -69,7 +69,7 @@ export default class Feedback extends React.Component {
       Toast.show({
         type: "success",
         text1: "شكرًا لك 🌹",
-        text2: "تم حفظ اقتراحك بنجاح",
+        text2: "تم إرسال اقتراحك بنجاح",
         props: { isRtl: true },
       });
       return navigation.goBack();
