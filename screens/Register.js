@@ -15,10 +15,12 @@ import { formatDate } from "../utils/date";
 
 import { AccountApi } from "../api/AccountApi";
 
+import RegisterSvg from "../components/svg/Register";
+
 import Button from "../components/Button";
 import TextInput from "../components/TextInput";
-import RegisterSvg from "../components/svg/Register";
 import ScreenWrapper from "../components/ScreenWrapper";
+import LoadingIndicator from "../components/LoadingIndicator";
 
 const errorColor = "red";
 const maximumDate = new Date(new Date().getFullYear() - 10, 11, 31);
@@ -35,6 +37,7 @@ export default class Register extends React.Component {
   }
 
   state = {
+    loading: false,
     name: {
       value: null,
       error: false,
@@ -121,7 +124,7 @@ export default class Register extends React.Component {
         text1: "المعلومات المدخلة خاطئة",
         props: { isRtl: true },
       });
-      this.setState({ ...validate });
+      this.setState({ ...validate, loading: false });
       return;
     }
 
@@ -138,9 +141,11 @@ export default class Register extends React.Component {
       Toast.show({
         type: "success",
         text1: "تحقق من الإيميل",
+        text2: "تم إرسال رمز تحقق على الايميل المعطى، يرجى التحقق وكتابة الرمز",
         props: { isRtl: true },
       });
-      navigation.replace("OTP");
+      this.setState({loading: false}, () => navigation.replace("OTP"));
+      return null;
     } else if (status === codes.alreadyExists)
       Toast.show({
         type: "error",
@@ -153,180 +158,186 @@ export default class Register extends React.Component {
       Toast.show({
         type: "error",
         text1: "خطأ في الاتصال بالخادم",
+        text2: "تأكد من اتصالك، او حاول مجددَا لاحقًا",
         props: { isRtl: true },
       });
+    
+    this.setState({loading: false});
   };
 
   render() {
-    const { open, date, gender, email, password, name } = this.state;
+    const { open, loading, date, gender, email, password, name } = this.state;
 
     return (
-      <ScreenWrapper>
-        <DateTimePickerModal
-          isVisible={open}
-          mode="date"
-          date={date.value ?? maximumDate}
-          maximumDate={maximumDate}
-          onConfirm={dateValue =>
-            this.setState({
-              open: false,
-              date: { value: dateValue, error: date.error },
-            })
-          }
-          onCancel={() => this.setState({ open: false })}
-        />
+      <>
+        {loading && <LoadingIndicator color={COLORS.primaryText} showInnerBox />}
+        <ScreenWrapper>
+          <DateTimePickerModal
+            isVisible={open}
+            mode="date"
+            date={date.value ?? maximumDate}
+            maximumDate={maximumDate}
+            onConfirm={dateValue =>
+              this.setState({
+                open: false,
+                date: { value: dateValue, error: date.error },
+              })
+            }
+            onCancel={() => this.setState({ open: false })}
+          />
 
-        <ScrollView
-          showsVerticalScrollIndicator={false}
-          style={STYLES.mainContainer}
-        >
-          <View style={[STYLES.titleContainer]}>
-            <Text style={STYLES.title}>تسـجـيل</Text>
-            <RegisterSvg />
-          </View>
-
-          <View style={styles.Inputs}>
-            <TextInput
-              color={name.error ? errorColor : COLORS.primaryText}
-              onChangeText={text =>
-                this.setState({ name: { value: text, error: name.error } })
-              }
-              value={name.value}
-              icon="person"
-              isRtl={this.isRtl}
-              placeholder="الاسم"
-              textContentType="name"
-            />
-            {name.error && (
-              <Text style={[styles.errorHint, { textAlign: "right" }]}>
-                {name.error}
-              </Text>
-            )}
-          </View>
-          <View style={styles.Inputs}>
-            <TextInput
-              color={email.error ? errorColor : COLORS.primaryText}
-              onChangeText={text =>
-                this.setState({ email: { value: text, error: email.error } })
-              }
-              value={email.value}
-              icon="at"
-              isRtl={this.isRtl}
-              placeholder="الايميل"
-              keyboardType="email-address"
-              textContentType="emailAddress"
-              autoComplete="email"
-            />
-            {email.error && (
-              <Text style={[styles.errorHint, { textAlign: "right" }]}>
-                {email.error}
-              </Text>
-            )}
-          </View>
-
-          <View style={styles.Inputs}>
-            <TextInput
-              color={password.error ? errorColor : COLORS.primaryText}
-              icon="md-key-outline"
-              isRtl={this.isRtl}
-              secureTextEntry={true}
-              placeholder="كلمة المرور"
-              textContentType="password"
-              onChangeText={text =>
-                this.setState({
-                  password: { value: text, error: password.error },
-                })
-              }
-              value={password.value}
-            />
-            {password.error && (
-              <Text style={[styles.errorHint, { textAlign: "right" }]}>
-                {password.error}
-              </Text>
-            )}
-          </View>
-          <TouchableOpacity
-            onPress={this.handleCalendarPress}
-            style={[styles.Inputs, styles.dateContainer, this.rtlView]}
+          <ScrollView
+            showsVerticalScrollIndicator={false}
+            style={STYLES.mainContainer}
           >
-            <View style={[styles.dateTextContainer]} pointerEvents="none">
+            <View style={[STYLES.titleContainer]}>
+              <Text style={STYLES.title}>تسـجـيل</Text>
+              <RegisterSvg />
+            </View>
+
+            <View style={styles.Inputs}>
               <TextInput
-                color={date.error ? errorColor : COLORS.primaryText}
-                icon="calendar"
-                editable={false}
+                color={name.error ? errorColor : COLORS.primaryText}
+                onChangeText={text =>
+                  this.setState({ name: { value: text, error: name.error } })
+                }
+                value={name.value}
+                icon="person"
                 isRtl={this.isRtl}
-                placeholder={"تاريخ الميلاد"}
-                value={date.value && formatDate(date.value)}
+                placeholder="الاسم"
+                textContentType="name"
               />
-              {date.error && (
+              {name.error && (
                 <Text style={[styles.errorHint, { textAlign: "right" }]}>
-                  {date.error}
+                  {name.error}
                 </Text>
               )}
             </View>
-          </TouchableOpacity>
-          <View style={styles.GenderFieldContainer}>
-            <View style={[styles.Inputs, styles.GenderButtonsContainer]}>
-              <Button
-                title=""
-                borderRadius={15}
-                width={50}
-                icon="woman"
-                iconColor={
-                  gender.error
-                    ? errorColor
-                    : gender.value === "female"
-                      ? COLORS.iconFemale
-                      : COLORS.primaryText
+            <View style={styles.Inputs}>
+              <TextInput
+                color={email.error ? errorColor : COLORS.primaryText}
+                onChangeText={text =>
+                  this.setState({ email: { value: text, error: email.error } })
                 }
-                hideBorder
-                iconSize="large"
-                onPress={() =>
-                  this.setState({ gender: { value: "female", error: false } })
-                }
+                value={email.value}
+                icon="at"
+                isRtl={this.isRtl}
+                placeholder="الايميل"
+                keyboardType="email-address"
+                textContentType="emailAddress"
+                autoComplete="email"
               />
+              {email.error && (
+                <Text style={[styles.errorHint, { textAlign: "right" }]}>
+                  {email.error}
+                </Text>
+              )}
+            </View>
+
+            <View style={styles.Inputs}>
+              <TextInput
+                color={password.error ? errorColor : COLORS.primaryText}
+                icon="md-key-outline"
+                isRtl={this.isRtl}
+                secureTextEntry={true}
+                placeholder="كلمة المرور"
+                textContentType="password"
+                onChangeText={text =>
+                  this.setState({
+                    password: { value: text, error: password.error },
+                  })
+                }
+                value={password.value}
+              />
+              {password.error && (
+                <Text style={[styles.errorHint, { textAlign: "right" }]}>
+                  {password.error}
+                </Text>
+              )}
+            </View>
+            <TouchableOpacity
+              onPress={this.handleCalendarPress}
+              style={[styles.Inputs, styles.dateContainer, this.rtlView]}
+            >
+              <View style={[styles.dateTextContainer]} pointerEvents="none">
+                <TextInput
+                  color={date.error ? errorColor : COLORS.primaryText}
+                  icon="calendar"
+                  editable={false}
+                  isRtl={this.isRtl}
+                  placeholder={"تاريخ الميلاد"}
+                  value={date.value && formatDate(date.value)}
+                />
+                {date.error && (
+                  <Text style={[styles.errorHint, { textAlign: "right" }]}>
+                    {date.error}
+                  </Text>
+                )}
+              </View>
+            </TouchableOpacity>
+            <View style={styles.GenderFieldContainer}>
+              <View style={[styles.Inputs, styles.GenderButtonsContainer]}>
+                <Button
+                  title=""
+                  borderRadius={15}
+                  width={50}
+                  icon="woman"
+                  iconColor={
+                    gender.error
+                      ? errorColor
+                      : gender.value === "female"
+                        ? COLORS.iconFemale
+                        : COLORS.primaryText
+                  }
+                  hideBorder
+                  iconSize="large"
+                  onPress={() =>
+                    this.setState({ gender: { value: "female", error: false } })
+                  }
+                />
+                <Button
+                  title=""
+                  borderRadius={15}
+                  width={50}
+                  icon="man"
+                  iconColor={
+                    gender.error
+                      ? errorColor
+                      : gender.value === "male"
+                        ? COLORS.iconMale
+                        : COLORS.primaryText
+                  }
+                  hideBorder
+                  iconSize="large"
+                  onPress={() =>
+                    this.setState({ gender: { value: "male", error: false } })
+                  }
+                />
+              </View>
+              {gender.error && (
+                <Text
+                  style={[
+                    styles.errorHint,
+                    { textAlign: "center" },
+                    this.rtlView,
+                  ]}
+                >
+                  {gender.error}
+                </Text>
+              )}
+            </View>
+
+            <View style={styles.ButtonStyle}>
               <Button
-                title=""
-                borderRadius={15}
-                width={50}
-                icon="man"
-                iconColor={
-                  gender.error
-                    ? errorColor
-                    : gender.value === "male"
-                      ? COLORS.iconMale
-                      : COLORS.primaryText
-                }
-                hideBorder
-                iconSize="large"
-                onPress={() =>
-                  this.setState({ gender: { value: "male", error: false } })
-                }
+                onPress={() => this.setState({loading: true},this.handleSubmit)}
+                width={200}
+                borderRadius={10}
+                title="تسجيل"
               />
             </View>
-            {gender.error && (
-              <Text
-                style={[
-                  styles.errorHint,
-                  { textAlign: "center" },
-                  this.rtlView,
-                ]}
-              >
-                {gender.error}
-              </Text>
-            )}
-          </View>
-
-          <View style={styles.ButtonStyle}>
-            <Button
-              onPress={this.handleSubmit}
-              width={200}
-              borderRadius={10}
-              title="تسجيل"
-            />
-          </View>
-        </ScrollView>
-      </ScreenWrapper>
+          </ScrollView>
+        </ScreenWrapper>
+      </>
     );
   }
 }
