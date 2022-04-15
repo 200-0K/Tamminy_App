@@ -80,6 +80,11 @@ describe("Assessment End-Point", () => {
     expect(res.status).toBe(assessmentApi.RESPONSE_CODES.getQuestions.success);
   });
 
+  test("Predict [Low Accuracy]", async () => {
+    const res = await assessmentApi.predict([100, 101]);
+    expect(res.status).toBe(assessmentApi.RESPONSE_CODES.predict.lowAccuracy);
+  });
+
   let assessment;
   test("Predict [With Save]", async () => {
     const res = await assessmentApi.predict([1, 2]);

@@ -21,6 +21,9 @@ export const STYLES = StyleSheet.create({
     paddingHorizontal: 20,
     backgroundColor: COLORS.screenBackground,
   },
+  scrollViewContentContainer: {
+    paddingBottom: 30
+  },
   titleContainer: {
     paddingVertical: 4,
     paddingHorizontal: 8,

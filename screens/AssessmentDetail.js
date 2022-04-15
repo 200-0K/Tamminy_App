@@ -5,39 +5,40 @@ import {
   Text,
   ScrollView,
   TouchableHighlight,
-  ActivityIndicator,
 } from "react-native";
+import PropTypes from "prop-types";
+import Toast from "react-native-toast-message";
 
-import { COLORS } from "../utils/colors";
 import { formatDate } from "../utils/date";
+import { COLORS } from "../utils/colors";
 import { STYLES } from "../utils/styles";
+
+import { AssessmentApi } from "../api/AssessmentApi";
 
 import DetailListItem from "../components/DetailListItem";
 import SeverityIndicator from "../components/SeverityIndicator";
 import ScreenWrapper from "../components/ScreenWrapper";
 import LoadingIndicator from "../components/LoadingIndicator";
-import ErrorIndicator from "../components/ErrorIndicator";
 
-const { rtlText, rtlView } = STYLES;
 export default class AssessmentDetail extends React.Component {
-  // TODO: navigation props
-  // static propTypes = {
-  //   id: PropTypes.number,
-  //   date: PropTypes.string.isRequired,
-  //   possibleDiseases: PropTypes.arrayOf(PropTypes.shape({
-  //     id: PropTypes.number.isRequired,
-  //     diseaseName: PropTypes.string.isRequired,
-  //     diseaseSubtitle: PropTypes.string.isRequired,
-  //     percentage: PropTypes.number.isRequired
-  //   })),
-  //   selectedSymptoms: PropTypes.arrayOf(PropTypes.shape({
-  //     id: PropTypes.number.isRequired,
-  //     symptomName: PropTypes.string.isRequired
-  //   })),
-  // };
+  static propTypes = {
+    navigation: PropTypes.object.isRequired,
+    route: PropTypes.shape({
+      params: PropTypes.oneOfType([
+        PropTypes.shape({
+          id: PropTypes.number,
+        }),
+        PropTypes.shape({
+          symptoms: PropTypes.arrayOf(PropTypes.number),
+        }),
+      ]).isRequired,
+    }).isRequired,
+  };
 
   constructor(props) {
     super(props);
+
+    this.assessmentApi = AssessmentApi();
 
     this.isRtl = true;
     this.rtlView = this.isRtl && STYLES.rtlView;
@@ -54,90 +55,87 @@ export default class AssessmentDetail extends React.Component {
   };
 
   async componentDidMount() {
-    const {route} = this.props;
-    // console.log(route.params) // [{id}] -- array of symptoms ids
-    // TODO
-    // if id != null then fetch assessment detail from the API
-    // if id == null then get assessment detail from Navigate object and update the state
-
-    const date = formatDate();
-    const possibleDiseases = [
-      {
-        id: 118,
-        diseaseName: "كورونا",
-        diseaseSubtitle:
-          "فيروسات كورونا فصيلة واسعة الانتشار معروفة بأنها تسبب أمراضاً تتراوح من نزلات البرد الشائعة إلى الاعتلالات الأشد وطأة مثل متلازمة الشرق الأوسط التنفسية (MERS) ومتلازمة الالتهاب الرئوي الحاد الوخيم.",
-        percentage: 100,
-      },
-      {
-        id: 82,
-        diseaseName: "نزلة برد",
-        diseaseSubtitle:
-          "فيروسات كورونا فصيلة واسعة الانتشار معروفة بأنها تسبب أمراضاً تتراوح من نزلات البرد الشائعة إلى الاعتلالات الأشد وطأة مثل متلازمة الشرق الأوسط التنفسية (MERS) ومتلازمة الالتهاب الرئوي الحاد الوخيم.",
-        percentage: 80,
-      },
-      {
-        id: 23,
-        diseaseName: "حساسية",
-        diseaseSubtitle:
-          "فيروسات كورونا فصيلة واسعة الانتشار معروفة بأنها تسبب أمراضاً تتراوح من نزلات البرد الشائعة إلى الاعتلالات الأشد وطأة مثل متلازمة الشرق الأوسط التنفسية (MERS) ومتلازمة الالتهاب الرئوي الحاد الوخيم.",
-        percentage: 60,
-      },
-      {
-        id: 81,
-        diseaseName: "نزلة برد",
-        diseaseSubtitle:
-          "فيروسات كورونا فصيلة واسعة الانتشار معروفة بأنها تسبب أمراضاً تتراوح من نزلات البرد الشائعة إلى الاعتلالات الأشد وطأة مثل متلازمة الشرق الأوسط التنفسية (MERS) ومتلازمة الالتهاب الرئوي الحاد الوخيم.",
-        percentage: 40,
-      },
-      {
-        id: 22,
-        diseaseName: "حساسية",
-        diseaseSubtitle:
-          "فيروسات كورونا فصيلة واسعة الانتشار معروفة بأنها تسبب أمراضاً تتراوح من نزلات البرد الشائعة إلى الاعتلالات الأشد وطأة مثل متلازمة الشرق الأوسط التنفسية (MERS) ومتلازمة الالتهاب الرئوي الحاد الوخيم.",
-        percentage: 20,
-      },
-    ];
-    const selectedSymptoms = [
-      {
-        id: 96,
-        symptomName: "صداع",
-      },
-      {
-        id: 26,
-        symptomName: "كحة",
-      },
-      {
-        id: 21,
-        symptomName: "فقدان حاسة التذوق",
-      },
-      {
-        id: 14,
-        symptomName: "تعب",
-      },
-    ];
+    const { navigation } = this.props;
+    const id = this.props.route?.params?.id;
+    const symptoms = this.props.route?.params?.symptoms;
 
     try {
-      setTimeout(() => {
-        this.setState({
-          loading: false,
-          error: false,
-          date,
-          possibleDiseases,
-          selectedSymptoms,
-        });
-      }, 5000); //! update the state after 5 second | For Testing
-    } catch (e) {
+      let date;
+      let possibleDiseases;
+      let selectedSymptoms;
+      let assessment;
+
+      if (id) {
+        assessment = await this.assessmentApi.get(id);
+        date = formatDate(assessment.date);
+      } else if (symptoms) {
+        const codes = this.assessmentApi.RESPONSE_CODES.predict;
+        const res = await this.assessmentApi.predict(symptoms);
+
+        if (res.status === codes.success) assessment = res.data;
+        else if (res.status === codes.saved) {
+          assessment = res.data;
+          Toast.show({
+            type: "info",
+            text1: "تم حفظ نتيجة التشخيصة",
+            props: { isRtl: true },
+          });
+        } else if (res.status === codes.lowAccuracy) {
+          Toast.show({
+            type: "error",
+            text1: "تعذر عرض نتيجة التشخيصة",
+            text2: "دقة التشخيصة ضعيفة للأعراض المدخلة",
+            props: { isRtl: true },
+          });
+          return navigation.goBack();
+        } else {
+          Toast.show({
+            type: "error",
+            text1: "خطأ عند تحليل البيانات",
+            props: { isRtl: true },
+          });
+          return navigation.goBack();
+        }
+
+        date = formatDate();
+      } else return navigation.goBack();
+
+      possibleDiseases = assessment.diseases
+        .map(disease =>
+          disease.percentage < 1
+            ? false
+            : {
+                id: disease.id,
+                diseaseName: disease.ar_name,
+                diseaseSubtitle: disease.ar_description,
+                percentage: Math.round(disease.percentage),
+              }
+        ).filter(Boolean);
+      selectedSymptoms = assessment.symptoms.map(symptom => ({
+        id: symptom.id,
+        symptomName: symptom.ar_name,
+      }));
+
       this.setState({
         loading: false,
-        error: true,
+        date,
+        possibleDiseases,
+        selectedSymptoms,
       });
+    } catch (e) {
+      console.log(e);
+      Toast.show({
+        type: "error",
+        text1: "تعذر تحميل الصفحة",
+        props: { isRtl: true },
+      });
+      return navigation.goBack();
     }
   }
 
   handleDiseasePress = id => {
-    const {navigation} = this.props;
-    navigation.navigate("DiseaseDetail", {id})
+    const { navigation } = this.props;
+    navigation.navigate("DiseaseDetail", { id });
   };
 
   renderDiseaseItem = ({ id, diseaseName, diseaseSubtitle, percentage }) => {
@@ -163,38 +161,39 @@ export default class AssessmentDetail extends React.Component {
   };
 
   handleSymptomPress = id => {
-    const {navigation} = this.props;
-    navigation.navigate("SymptomDetail", {id})
+    const { navigation } = this.props;
+    navigation.navigate("SymptomDetail", { id });
   };
 
   renderSymptomItem = ({ id, symptomName }) => {
     return (
-    <TouchableHighlight
-      style={[styles.listItemContainer, this.rtlView]}
-      activeOpacity={0.8}
-      underlayColor={"rgba(0,0,0,0.05)"}
-      onPress={() => this.handleSymptomPress(id)}
-      key={id}
-    >
-      <>
-        <Text>+ </Text>
-        <DetailListItem
-          title={symptomName}
-          isRtl={this.isRtl}
-          style={styles.detailListItem}
-        />
-      </>
-    </TouchableHighlight>
-  )};
+      <TouchableHighlight
+        style={[styles.listItemContainer, this.rtlView]}
+        activeOpacity={0.8}
+        underlayColor={"rgba(0,0,0,0.05)"}
+        onPress={() => this.handleSymptomPress(id)}
+        key={id}
+      >
+        <>
+          <Text>+ </Text>
+          <DetailListItem
+            title={symptomName}
+            isRtl={this.isRtl}
+            style={styles.detailListItem}
+          />
+        </>
+      </TouchableHighlight>
+    );
+  };
 
   render() {
-    const { loading, error, possibleDiseases, selectedSymptoms, date } = this.state;
+    const { loading, possibleDiseases, selectedSymptoms, date } = this.state;
 
     return (
       <ScreenWrapper>
         <ScrollView
           style={STYLES.mainContainer}
-          contentContainerStyle={styles.scrollViewContainer}
+          contentContainerStyle={STYLES.scrollViewContentContainer}
         >
           <View style={[STYLES.titleContainer, styles.titleContainer]}>
             <Text style={[STYLES.title, styles.title, this.rtlText]}>
@@ -204,9 +203,7 @@ export default class AssessmentDetail extends React.Component {
 
           {loading && <LoadingIndicator color={COLORS.primaryText} />}
 
-          {error && <ErrorIndicator />}
-
-          {!loading && !error && (
+          {!loading && (
             <>
               {date && (
                 <View style={styles.dateContainer}>
@@ -215,7 +212,6 @@ export default class AssessmentDetail extends React.Component {
                 </View>
               )}
 
-              {/* TODO: No Result Message */}
               <View style={styles.sectionContainer}>
                 <View style={styles.sectionTitleContainer}>
                   <Text style={[styles.sectionTitle, this.rtlText]}>
@@ -246,10 +242,6 @@ export default class AssessmentDetail extends React.Component {
 }
 
 const styles = StyleSheet.create({
-  scrollViewContainer: {
-    paddingBottom: 50,
-  },
-
   titleContainer: {
     borderBottomWidth: 2,
     borderColor: COLORS.primaryText,
