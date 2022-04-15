@@ -16,7 +16,6 @@ import { SymptomApi } from "../api/SymptomApi";
 import SeverityIndicator from "../components/SeverityIndicator";
 import ScreenWrapper from "../components/ScreenWrapper";
 import LoadingIndicator from "../components/LoadingIndicator";
-import ErrorIndicator from "../components/ErrorIndicator";
 import HorizontalImageScroller from "../components/HorizontalImageScroller";
 
 export default class SymptomDetail extends React.Component {
@@ -41,7 +40,6 @@ export default class SymptomDetail extends React.Component {
 
   state = {
     loading: true,
-    error: false,
     symptomMeta: {},
   };
 
@@ -70,11 +68,12 @@ export default class SymptomDetail extends React.Component {
         symptomMeta,
       });
     } catch (e) {
-      console.error(e);
-      this.setState({
-        loading: false,
-        error: true,
+      Toast.show({
+        type: "error",
+        text1: "خطأ في تحميل الصفحة",
+        props: { isRtl: true },
       });
+      navigation.goBack();
     }
   }
 
@@ -102,10 +101,9 @@ export default class SymptomDetail extends React.Component {
   };
 
   render() {
-    const { loading, error, symptomMeta } = this.state;
+    const { loading, symptomMeta } = this.state;
 
     if (loading) return <LoadingIndicator color={COLORS.primaryText} />;
-    if (error) return <ErrorIndicator />;
 
     const { name, description, images, diseases } = symptomMeta;
     return (
@@ -116,14 +114,13 @@ export default class SymptomDetail extends React.Component {
         <ScrollView
           showsVerticalScrollIndicator={false}
           style={STYLES.mainContainer}
-          contentContainerStyle={{
-            paddingHorizontal: STYLES.mainContainer.paddingHorizontal,
-          }}
         >
-          <View style={styles.titleContainer}>
+          <View style={{ marginTop: STYLES.titleContainer.marginTop }}>
             <Text style={[STYLES.title, this.rtlText]}>{name}</Text>
           </View>
-          <Text style={[styles.description, this.rtlText]}>{description}</Text>
+          <Text selectable style={[styles.description, this.rtlText]}>
+            {description}
+          </Text>
 
           <View style={STYLES.sectionContainer}>
             <View style={STYLES.sectionTitleContainer}>
@@ -138,9 +135,6 @@ export default class SymptomDetail extends React.Component {
 }
 
 const styles = StyleSheet.create({
-  titleContainer: {
-    paddingVertical: 4,
-  },
   description: {
     fontSize: 14,
     color: COLORS.primaryText,

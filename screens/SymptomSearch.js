@@ -22,7 +22,6 @@ import { GlobalContext } from "../contexts/Global";
 
 import ScreenWrapper from "../components/ScreenWrapper";
 import LoadingIndicator from "../components/LoadingIndicator";
-import ErrorIndicator from "../components/ErrorIndicator";
 
 const keyExtractor = ({ id }) => id.toString();
 
@@ -43,12 +42,13 @@ export default class SymptomSearch extends React.Component {
 
   state = {
     loading: true,
-    error: false,
     symptoms: this.allSymptoms,
     selectedSymptoms: [],
   };
 
   async componentDidMount() {
+    const { navigation } = this.props;
+
     try {
       const symptoms = await this.symptomApi.getAll();
       this.allSymptoms = symptoms.map(symptom => ({
@@ -59,14 +59,15 @@ export default class SymptomSearch extends React.Component {
 
       this.setState({
         loading: false,
-        error: false,
         symptoms: this.allSymptoms,
       });
     } catch {
-      this.setState({
-        loading: false,
-        error: true,
+      Toast.show({
+        type: "error",
+        text1: "خطأ في تحميل الصفحة",
+        props: { isRtl: true },
       });
+      navigation.goBack();
     }
   }
 
@@ -168,7 +169,8 @@ export default class SymptomSearch extends React.Component {
     let symptoms = this.allSymptoms;
     if (text)
       symptoms = this.allSymptoms.filter(
-        ({ symptomName, symptomDescription }) => symptomName.includes(text) || symptomDescription.includes(text)
+        ({ symptomName, symptomDescription }) =>
+          symptomName.includes(text) || symptomDescription.includes(text)
       );
 
     this.setState({
@@ -194,10 +196,9 @@ export default class SymptomSearch extends React.Component {
   };
 
   render() {
-    const { loading, error, symptoms, selectedSymptoms } = this.state;
+    const { loading, symptoms, selectedSymptoms } = this.state;
 
     if (loading) return <LoadingIndicator color={COLORS.primaryText} />;
-    if (error) return <ErrorIndicator />;
 
     return (
       <ScreenWrapper>

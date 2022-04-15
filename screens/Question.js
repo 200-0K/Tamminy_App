@@ -23,7 +23,6 @@ import Button from "../components/Button";
 import ProgressBar from "../components/ProgressBar";
 import ScreenWrapper from "../components/ScreenWrapper";
 import LoadingIndicator from "../components/LoadingIndicator";
-import ErrorIndicator from "../components/ErrorIndicator";
 
 export default class Question extends React.Component {
   static propTypes = {
@@ -51,7 +50,6 @@ export default class Question extends React.Component {
 
   state = {
     loading: true,
-    error: false,
     newQuestions: [],
     oldQuestions: [],
   };
@@ -68,14 +66,15 @@ export default class Question extends React.Component {
       this.TOTAL_QUESTION = newQuestions.length;
       this.setState({
         loading: false,
-        error: false,
         newQuestions,
       });
     } catch (e) {
-      this.setState({
-        loading: false,
-        error: true,
+      Toast.show({
+        type: "error",
+        text1: "خطأ في تحميل الصفحة",
+        props: { isRtl: true },
       });
+      navigation.goBack();
     }
   }
 
@@ -103,13 +102,13 @@ export default class Question extends React.Component {
   navigateToAssessmentDetail = () => {
     const { oldQuestions } = this.state;
     const { navigation, route } = this.props;
-    this.setState({loading: false}, () => {
+    this.setState({ loading: false }, () => {
       navigation.replace("AssessmentDetail", {
         symptoms: [
           ...oldQuestions.filter(question => question.answer),
           ...route.params.symptoms,
         ],
-      })
+      });
     });
   };
 
@@ -169,14 +168,13 @@ export default class Question extends React.Component {
 
     this.setState({
       loading: false,
-      error: false,
       newQuestions: newQs,
       oldQuestions: oldQs,
     });
   };
 
   render() {
-    const { loading, error, newQuestions } = this.state;
+    const { loading, newQuestions } = this.state;
 
     return (
       <ScreenWrapper>
@@ -209,9 +207,8 @@ export default class Question extends React.Component {
           </View>
 
           {loading && <LoadingIndicator color={COLORS.primaryText} />}
-          {error && <ErrorIndicator />}
 
-          {!loading && !error && newQuestions.length > 0 && (
+          {!loading && newQuestions.length > 0 && (
             <ScrollView
               showsVerticalScrollIndicator={false}
               style={STYLES.mainContainer}
