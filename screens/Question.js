@@ -211,7 +211,7 @@ export default class Question extends React.Component {
           {loading && <LoadingIndicator color={COLORS.primaryText} />}
           {error && <ErrorIndicator />}
 
-          {!loading && !error && (
+          {!loading && !error && newQuestions.length > 0 && (
             <ScrollView
               showsVerticalScrollIndicator={false}
               style={STYLES.mainContainer}
