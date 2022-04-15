@@ -8,6 +8,7 @@ import {
   TouchableHighlight,
   TouchableOpacity,
 } from "react-native";
+import Toast from "react-native-toast-message";
 
 import DetailListItem from "../components/DetailListItem";
 import TextInput from "../components/TextInput";
@@ -30,12 +31,12 @@ export default class SymptomSearch extends React.Component {
     super(props);
 
     this.symptomApi = SymptomApi();
-    
+
     this.isRtl = true; // this.context.isRtl;
     this.rtlView = this.isRtl && STYLES.rtlView;
     this.rtlText = this.isRtl && STYLES.rtlText;
   }
-  
+
   static contextType = GlobalContext;
 
   allSymptoms = []; // important for searching and filtering
@@ -55,16 +56,16 @@ export default class SymptomSearch extends React.Component {
         symptomName: symptom.ar_name,
         symptomDescription: symptom.ar_description,
       }));
-      
-      this.setState({ 
-        loading: false, 
-        error: false, 
-        symptoms: this.allSymptoms 
+
+      this.setState({
+        loading: false,
+        error: false,
+        symptoms: this.allSymptoms,
       });
     } catch {
-      this.setState({ 
-        loading: false, 
-        error: true 
+      this.setState({
+        loading: false,
+        error: true,
       });
     }
   }
@@ -178,10 +179,18 @@ export default class SymptomSearch extends React.Component {
   // Navigate to Question
   handleButtonPress = () => {
     const { selectedSymptoms } = this.state;
-    if (selectedSymptoms.length < 1) return;
+    if (selectedSymptoms.length < 2) {
+      Toast.show({
+        type: "info",
+        text1: "معلومات غير كافية",
+        text2: "يجب على الأقل اختيار عرضين تشعر بهما حاليًا",
+        props: { isRtl: true },
+      });
+      return;
+    }
 
     const { navigation } = this.props;
-    navigation.navigate("Question", { selectedSymptoms });
+    navigation.navigate("Question", { symptoms: selectedSymptoms });
   };
 
   render() {
