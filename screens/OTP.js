@@ -74,7 +74,7 @@ export default class OTP extends React.Component {
     } else {
       Toast.show({
         type: "error",
-        text1: "خطأ في الاتصال بالخادم",
+        text1: "تعذر الاتصال بالخادم",
         text2: "تأكد من اتصالك، او حاول مجددَا لاحقًا",
         props: { isRtl: true },
       });

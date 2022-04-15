@@ -144,7 +144,7 @@ export default class Register extends React.Component {
         text2: "تم إرسال رمز تحقق على الايميل المعطى، يرجى التحقق وكتابة الرمز",
         props: { isRtl: true },
       });
-      this.setState({loading: false}, () => navigation.replace("OTP"));
+      this.setState({ loading: false }, () => navigation.replace("OTP"));
       return null;
     } else if (status === codes.alreadyExists)
       Toast.show({
@@ -157,12 +157,12 @@ export default class Register extends React.Component {
     else
       Toast.show({
         type: "error",
-        text1: "خطأ في الاتصال بالخادم",
+        text1: "تعذر الاتصال بالخادم",
         text2: "تأكد من اتصالك، او حاول مجددَا لاحقًا",
         props: { isRtl: true },
       });
-    
-    this.setState({loading: false});
+
+    this.setState({ ...validate, loading: false });
   };
 
   render() {
@@ -170,7 +170,9 @@ export default class Register extends React.Component {
 
     return (
       <>
-        {loading && <LoadingIndicator color={COLORS.primaryText} showInnerBox />}
+        {loading && (
+          <LoadingIndicator color={COLORS.primaryText} showInnerBox />
+        )}
         <ScreenWrapper>
           <DateTimePickerModal
             isVisible={open}
@@ -286,8 +288,8 @@ export default class Register extends React.Component {
                     gender.error
                       ? errorColor
                       : gender.value === "female"
-                        ? COLORS.iconFemale
-                        : COLORS.primaryText
+                      ? COLORS.iconFemale
+                      : COLORS.primaryText
                   }
                   hideBorder
                   iconSize="large"
@@ -304,8 +306,8 @@ export default class Register extends React.Component {
                     gender.error
                       ? errorColor
                       : gender.value === "male"
-                        ? COLORS.iconMale
-                        : COLORS.primaryText
+                      ? COLORS.iconMale
+                      : COLORS.primaryText
                   }
                   hideBorder
                   iconSize="large"
@@ -329,7 +331,9 @@ export default class Register extends React.Component {
 
             <View style={styles.ButtonStyle}>
               <Button
-                onPress={() => this.setState({loading: true},this.handleSubmit)}
+                onPress={() =>
+                  this.setState({ loading: true }, this.handleSubmit)
+                }
                 width={200}
                 borderRadius={10}
                 title="تسجيل"
