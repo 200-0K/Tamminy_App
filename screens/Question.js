@@ -4,20 +4,21 @@ import {
   Text,
   ScrollView,
   TouchableOpacity,
-  ActivityIndicator,
   StatusBar,
 } from "react-native";
 import React from "react";
-import { HeaderHeightContext } from "@react-navigation/elements";
 import chroma from "chroma-js";
+import PropTypes from "prop-types";
 
 import { COLORS } from "../utils/colors";
 import { STYLES } from "../utils/styles";
 
+import { AssessmentApi } from "../api/AssessmentApi";
+
 import LeftArrow from "../components/svg/icons/LeftArrow";
 import DLeftArrow from "../components/svg/icons/D-LeftArrow";
-
 import Feedback from "../components/svg/icons/Feedback";
+
 import Button from "../components/Button";
 import ProgressBar from "../components/ProgressBar";
 import ScreenWrapper from "../components/ScreenWrapper";
@@ -25,12 +26,25 @@ import LoadingIndicator from "../components/LoadingIndicator";
 import ErrorIndicator from "../components/ErrorIndicator";
 
 export default class Question extends React.Component {
+  static propTypes = {
+    navigation: PropTypes.object.isRequired,
+    route: PropTypes.shape({
+      params: PropTypes.shape({
+        symptoms: PropTypes.arrayOf(
+          PropTypes.shape({ id: PropTypes.number.isRequired })
+        ).isRequired,
+      }).isRequired,
+    }).isRequired,
+  };
+
   TOTAL_QUESTION = 0;
 
   constructor(props) {
     super(props);
 
-    this.isRtl = true; // TODO: based app language
+    this.assessmentApi = AssessmentApi();
+
+    this.isRtl = true; // TODO: lang
     this.rtlView = this.isRtl && STYLES.rtlView;
     this.rtlText = this.isRtl && STYLES.rtlText;
   }
@@ -38,34 +52,18 @@ export default class Question extends React.Component {
   state = {
     loading: true,
     error: false,
-    newQuestions: [
-      {
-        id: 3,
-        question: "هل تعاني من حمى؟",
-        answer: null,
-      },
-      {
-        id: 1,
-        question: "هل تشعر بصداع؟",
-        answer: null,
-      },
-      {
-        id: 2,
-        question: "هل لديك كحة؟",
-        answer: null,
-      },
-    ],
+    newQuestions: [],
     oldQuestions: [],
   };
 
   async componentDidMount() {
-    // TODO
-    try {
-      // const newQuestions = this.getNewQuestions()
-      const newQuestions = this.state.newQuestions; //!TO BE CHANGED
+    const { navigation } = this.props;
+    const symptoms = this.props.route.params?.symptoms;
+    if (!symptoms) navigation.goBack();
 
-      // TODO: Good?
-      if (newQuestions.length < 1) return this.navigateToAssessmentDetail();
+    try {
+      const newQuestions = await this.getNewQuestions();
+      if (!newQuestions) return this.navigateToAssessmentDetail();
 
       this.TOTAL_QUESTION = newQuestions.length;
       this.setState({
@@ -81,20 +79,36 @@ export default class Question extends React.Component {
     }
   }
 
-  getNewQuestions = () => {
-    //TODO: get Related Symptoms Question
-    // const selectedSymptoms = this.props.navigation.state.params?.selectedSymptoms || [];
-    // const newQuestions = await AssessmentApi.getRelatedSymptomsQuestion([...selectedSymptoms, old questions id with yes answer])
-    // return newQuestions;
+  getNewQuestions = async (otherSymptoms = []) => {
+    const { oldQuestions } = this.state;
+    const symptoms = this.props.route.params?.symptoms;
+
+    const codes = this.assessmentApi.RESPONSE_CODES.getQuestions;
+    const res = await this.assessmentApi.getQuestions([
+      ...symptoms.map(symptom => symptom.id),
+      ...oldQuestions
+        .filter(question => question.answer)
+        .map(symptom => symptom.id),
+      ...otherSymptoms,
+    ]);
+
+    if (res.status === codes.noQuestions) return false;
+    return res.data.map(question => ({
+      id: question.id,
+      question: question.ar_question,
+      answer: null,
+    }));
   };
 
   navigateToAssessmentDetail = () => {
     const { oldQuestions } = this.state;
     const { navigation, route } = this.props;
-    navigation.replace(
-      "AssessmentDetail",
-      [...oldQuestions.filter(question => question.answer), ...route.params.selectedSymptoms]
-    );
+    navigation.replace("AssessmentDetail", {
+      symptoms: [
+        ...oldQuestions.filter(question => question.answer),
+        ...route.params.symptoms,
+      ],
+    });
   };
 
   navigateToPreviousScreen = () => {
@@ -105,7 +119,7 @@ export default class Question extends React.Component {
   showPreviousQuestion = () => {
     const { newQuestions, oldQuestions } = this.state;
     this.setState({
-      newQuestions: [oldQuestions[oldQuestions.length-1], ...newQuestions],
+      newQuestions: [oldQuestions[oldQuestions.length - 1], ...newQuestions],
       oldQuestions: oldQuestions.slice(0, oldQuestions.length - 1),
     });
   };
@@ -123,21 +137,33 @@ export default class Question extends React.Component {
   };
 
   // function handleAnswer(answer) {}
-  handleAnswer = answer => {
+  handleAnswer = async answer => {
     const { newQuestions, oldQuestions } = this.state;
 
-    const currentQuestion = newQuestions[0];
+    const currentQuestion = { ...newQuestions[0] };
     currentQuestion.answer = answer;
 
-    const oldQs = [...oldQuestions, currentQuestion];
-
+    let oldQs = [...oldQuestions, currentQuestion];
     let newQs = newQuestions.slice(1);
-    // if (answer == true) {
-    //   newQs = this.getNewQuestions();
-    // }
 
-    // TODO: Good?
-    if (newQs.length < 1) return this.navigateToAssessmentDetail();
+    if (answer == true) {
+      let newFetchedQs = await this.getNewQuestions([currentQuestion.id]);
+      if (newFetchedQs) {
+        // remove questions that have already been answered
+        newFetchedQs = newFetchedQs.filter(
+          newQ => !oldQs.some(oldQ => oldQ.id === newQ.id)
+        );
+        // add skipped questions to oldQs for backtraking
+        oldQs = [
+          ...oldQs,
+          ...newQs.filter(
+            prevNewQ => !newFetchedQs.some(newQ => newQ.id === prevNewQ.id)
+          ),
+        ];
+      }
+      newQs = newFetchedQs;
+    }
+    if (!newQs || newQs.length < 1) return this.navigateToAssessmentDetail();
 
     this.setState({
       loading: false,
@@ -145,8 +171,6 @@ export default class Question extends React.Component {
       newQuestions: newQs,
       oldQuestions: oldQs,
     });
-
-    // TODO: navigat to another question screen
   };
 
   render() {
@@ -161,7 +185,7 @@ export default class Question extends React.Component {
                 <DLeftArrow color={COLORS.primaryText} />
               </TouchableOpacity>
 
-              <View style={{marginHorizontal: 5}}></View>
+              <View style={{ marginHorizontal: 5 }}></View>
 
               <TouchableOpacity onPress={this.showPreviousQuestion}>
                 <LeftArrow color={COLORS.primaryText} />
@@ -174,17 +198,18 @@ export default class Question extends React.Component {
           )}
         </View>
 
-        {loading && <LoadingIndicator color={COLORS.primaryText} />}
-        {error && <ErrorIndicator />}
+        <>
+          <View style={[styles.progressBarContainer]}>
+            <ProgressBar
+              toValue={1 - newQuestions.length / this.TOTAL_QUESTION}
+              gradientColors={COLORS.questionProgressBarGradient}
+            />
+          </View>
 
-        {!loading && !error && (
-          <>
-            <View style={[styles.progressBarContainer]}>
-              <ProgressBar
-                toValue={1 - newQuestions.length / this.TOTAL_QUESTION}
-                gradientColors={COLORS.questionProgressBarGradient}
-              />
-            </View>
+          {loading && <LoadingIndicator color={COLORS.primaryText} />}
+          {error && <ErrorIndicator />}
+
+          {!loading && !error && (
             <ScrollView
               showsVerticalScrollIndicator={false}
               style={STYLES.mainContainer}
@@ -220,7 +245,11 @@ export default class Question extends React.Component {
                       icon="checkmark-sharp"
                       iconSize="large"
                       iconColor={COLORS.checkmark}
-                      onPress={() => this.handleAnswer(true)}
+                      onPress={() =>
+                        this.setState({ loading: true }, () =>
+                          this.handleAnswer(true)
+                        )
+                      }
                       fontSize={24}
                     />
                   </View>
@@ -240,19 +269,18 @@ export default class Question extends React.Component {
                 </View>
               </View>
             </ScrollView>
-
-            <TouchableOpacity
-              style={STYLES.feedbackContainer}
+          )}
+          <TouchableOpacity
+            style={STYLES.feedbackContainer}
+            onPress={this.handleFeedbackPress}
+          >
+            <Feedback
+              size={25}
+              color={COLORS.buttonText}
               onPress={this.handleFeedbackPress}
-            >
-              <Feedback
-                size={25}
-                color={COLORS.buttonText}
-                onPress={this.handleFeedbackPress}
-              />
-            </TouchableOpacity>
-          </>
-        )}
+            />
+          </TouchableOpacity>
+        </>
       </ScreenWrapper>
     );
   }
