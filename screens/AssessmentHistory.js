@@ -5,76 +5,80 @@ import {
   View,
   ScrollView,
   TouchableHighlight,
-  ActivityIndicator,
 } from "react-native";
 import chroma from "chroma-js";
+import Toast from "react-native-toast-message";
+
+import { GlobalContext } from "../contexts/Global";
 
 import { COLORS } from "../utils/colors";
 import { STYLES } from "../utils/styles";
 import { formatDate } from "../utils/date";
+
+import { AssessmentApi } from "../api/AssessmentApi";
+
 import DetailListItem from "../components/DetailListItem";
 import SeverityIndicator from "../components/SeverityIndicator";
 import ScreenWrapper from "../components/ScreenWrapper";
+import LoadingIndicator from "../components/LoadingIndicator";
 
 export default class AssessmentHistory extends React.Component {
   constructor(props) {
     super(props);
 
-    this.isRtl = true; // TODO: based app language
+    this.assessmentApi = AssessmentApi();
+
+    this.isRtl = true; // TODO: lang
     this.rtlView = this.isRtl && STYLES.rtlView;
     this.rtlText = this.isRtl && STYLES.rtlText;
   }
 
+  static contextType = GlobalContext;
+
   state = {
     loading: true,
-    error: false,
-    previousAssessments: [
-      {
-        id: 12,
-        date: "2022/02/08",
-      },
-      {
-        id: 13,
-        date: "2022/01/11",
-      },
-      {
-        id: 14,
-        date: "2021/08/16",
-      },
-      {
-        id: 15,
-        date: "2021/11/28",
-      },
-      {
-        id: 16,
-        date: "2022/02/05",
-      },
-    ],
+    assessments: [],
   };
 
   async componentDidMount() {
-    const { previousAssessments } = this.state;
-
-    const prevAssessments = JSON.parse(JSON.stringify(previousAssessments));
-    // prevAssessments.sort((a1, a2) => a2.date.localeCompare(a1.date)); // Sort in ascending order from oldest to latest
-    prevAssessments.sort((a1, a2) => a2.date.localeCompare(a1.date)); // Sort in descending order from most recent to oldest
-    prevAssessments.forEach(
-      assessment => (assessment.date = formatDate(assessment.date))
-    );
+    const { navigation } = this.props;
+    if (!this.context.isLoggedIn) {
+      Toast.show({
+        type: "error",
+        text1: "يرجى تسجيل الدخول",
+        text2: "يجب التسجيل لدخول هذه الصفحة",
+        props: { isRtl: true },
+      });
+      return this.setState({ loading: false }, () =>
+        navigation.replace("Login")
+      );
+    }
 
     try {
-      setTimeout(() => {
-        this.setState({
-          loading: false,
-          error: false,
-          previousAssessments: prevAssessments,
+      let assessments = await this.assessmentApi.getAll();
+      if (!assessments || assessments.length < 1) {
+        Toast.show({
+          type: "info",
+          text1: "لا يوجد لديك تشخيصات سابقة لعرضها",
+          props: { isRtl: true },
         });
-      }, 100); //! update the state after 5 second | For Testing
-    } catch (e) {
+        return navigation.goBack();
+      }
+
+      assessments.sort((a1, a2) => a2.date.localeCompare(a1.date)); // Sort in descending order from most recent to oldest
+      assessments.forEach(a => (a.date = formatDate(a.date)));
+
       this.setState({
         loading: false,
-        error: true,
+        assessments,
       });
+    } catch {
+      Toast.show({
+        type: "error",
+        text1: "تعذر تحميل الصفحة",
+        props: { isRtl: true },
+      });
+      return navigation.goBack();
     }
   }
 
@@ -109,47 +113,15 @@ export default class AssessmentHistory extends React.Component {
   );
 
   render() {
-    const { loading, error, previousAssessments } = this.state;
+    const { loading, assessments } = this.state;
 
-    if (loading) {
-      // TODO: custom component
-      return (
-        <View
-          style={[
-            {
-              ...StyleSheet.absoluteFill,
-              justifyContent: "center",
-              alignItems: "center",
-            },
-          ]}
-        >
-          <ActivityIndicator size="large" color={COLORS.primaryText} />
-        </View>
-      );
-    }
-
-    if (error) {
-      // TODO: custom component
-      return (
-        <View
-          style={[
-            {
-              ...StyleSheet.absoluteFill,
-              justifyContent: "center",
-              alignItems: "center",
-            },
-          ]}
-        >
-          <Text style={{ color: "red", fontSize: 42 }}>Error occurred</Text>
-        </View>
-      );
-    }
+    if (loading) return <LoadingIndicator color={COLORS.primaryText} />;
 
     return (
       <ScreenWrapper>
         <ScrollView
           style={STYLES.mainContainer}
-          contentContainerStyle={[STYLES.mainContainer]}
+          contentContainerStyle={STYLES.scrollViewContentContainer}
         >
           <View style={STYLES.titleContainer}>
             <Text
@@ -160,7 +132,7 @@ export default class AssessmentHistory extends React.Component {
           </View>
 
           <View style={styles.listContainer}>
-            {previousAssessments.map(this.renderAssessmentHistory)}
+            {assessments.map(this.renderAssessmentHistory)}
           </View>
         </ScrollView>
       </ScreenWrapper>
