@@ -5,7 +5,7 @@ import { DiseaseApi } from "./DiseaseApi";
 import { AssessmentApi } from "./AssessmentApi";
 import { FeedbackApi } from "./FeedbackApi";
 
-let registerationData;
+jest.setTimeout(300000)
 
 let apiManager;
 beforeAll(() => {
