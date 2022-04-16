@@ -7,9 +7,8 @@ import {
   ScrollView,
   TouchableHighlight,
   TouchableOpacity,
-  ActivityIndicator,
 } from "react-native";
-import PropTypes from "prop-types";
+import Toast from "react-native-toast-message";
 
 import DetailListItem from "../components/DetailListItem";
 import TextInput from "../components/TextInput";
@@ -17,147 +16,59 @@ import Button from "../components/Button";
 
 import { STYLES } from "../utils/styles";
 import { COLORS } from "../utils/colors";
-import ScreenWrapper from "../components/ScreenWrapper";
 
-const keyExtractor = ({ id }) => Math.random().toString(32).slice(2); // TODO: change to id.toString()
+import { SymptomApi } from "../api/SymptomApi";
+import { GlobalContext } from "../contexts/Global";
+
+import ScreenWrapper from "../components/ScreenWrapper";
+import LoadingIndicator from "../components/LoadingIndicator";
+
+const keyExtractor = ({ id }) => id.toString();
 
 export default class SymptomSearch extends React.Component {
-  // static propTypes = {
-  //   prop1: PropTypes.string,
-  //   prop2: PropTypes.number.isRequired,
-  //   prop3: PropTypes.func,
-  // };
   constructor(props) {
     super(props);
 
-    this.isRtl = true;
+    this.symptomApi = SymptomApi();
+
+    this.isRtl = true; // this.context.isRtl;
     this.rtlView = this.isRtl && STYLES.rtlView;
     this.rtlText = this.isRtl && STYLES.rtlText;
   }
 
-  allSymptoms = [
-    {
-      id: 1,
-      symptomName: "صداع",
-      symptomDescription:
-        "ألم في الرأس، إذ يمكن أن يحدث في أي جزء من الرأس، أو على جانبي الرأس، أو في جانب واحد فقط.",
-    },
-    {
-      id: 2,
-      symptomName: "كحة",
-      symptomDescription:
-        "طرد فجائي للهواء عبر الحنجرة يساعد على تنظيف الممرات التنفسية الكبيرة من السوائل والمهيجات والجزيئات الغريبة والميكروبات وعادة ما يحدث بشكل .",
-    },
-    {
-      id: 3,
-      symptomName: "حمى",
-      symptomDescription: "ارتفاع في درجة حرارة الجسم.",
-    },
-    {
-      id: 1,
-      symptomName: "صداع",
-      symptomDescription:
-        "ألم في الرأس، إذ يمكن أن يحدث في أي جزء من الرأس، أو على جانبي الرأس، أو في جانب واحد فقط.",
-    },
-    {
-      id: 2,
-      symptomName: "كحة",
-      symptomDescription:
-        "طرد فجائي للهواء عبر الحنجرة يساعد على تنظيف الممرات التنفسية الكبيرة من السوائل والمهيجات والجزيئات الغريبة والميكروبات وعادة ما يحدث بشكل .",
-    },
-    {
-      id: 3,
-      symptomName: "حمى",
-      symptomDescription: "ارتفاع في درجة حرارة الجسم.",
-    },
-    {
-      id: 1,
-      symptomName: "صداع",
-      symptomDescription:
-        "ألم في الرأس، إذ يمكن أن يحدث في أي جزء من الرأس، أو على جانبي الرأس، أو في جانب واحد فقط.",
-    },
-    {
-      id: 2,
-      symptomName: "كحة",
-      symptomDescription:
-        "طرد فجائي للهواء عبر الحنجرة يساعد على تنظيف الممرات التنفسية الكبيرة من السوائل والمهيجات والجزيئات الغريبة والميكروبات وعادة ما يحدث بشكل .",
-    },
-    {
-      id: 3,
-      symptomName: "حمى",
-      symptomDescription: "ارتفاع في درجة حرارة الجسم.",
-    },
-    {
-      id: 1,
-      symptomName: "صداع",
-      symptomDescription:
-        "ألم في الرأس، إذ يمكن أن يحدث في أي جزء من الرأس، أو على جانبي الرأس، أو في جانب واحد فقط.",
-    },
-    {
-      id: 2,
-      symptomName: "كحة",
-      symptomDescription:
-        "طرد فجائي للهواء عبر الحنجرة يساعد على تنظيف الممرات التنفسية الكبيرة من السوائل والمهيجات والجزيئات الغريبة والميكروبات وعادة ما يحدث بشكل .",
-    },
-    {
-      id: 3,
-      symptomName: "حمى",
-      symptomDescription: "ارتفاع في درجة حرارة الجسم.",
-    },
-    {
-      id: 1,
-      symptomName: "صداع",
-      symptomDescription:
-        "ألم في الرأس، إذ يمكن أن يحدث في أي جزء من الرأس، أو على جانبي الرأس، أو في جانب واحد فقط.",
-    },
-    {
-      id: 2,
-      symptomName: "كحة",
-      symptomDescription:
-        "طرد فجائي للهواء عبر الحنجرة يساعد على تنظيف الممرات التنفسية الكبيرة من السوائل والمهيجات والجزيئات الغريبة والميكروبات وعادة ما يحدث بشكل .",
-    },
-    {
-      id: 3,
-      symptomName: "حمى",
-      symptomDescription: "ارتفاع في درجة حرارة الجسم.",
-    },
-    {
-      id: 1,
-      symptomName: "صداع",
-      symptomDescription:
-        "ألم في الرأس، إذ يمكن أن يحدث في أي جزء من الرأس، أو على جانبي الرأس، أو في جانب واحد فقط.",
-    },
-    {
-      id: 2,
-      symptomName: "كحة",
-      symptomDescription:
-        "طرد فجائي للهواء عبر الحنجرة يساعد على تنظيف الممرات التنفسية الكبيرة من السوائل والمهيجات والجزيئات الغريبة والميكروبات وعادة ما يحدث بشكل .",
-    },
-    {
-      id: 3,
-      symptomName: "حمى",
-      symptomDescription: "ارتفاع في درجة حرارة الجسم.",
-    },
-  ];
+  static contextType = GlobalContext;
+
+  allSymptoms = []; // important for searching and filtering
 
   state = {
     loading: true,
-    error: false,
     symptoms: this.allSymptoms,
-    selectedSymptoms: [
-      {
-        id: 1,
-      },
-      {
-        id: 3,
-      },
-    ],
+    selectedSymptoms: [],
   };
 
   async componentDidMount() {
-    setTimeout(() => {
-      this.setState({ loading: false });
-    }, 2000);
+    const { navigation } = this.props;
+
+    try {
+      const symptoms = await this.symptomApi.getAll();
+      this.allSymptoms = symptoms.map(symptom => ({
+        id: symptom.id,
+        symptomName: symptom.ar_name,
+        symptomDescription: symptom.ar_description,
+      }));
+
+      this.setState({
+        loading: false,
+        symptoms: this.allSymptoms,
+      });
+    } catch {
+      Toast.show({
+        type: "error",
+        text1: "تعذر تحميل الصفحة",
+        props: { isRtl: true },
+      });
+      return navigation.goBack();
+    }
   }
 
   removeFromSelectedSymptoms = id => {
@@ -228,7 +139,7 @@ export default class SymptomSearch extends React.Component {
 
     return (
       <View
-        style={[styles.searchItemContainer, this.rtlView]} //TODO
+        style={[styles.searchItemContainer, this.rtlView]} //TODO: lang
       >
         <TouchableOpacity
           style={styles.searchItemSymbolContainer}
@@ -270,48 +181,24 @@ export default class SymptomSearch extends React.Component {
   // Navigate to Question
   handleButtonPress = () => {
     const { selectedSymptoms } = this.state;
-    if (selectedSymptoms.length < 1) return;
+    if (selectedSymptoms.length < 2) {
+      Toast.show({
+        type: "info",
+        text1: "معلومات غير كافية",
+        text2: "يجب على الأقل اختيار عرضين تشعر بهما حاليًا",
+        props: { isRtl: true },
+      });
+      return;
+    }
 
     const { navigation } = this.props;
-    navigation.navigate("Question", { selectedSymptoms });
+    navigation.navigate("Question", { symptoms: selectedSymptoms });
   };
 
   render() {
-    const { loading, error, symptoms, selectedSymptoms } = this.state;
+    const { loading, symptoms, selectedSymptoms } = this.state;
 
-    if (loading) {
-      // TODO: custom component
-      return (
-        <View
-          style={[
-            {
-              ...StyleSheet.absoluteFill,
-              justifyContent: "center",
-              alignItems: "center",
-            },
-          ]}
-        >
-          <ActivityIndicator size="large" color={COLORS.primaryText} />
-        </View>
-      );
-    }
-
-    if (error) {
-      // TODO: custom component
-      return (
-        <View
-          style={[
-            {
-              ...StyleSheet.absoluteFill,
-              justifyContent: "center",
-              alignItems: "center",
-            },
-          ]}
-        >
-          <Text style={{ color: "red", fontSize: 42 }}>Error occurred</Text>
-        </View>
-      );
-    }
+    if (loading) return <LoadingIndicator color={COLORS.primaryText} />;
 
     return (
       <ScreenWrapper>
@@ -324,7 +211,7 @@ export default class SymptomSearch extends React.Component {
             <TextInput
               icon="search"
               isRtl={this.isRtl}
-              placeholder="بحث" //TODO
+              placeholder="بحث" //TODO: lang
               clearButtonMode={"while-editing"} // IOS only
               style={{ marginBottom: 5 }}
               onChangeText={this.handleSearch}
@@ -336,7 +223,7 @@ export default class SymptomSearch extends React.Component {
                   styles.selectedSymptomsScroller,
                   { marginTop: 5 },
                   { transform: [{ scaleX: -1 }] },
-                ]} //TODO
+                ]} //TODO: lang
                 horizontal={true}
                 fadingEdgeLength={400} // Android only
                 showsHorizontalScrollIndicator={false}
@@ -357,7 +244,7 @@ export default class SymptomSearch extends React.Component {
 
           <View style={styles.buttonContainer}>
             <Button
-              title="التالي" //TODO
+              title="التالي" //TODO: lang
               onPress={this.handleButtonPress}
             />
           </View>

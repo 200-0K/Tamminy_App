@@ -8,115 +8,85 @@ import {
   TouchableOpacity,
   TouchableHighlight,
 } from "react-native";
-import PropTypes from "prop-types";
-
-import TextInput from "../components/TextInput";
+import Toast from "react-native-toast-message";
 
 import { STYLES } from "../utils/styles";
 import { COLORS } from "../utils/colors";
+
+import { DiseaseApi } from "../api/DiseaseApi";
+import { SymptomApi } from "../api/SymptomApi";
+
+import TextInput from "../components/TextInput";
 import DetailListItem from "../components/DetailListItem";
 import ScreenWrapper from "../components/ScreenWrapper";
 
-const keyExtractor = (category, id) => `${category}.${id}`;
-
 export default class Search extends React.Component {
-  // static propTypes = {
-  //   prop1: PropTypes.string,
-  //   prop2: PropTypes.number.isRequired,
-  //   prop3: PropTypes.func,
-  // };
-
   constructor(props) {
     super(props);
 
-    this.isRtl = true; // TODO: based app language
+    this.diseaseApi = DiseaseApi();
+    this.symptomApi = SymptomApi();
+
+    this.isRtl = true; // TODO: lang
     this.rtlView = this.isRtl && STYLES.rtlView;
     this.rtlText = this.isRtl && STYLES.rtlText;
   }
 
-  categories = [
-    {
-      name: "symptoms",
-      ar: "اعراض",
-      items: [
-        {
-          id: 1,
-          name: "صداع",
-          description:
-            "ألم في الرأس، إذ يمكن أن يحدث في أي جزء من الرأس، أو على جانبي الرأس، أو في جانب واحد فقط.",
-        },
-        {
-          id: 2,
-          name: "كحة",
-          description:
-            "طرد فجائي للهواء عبر الحنجرة يساعد على تنظيف الممرات التنفسية الكبيرة من السوائل والمهيجات والجزيئات الغريبة والميكروبات وعادة ما يحدث بشكل .",
-        },
-        {
-          id: 3,
-          name: "حمى",
-          description: "ارتفاع في درجة حرارة الجسم.",
-        },
-      ],
-      itemPressHanlder: id => this.handleSymptomPress(id),
-      // fetchItems: // initialize API class & call fetch
-    },
-    {
-      name: "diseases",
-      ar: "امراض",
-      items: [
-        {
-          id: 1,
-          name: "كورونا",
-          description:
-            "فيروسات كورونا فصيلة واسعة الانتشار معروفة بأنها تسبب أمراضاً تتراوح من نزلات البرد الشائعة إلى الاعتلالات الأشد وطأة مثل متلازمة الشرق الأوسط التنفسية (MERS) ومتلازمة الالتهاب الرئوي الحاد الوخيم.",
-        },
-        {
-          id: 2,
-          name: "نزلة برد",
-          description:
-            "فيروسات كورونا فصيلة واسعة الانتشار معروفة بأنها تسبب أمراضاً تتراوح من نزلات البرد الشائعة إلى الاعتلالات الأشد وطأة مثل متلازمة الشرق الأوسط التنفسية (MERS) ومتلازمة الالتهاب الرئوي الحاد الوخيم.",
-        },
-        {
-          id: 3,
-          name: "حساسية",
-          description:
-            "فيروسات كورونا فصيلة واسعة الانتشار معروفة بأنها تسبب أمراضاً تتراوح من نزلات البرد الشائعة إلى الاعتلالات الأشد وطأة مثل متلازمة الشرق الأوسط التنفسية (MERS) ومتلازمة الالتهاب الرئوي الحاد الوخيم.",
-        },
-      ],
-      itemPressHanlder: id => this.handleDiseasePress(id),
-      // fetchItems: // initialize API class & call fetch
-    },
-  ];
+  categories = [];
 
   state = {
     loading: true,
-    error: false,
     currentCategory: null,
     categories: [],
     items: [],
   };
 
   async componentDidMount() {
-    // TODO
-    // Otherwise:
-    // this.categories.forEach(categoryMeta => {
-    // categoryMeta.items = await categoryMeta.fetchItems(); // fetch id, name, description of all symptoms & diseases
-    // Check local storage; if category available, check if up-to-date (by hash? || expiry date?) Then:
-    // return local storage category
-    // if not avaliable then fetch it from API and save it, then return it
-    // })
-    //
+    const { navigation } = this.props;
 
-    // if no error update state:
-    setTimeout(() => {
+    try {
+      const symtpomCategory = {
+        name: "symptoms",
+        ar: "اعراض",
+        items: [],
+        itemPressHanlder: id => this.handleSymptomPress(id),
+      };
+      const symptoms = await this.symptomApi.getAll();
+      symtpomCategory.items = symptoms.map(symptom => ({
+        id: symptom.id,
+        name: symptom.ar_name,
+        description: symptom.ar_description,
+      }));
+
+      const diseaseCategory = {
+        name: "Disease",
+        ar: "امراض",
+        items: [],
+        itemPressHanlder: id => this.handleDiseasePress(id),
+      };
+      const diseases = await this.diseaseApi.getAll();
+      diseaseCategory.items = diseases.map(disease => ({
+        id: disease.id,
+        name: disease.ar_name,
+        description: disease.ar_description,
+      }));
+
+      this.categories.push(symtpomCategory, diseaseCategory);
+
       this.setState({
         loading: false,
-        error: false,
         currentCategory: this.categories[0],
         categories: this.categories,
         searchText: "",
       });
-    }, 100);
+    } catch (e) {
+      Toast.show({
+        type: "error",
+        text1: "تعذر تحميل الصفحة",
+        props: { isRtl: true },
+      });
+      return navigation.goBack();
+    }
   }
 
   handleSymptomPress = id => {
@@ -180,8 +150,7 @@ export default class Search extends React.Component {
   };
 
   render() {
-    const { loading, error, searchText, categories, currentCategory } =
-      this.state;
+    const { loading, searchText, categories, currentCategory } = this.state;
     const items = currentCategory?.items;
 
     return (
@@ -190,7 +159,6 @@ export default class Search extends React.Component {
           <View>
             <View style={STYLES.titleContainer}>
               <Text style={STYLES.title}>بحث</Text>
-              {/* TODO: Lang */}
             </View>
 
             {!loading && (
@@ -211,6 +179,7 @@ export default class Search extends React.Component {
                   inverted={true}
                   showsHorizontalScrollIndicator={false}
                   contentContainerStyle={styles.categoriesContainer}
+                  // keyExtractor={({name}) => name}
                   keyExtractor={() => Math.random().toString(32)}
                   keyboardShouldPersistTaps="handled"
                 />
@@ -232,11 +201,7 @@ export default class Search extends React.Component {
             </View>
           )}
 
-          {/* {error && (
-          // TODO
-        )} */}
-
-          {!loading && !error && (
+          {!loading && (
             <FlatList
               data={
                 searchText
@@ -250,11 +215,9 @@ export default class Search extends React.Component {
               renderItem={this.renderSearchItem}
               showsVerticalScrollIndicator={false}
               contentContainerStyle={styles.bodyContainerFlatList}
-              keyExtractor={({ id }) => keyExtractor(id, currentCategory.name)}
-              // keyExtractor={() => Math.random().toString(32)}
+              keyExtractor={({ id }) => `${currentCategory.name}.${id}`}
               keyboardShouldPersistTaps="handled"
             />
-            // TODO: if there is no result show something
           )}
         </View>
       </ScreenWrapper>

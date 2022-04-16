@@ -51,7 +51,7 @@ export const AssessmentApi = axios => {
         symptoms.map(id => `symptom[]=${id}`).join("&"),
         { headers: { "Content-Type": "application/x-www-form-urlencoded;" } }
       );
-      res.data.diseases.sort((a, b) => b.percentage - a.percentage);
+      res.data?.diseases?.sort((a, b) => b.percentage - a.percentage);
       return res;
     },
     getQuestions: async symptoms => {

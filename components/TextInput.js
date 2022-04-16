@@ -1,8 +1,7 @@
-import { StyleSheet, View, Animated, TextInput as TI } from "react-native";
+import { StyleSheet, Animated, TextInput as TI } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import PropTypes from "prop-types";
 
-import { COLORS } from "../utils/colors";
 import { STYLES } from "../utils/styles";
 import React from "react";
 
@@ -37,16 +36,22 @@ export default class TextInput extends React.Component {
   }
 
   render() {
-    const { icon, style, isRtl } = this.props;
+    const { icon, style, isRtl, color } = this.props;
     const { opacityAnim } = this.state;
 
     const rtlView = isRtl && STYLES.rtlView;
     const rtlText = isRtl && STYLES.rtlText;
   
+    const tfStyle = {
+      borderBottomColor: color,
+      borderColor: color,
+      color: "black"
+    }
+
     return (
       <Animated.View style={[styles.container, rtlView, {opacity: opacityAnim}]}>
-        {icon && <Ionicons name={icon} size={18} style={{ color: COLORS.primaryText }} />}
-        <TI {...this.props} style={[styles.Textinput, rtlText, style]} onFocus={this.handleFocus} onBlur={this.handleBlur}/>
+        {icon && <Ionicons name={icon} size={18} style={{ color: color }} />}
+        <TI {...this.props} style={[styles.Textinput, tfStyle, rtlText, style]} onFocus={this.handleFocus} onBlur={this.handleBlur}/>
       </Animated.View>
     );
   }
@@ -60,9 +65,7 @@ const styles = StyleSheet.create({
   Textinput: {
     flex: 1, 
     borderBottomWidth: 2,
-    borderBottomColor: COLORS.primaryText,
     borderRadius: 3,
-    borderColor: COLORS.primaryText, 
     paddingHorizontal: 10,
     marginHorizontal: 4,
     paddingVertical: 4
@@ -72,9 +75,11 @@ const styles = StyleSheet.create({
 TextInput.propTypes = {
   icon: PropTypes.string,
   isRtl: PropTypes.bool,
+  color: PropTypes.string
 }
 
 TextInput.defaultProps = {
   icon: null,
-  isRtl: false ,
+  isRtl: false,
+  color: "black"
 }

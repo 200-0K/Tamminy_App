@@ -1,31 +1,37 @@
 import React from "react";
 import {
   StyleSheet,
-  SafeAreaView,
   View,
   ScrollView,
   Text,
-  ActivityIndicator,
   TouchableHighlight,
-  Alert,
 } from "react-native";
 import PropTypes from "prop-types";
+import Toast from "react-native-toast-message";
+
 import { COLORS } from "../utils/colors";
 import { STYLES } from "../utils/styles";
+
+import { DiseaseApi } from "../api/DiseaseApi";
+
 import SeverityIndicator from "../components/SeverityIndicator";
 import ScreenWrapper from "../components/ScreenWrapper";
-import ErrorIndicator from "../components/ErrorIndicator";
 import LoadingIndicator from "../components/LoadingIndicator";
 
 export default class DiseaseDetail extends React.Component {
-  // static propTypes = {
-  //   prop1: PropTypes.string,
-  //   prop2: PropTypes.number.isRequired,
-  //   prop3: PropTypes.func,
-  // };
+  static propTypes = {
+    navigation: PropTypes.object.isRequired,
+    route: PropTypes.shape({
+      params: PropTypes.shape({
+        id: PropTypes.number.isRequired,
+      }).isRequired,
+    }).isRequired,
+  };
 
   constructor(props) {
     super(props);
+
+    this.diseaseApi = DiseaseApi();
 
     this.isRtl = true; // TODO: based app language
     this.rtlView = this.isRtl && STYLES.rtlView;
@@ -34,68 +40,40 @@ export default class DiseaseDetail extends React.Component {
 
   state = {
     loading: true,
-    error: false,
-    DiseaseMeta: {
-      id: 123,
-      name: "كورونا",
-      description:
-        "فيروسات كورونا فصيلة واسعة الانتشار معروفة بأنها تسبب أمراضاً تتراوح من نزلات البرد الشائعة إلى الاعتلالات الأشد وطأة مثل متلازمة الشرق الأوسط التنفسية (MERS) ومتلازمة الالتهاب الرئوي الحاد الوخيم.",
-      precautions: [
-        "ابتعد مسافة متر واحد على الأقل عن الآخرين.",
-        "اجعل من ارتداء الكمامة عادة عندما تكون مع أشخاص آخرين. إنّ استعمال الكمامات وحفظها وتنظيفها والتخلص منها بشكل سليم أمر ضروري لجعلها فعالة قدر الإمكان.",
-        "نظّف يديك قبل أن ترتدي الكمامة، وقبل خلعها وبعده.",
-        "تجنب الأماكن المزدحمة أو المغلقة.",
-      ],
-
-      symptoms: [
-        {
-          id: 1,
-          name: "العرض 1",
-          percentage: 94, // (times current symptom occurred / total symptoms for this disease)
-        },
-        {
-          id: 2,
-          name: "العرض 2",
-          percentage: 75,
-        },
-        {
-          id: 3,
-          name: "العرض 3",
-          percentage: 55,
-        },
-        {
-          id: 4,
-          name: "العرض 4",
-          percentage: 35, // (times current symptom occurred / total symptoms for this disease)
-        },
-        {
-          id: 5,
-          name: "العرض 5",
-          percentage: 13,
-        },
-      ],
-    },
+    diseaseMeta: {},
   };
 
   async componentDidMount() {
-    const { id } = this.props.route.params;
-    // Alert.alert("Disease id", `${id}`);
-    // TODO
-    // fetch symptom detail by SymptomApi class
+    const { navigation } = this.props;
+    const id = this.props.route.params.id;
+    if (!id) navigation.goBack();
 
-    // if no error
-    // this.setState({
-    //   loading: false,
-    //   error: false,
-    //   symptomMeta,
-    // })
+    try {
+      const disease = await this.diseaseApi.get(id);
+      const diseaseMeta = {
+        id: disease.id,
+        name: disease.ar_name,
+        description: disease.ar_description,
+        precautions: disease.precautions.map(precaution => precaution.ar_name),
+        symptoms: disease.symptoms.map(symptom => ({
+          id: symptom.id,
+          name: symptom.ar_name,
+          percentage: 0, //! can't calc this atm
+        })),
+      };
 
-    setTimeout(() => {
       this.setState({
         loading: false,
-        error: false,
+        diseaseMeta,
       });
-    }, 100);
+    } catch (e) {
+      Toast.show({
+        type: "error",
+        text1: "تعذر تحميل الصفحة",
+        props: { isRtl: true },
+      });
+      return navigation.goBack();
+    }
   }
 
   handleSymptomPress = id => {
@@ -122,7 +100,6 @@ export default class DiseaseDetail extends React.Component {
   };
 
   renderSymptom = ({ id, name, percentage }) => {
-    console.log(id, name, percentage)
     return (
       <TouchableHighlight
         style={[styles.symptomContainer, this.rtlView]}
@@ -141,28 +118,20 @@ export default class DiseaseDetail extends React.Component {
   };
 
   render() {
-    const { loading, error, DiseaseMeta } = this.state;
+    const { loading, diseaseMeta } = this.state;
 
-    if (loading) {
-      return <LoadingIndicator />;
-    }
+    if (loading) return <LoadingIndicator color={COLORS.primaryText} />;
 
-    if (error) {
-      return <ErrorIndicator />;
-    }
-
-    const { name, description, precautions, symptoms } = DiseaseMeta;
-
+    const { name, description, precautions, symptoms } = diseaseMeta;
     return (
       <ScreenWrapper>
         <ScrollView
           showsVerticalScrollIndicator={false}
           style={STYLES.mainContainer}
+          contentContainerStyle={STYLES.scrollViewContentContainer}
         >
           <View style={{ marginTop: STYLES.titleContainer.marginTop }}>
-            <Text selectable style={[STYLES.title, this.rtlText]}>
-              {name}
-            </Text>
+            <Text style={[STYLES.title, this.rtlText]}>{name}</Text>
             <Text selectable style={[styles.description, this.rtlText]}>
               {description}
             </Text>

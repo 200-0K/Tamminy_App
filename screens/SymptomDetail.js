@@ -2,23 +2,21 @@ import React from "react";
 import {
   StyleSheet,
   View,
-  Image,
-  FlatList,
   ScrollView,
   Text,
-  ActivityIndicator,
   TouchableHighlight,
-  StatusBar,
-  Alert,
 } from "react-native";
 import PropTypes from "prop-types";
 
 import { COLORS } from "../utils/colors";
 import { STYLES } from "../utils/styles";
+
+import { SymptomApi } from "../api/SymptomApi";
+
 import SeverityIndicator from "../components/SeverityIndicator";
 import ScreenWrapper from "../components/ScreenWrapper";
 import LoadingIndicator from "../components/LoadingIndicator";
-import ErrorIndicator from "../components/ErrorIndicator";
+import HorizontalImageScroller from "../components/HorizontalImageScroller";
 
 export default class SymptomDetail extends React.Component {
   static propTypes = {
@@ -32,6 +30,9 @@ export default class SymptomDetail extends React.Component {
 
   constructor(props) {
     super(props);
+
+    this.symptomApi = SymptomApi();
+
     this.isRtl = true;
     this.rtlText = this.isRtl && STYLES.rtlText;
     this.rtlView = this.isRtl && STYLES.rtlView;
@@ -39,87 +40,46 @@ export default class SymptomDetail extends React.Component {
 
   state = {
     loading: true,
-    error: false,
-    imagesLoading: [],
-    symptomMeta: {
-      id: 123,
-      name: "جيوب انفية",
-      description:
-        "يحدث التهاب الجيوب الأنفية المزمن عندما تتورّم الفراغات الموجودة داخل الأنف والرأس كما يمكن ان يحدث التهاب الجيوب الأنفية المزمن عن طريق العدوى، أو عن طريق النمو النسيجي في الجيوب الأنفية",
-      images: [
-        "https://upload.wikimedia.org/wikipedia/commons/6/65/CT_of_chronic_sinusitis.jpg",
-        "https://www.almrsal.com/wp-content/uploads/2018/10/%D8%A3%D9%86%D9%88%D8%A7%D8%B9-%D8%A7%D9%84%D8%AC%D9%8A%D9%88%D8%A8-%D8%A7%D9%84%D8%A3%D9%86%D9%81%D9%8A%D8%A9-%D9%88%D8%A3%D9%85%D8%A7%D9%83%D9%86%D9%87%D8%A7.jpg",
-        "https://upload.wikimedia.org/wikipedia/commons/f/fb/Blausen_0800_Sinusitis.png",
-        "https://upload.wikimedia.org/wikipedia/commons/1/1d/Sinuses_and_Sinusitis_%285937085231%29.jpg",
-        "https://www.aljazeera.net/wp-content/uploads/2013/11/1e7b626d-60d9-484a-942c-99bf02b98072.jpeg?fit=686%2C515",
-      ],
-      diseases: [
-        {
-          id: 1,
-          name: "مرض 1",
-          percentage: 94, // (times current symptom occurred / total symptoms for this disease)
-        },
-        {
-          id: 2,
-          name: "مرض 2",
-          percentage: 75,
-        },
-        {
-          id: 3,
-          name: "مرض 3",
-          percentage: 55,
-        },
-        {
-          id: 4,
-          name: "مرض 4",
-          percentage: 35, // (times current symptom occurred / total symptoms for this disease)
-        },
-        {
-          id: 5,
-          name: "مرض 5",
-          percentage: 13,
-        },
-      ],
-    },
+    symptomMeta: {},
   };
 
   async componentDidMount() {
-    const { id } = this.props.route.params;
-    console.log(this.props.route)
-    // Alert.alert("Symptom id", `${id}`);
-    // TODO
-    // fetch symptom detail by SymptomApi class
+    const { navigation } = this.props;
+    const id = this.props.route.params.id;
+    if (!id) navigation.goBack();
 
-    // if no error
-    // this.setState({
-    //   loading: false,
-    //   error: false,
-    //   symptomMeta,
-    // })
+    try {
+      const symptom = await this.symptomApi.get(id);
+      const symptomMeta = {
+        id: symptom.id,
+        name: symptom.ar_name,
+        description: symptom.ar_description,
+        images: symptom.images.map(image => image.image),
+        diseases: symptom.diseases.map(disease => ({
+          id: disease.id,
+          name: disease.ar_name,
+          percentage: 0, //! can't calc this atm
+        })),
+      };
 
-    setTimeout(() => {
       this.setState({
         loading: false,
         error: false,
+        symptomMeta,
       });
-    }, 1000);
+    } catch (e) {
+      Toast.show({
+        type: "error",
+        text1: "تعذر تحميل الصفحة",
+        props: { isRtl: true },
+      });
+      return navigation.goBack();
+    }
   }
 
   handleDiseasePress = id => {
     const { navigation } = this.props;
     navigation.replace("DiseaseDetail", { id });
-  };
-
-  renderImage = ({ item: uri }) => {
-    return (
-      <View style={{ position: "relative" }} key={uri}>
-        <Image
-          source={{ uri }}
-          resizeMode="cover"
-          style={{ height: "100%", aspectRatio: 1 }}
-        />
-      </View>
-    );
   };
 
   renderDisease = ({ id, name, percentage }) => {
@@ -141,41 +101,27 @@ export default class SymptomDetail extends React.Component {
   };
 
   render() {
-    const { loading, error, symptomMeta } = this.state;
+    const { loading, symptomMeta } = this.state;
 
-    if (loading) {
-      return <LoadingIndicator color={COLORS.primaryText} />;
-    }
-
-    if (error) {
-      return <ErrorIndicator />;
-    }
+    if (loading) return <LoadingIndicator color={COLORS.primaryText} />;
 
     const { name, description, images, diseases } = symptomMeta;
     return (
       <ScreenWrapper>
         <View>
-          <FlatList
-            data={images}
-            renderItem={this.renderImage}
-            horizontal={true}
-            inverted={true} // TODO
-            keyExtractor={() => Math.random().toString(32)}
-            style={styles.imageContainer}
-            showsHorizontalScrollIndicator={false}
-          />
+          <HorizontalImageScroller images={images} />
         </View>
         <ScrollView
           showsVerticalScrollIndicator={false}
           style={STYLES.mainContainer}
-          contentContainerStyle={{
-            paddingHorizontal: STYLES.mainContainer.paddingHorizontal,
-          }}
+          contentContainerStyle={STYLES.scrollViewContentContainer}
         >
-          <View style={styles.titleContainer}>
+          <View style={{ marginTop: STYLES.titleContainer.marginTop }}>
             <Text style={[STYLES.title, this.rtlText]}>{name}</Text>
           </View>
-          <Text style={[styles.description, this.rtlText]}>{description}</Text>
+          <Text selectable style={[styles.description, this.rtlText]}>
+            {description}
+          </Text>
 
           <View style={STYLES.sectionContainer}>
             <View style={STYLES.sectionTitleContainer}>
@@ -190,12 +136,6 @@ export default class SymptomDetail extends React.Component {
 }
 
 const styles = StyleSheet.create({
-  imageContainer: {
-    height: 250,
-  },
-  titleContainer: {
-    paddingVertical: 4,
-  },
   description: {
     fontSize: 14,
     color: COLORS.primaryText,
