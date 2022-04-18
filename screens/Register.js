@@ -5,6 +5,7 @@ import {
   View,
   ScrollView,
   TouchableOpacity,
+  Platform,
 } from "react-native";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import Toast from "react-native-toast-message";
@@ -177,6 +178,7 @@ export default class Register extends React.Component {
           <DateTimePickerModal
             isVisible={open}
             mode="date"
+            display={Platform.ios ? "compact" : "default"}
             date={date.value ?? maximumDate}
             maximumDate={maximumDate}
             onConfirm={dateValue =>
