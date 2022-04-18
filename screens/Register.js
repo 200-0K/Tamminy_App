@@ -190,6 +190,8 @@ export default class Register extends React.Component {
             }
             onCancel={() => this.setState({ open: false })}
             isDarkModeEnabled={true}
+            textColor={"white"}
+            final fix 
           />
 
           <ScrollView
