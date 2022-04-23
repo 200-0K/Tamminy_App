@@ -45,11 +45,11 @@ export const AccountApi = axios => {
         const res = await axios.post(
           "/account/register", 
           new URLSearchParams(data).toString(), 
-          { headers: { "Content-Type": "application/x-www-form-urlencoded;" },
-        });
-        return res.status;
-      
-      } catch (e) {return e.response?.status;}
+          { headers: { "Content-Type": "application/x-www-form-urlencoded;" }, _inactiveToken: true}
+        );
+        return res.status;      
+        
+      } catch (e) {return e.response?.status; }
     },
     verify: async otp => {
       try {

@@ -24,9 +24,9 @@ export default class App extends React.Component {
     // Initiate ApiManager with token if available
     // Pass Other configurations to AppContainer e.g. Theme, Lang, isRtl, etc...
     const apiManager = ApiManager({
-      baseUrl: "http://172.20.10.3/", // your pc local ip address --Open CMD and type-> netsh interface ip show address | findstr "IP Address"
+      baseUrl: "http://192.168.1.208/", // your pc local ip address --Open CMD and type-> netsh interface ip show address | findstr "IP Address"
       token,
-      tokenChangedCallback: this.setToken,
+      activeTokenChangedCallback: this.setToken,
     });
     SymptomApi(apiManager);
     DiseaseApi(apiManager);
