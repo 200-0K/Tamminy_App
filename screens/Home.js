@@ -84,12 +84,13 @@ export default class Home extends React.Component {
 
           <View style={{ flex: 1 }}>
             <HomeSvg />
-            <View>
-              <Text style={[styles.title, { textAlign: "right" }]}>
-                هل تعاني
-              </Text>
-              <Text style={[styles.title, { textAlign: "left" }]}>من شيء؟</Text>
+            <View style={{flexDirection: "row", justifyContent: "center"}}>
+              <View style={{maxWidth: 370, flex: 1}}>
+                <Text style={[styles.title, { textAlign: "right" }]}>هل تعاني</Text>
+                <Text style={[styles.title, { textAlign: "left" }]}>من شيء؟</Text>
+              </View>
             </View>
+            
 
             <View style={[styles.optionIcon]}>
               <TouchableOpacity
