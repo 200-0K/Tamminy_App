@@ -18,16 +18,16 @@ import LoadingIndicator from "./components/LoadingIndicator";
 
 getToken = async () => {
   try {
-    return (await AsyncStorage.getItem("Token"))
-  } catch (e){return null}
-}
+    return await AsyncStorage.getItem("Token");
+  } catch (e) {return null;}
+};
 
 updateToken = async token => {
   try {
     await AsyncStorage.setItem("Token", token ?? "");
     return true;
-  } catch (e){return null}
-}
+  } catch (e) {return false;}
+};
 
 export default class App extends React.Component {
   state = {
@@ -38,7 +38,7 @@ export default class App extends React.Component {
   };
 
   async componentDidMount() {
-    const token = await getToken() ?? false;
+    const token = (await getToken()) ?? false;
 
     const apiManager = ApiManager({
       baseUrl: "http://192.168.1.208/", // your pc local ip address --Open CMD and type-> netsh interface ip show address | findstr "IP Address"
@@ -54,7 +54,7 @@ export default class App extends React.Component {
     this.setState({
       _loading: false,
       isLoggedIn: !!token,
-    })
+    });
   }
 
   setToken = async token => {
@@ -66,7 +66,7 @@ export default class App extends React.Component {
   };
 
   render() {
-    const {_loading} = this.state;
+    const { _loading } = this.state;
 
     if (_loading) return <LoadingIndicator color={COLORS.primaryText} />;
 
