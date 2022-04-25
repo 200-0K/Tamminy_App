@@ -67,6 +67,13 @@ export default class Login extends React.Component {
         text2: "كلمة السر او البريد الإلكتروني غير صحيح",
         props: { isRtl: true },
       });
+    } else {
+      Toast.show({
+        type: "error",
+        text1: "تعذر الاتصال بالخادم",
+        text2: "تأكد من اتصالك، او حاول مجددَا لاحقًا",
+        props: { isRtl: true },
+      });
     }
 
     this.setState({ loading: false });
