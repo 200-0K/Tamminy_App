@@ -1,10 +1,11 @@
 {
   "expo": {
-    "name": "TameniAI",
-    "slug": "TameniAI",
+    "name": "Tamminy",
+    "slug": "Tamminy",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
+    "primaryColor": "#ffffff",
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",
@@ -17,14 +18,16 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.tamminy"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#FFFFFF"
+        "backgroundColor": "#ffffff"
       },
-      "softwareKeyboardLayoutMode": "pan"
+      "softwareKeyboardLayoutMode": "pan",
+      "package": "com.tamminy"
     },
     "web": {
       "favicon": "./assets/favicon.png"
