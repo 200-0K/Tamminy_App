@@ -41,7 +41,9 @@ export default class App extends React.Component {
     const token = (await getToken()) ?? false;
 
     const apiManager = ApiManager({
-      baseUrl: "http://192.168.1.208/", // your pc local ip address --Open CMD and type-> netsh interface ip show address | findstr "IP Address"
+      // for local development use your pc local ip address 
+      // --Open CMD and type-> netsh interface ip show address | findstr "IP Address"
+      baseUrl: "https://www.tamminy.com/api/v1",
       token,
       activeTokenChangedCallback: this.setToken,
     });
