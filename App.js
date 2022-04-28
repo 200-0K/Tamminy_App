@@ -1,4 +1,5 @@
 import React from "react";
+import * as SplashScreen from 'expo-splash-screen';
 import Toast from "react-native-toast-message";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
@@ -28,6 +29,8 @@ updateToken = async token => {
     return true;
   } catch (e) {return false;}
 };
+
+SplashScreen.hideAsync();
 
 export default class App extends React.Component {
   state = {
