@@ -21,17 +21,6 @@ import { StatusBar } from "expo-status-bar";
 const Stack = createNativeStackNavigator();
 
 function App() {
-  // TODO
-  // Contexts are independent files
-  // ---  AppCtx ---
-  // --- AuthCtx ---
-  // - AuthCtx will contain user's token
-  // - Upon app start AuthCtx will handle loading user authentication details into the context
-  // - If token is set then treat user as signed-in e.g. don't show login button at home screen
-  // - Make ApiManager class use this context to get/set user's token
-  // - If token is changed then the context will handle saving it into a localstorage
-  // Perfect!
-
   return (
     <NavigationContainer>
       <Stack.Navigator
